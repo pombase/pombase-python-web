@@ -1,6 +1,6 @@
 language: python
 python:
   - "3.6"
-install:
-script:
-  - python manage.py test
+  - "3.7-dev" 
+install: pip install -r requirements.txt
+script: python manage.py test
