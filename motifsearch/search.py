@@ -25,11 +25,35 @@ class Search:
         if gene_name != '':
             self.peptides.update({gene_name: seq})
 
-    def motif(self, patt):
+    def motif(self, search_text, match_count = 20, context = 25):
         """Search all peptides of the regular expression 'patt'
         """
+        patt = re.compile(search_text)
         ret = []
         for key, seq in self.peptides.items():
-            for m in patt.finditer(seq):
-                ret.append(key)
+            if len(ret) < 20:
+                pep_res = []
+                for m in patt.finditer(seq):
+                    if len(pep_res) < match_count:
+                        before_start = m.start() - context
+                        if before_start < 0:
+                            before_start = 0
+                        hit = {
+                            'start': m.start() + 1,
+                            'end': m.end(),
+                            'match': m.group(),
+                            'before': seq[before_start:m.start()],
+                            'after': seq[m.end():m.end() + context],
+                        }
+                        pep_res.append(hit)
+                    else:
+                        break
+                if len(pep_res) > 0:
+                    pep_matches = {
+                        'peptide_id': key,
+                        'matches': pep_res,
+                    }
+                    ret.append(pep_matches)
+            else:
+                break
         return ret

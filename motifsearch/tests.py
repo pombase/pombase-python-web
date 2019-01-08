@@ -1,5 +1,4 @@
 import os
-import re
 
 from django.test import TestCase
 from motifsearch.search import Search
@@ -10,6 +9,38 @@ DATA_DIR = CURRENT_DIR + '/test_data'
 print(CURRENT_DIR)
 
 class SearchTest(TestCase):
+    def setUp(self):
+        data_path = DATA_DIR + '/test_pep.fasta'
+        self._search = Search(data_path)
+
     def test_all_results(self):
-        search = Search(DATA_DIR + '/test_pep.fasta')
-        self.assertEqual(len(search.motif(re.compile('^M'))), 5)
+        result = self._search.motif('^M')
+        self.assertEqual(len(result), 5)
+
+    def test_RSLYED(self):
+        result = self._search.motif('RSLYED')
+        self.assertEqual(len(result), 1)
+        res0 = result[0]
+        self.assertEqual(res0['peptide_id'], 'SPAC1002.02')
+        res0_matches = res0['matches']
+        self.assertEqual(len(res0_matches), 1)
+        match0 = res0_matches[0]
+        self.assertEqual(match0['start'], 12)
+        self.assertEqual(match0['end'], 17)
+        self.assertEqual(match0['match'], 'RSLYED')
+        self.assertEqual(match0['before'], 'MASTFSQSVFA')
+        self.assertEqual(match0['after'], 'SAENKVDSSKNTEANFPITLPKVLP')
+
+    def test_FdotL(self):
+        result = self._search.motif('F.L')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result[0]['matches']), 2)
+        self.assertEqual(result[0]['matches'][1]['match'], 'FIL')
+        self.assertEqual(result[1]['matches'][0]['match'], 'FNL')
+
+    def test_END_dot_start_EDD(self):
+        result = self._search.motif('END.*EDD')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result[0]['matches']), 1)
+        self.assertEqual(result[0]['matches'][0]['match'], 'ENDLEEDD')
+
