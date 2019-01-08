@@ -28,7 +28,7 @@ class Search:
     def motif(self, search_text, match_count = 20, context = 25):
         """Search all peptides of the regular expression 'patt'
         """
-        patt = re.compile(search_text)
+        patt = re.compile(search_text, re.IGNORECASE)
         ret = []
         for key, seq in self.peptides.items():
             if len(ret) < 20:
