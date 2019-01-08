@@ -16,3 +16,6 @@ def query(request, pattern):
         'status': 'OK',
         'peptide_matches': search.motif(pattern)
     })
+
+def ping(request):
+    return JsonResponse({ 'status': 'OK' });
