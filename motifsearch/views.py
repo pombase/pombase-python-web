@@ -7,11 +7,12 @@ from motifsearch.search import Search
 
 search = None
 
-def index(request):
+def query(request, pattern):
+    global search
     if search == None:
         search = Search(os.environ['PEPTIDE_PATH'])
 
-    data = {
-        'key1': 'data1'
-    }
-    return JsonResponse(data)
+    return JsonResponse({
+        'status': 'OK',
+        'peptide_matches': search.motif(pattern)
+    })
