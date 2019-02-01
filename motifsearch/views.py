@@ -14,7 +14,7 @@ def query(request):
 
     pattern = request.GET.get('pattern', '').strip()
 
-    if len(pattern) < 2:
+    if len(pattern) < 1:
         return JsonResponse({
             'status': 'error',
             'message': 'pattern too short'
