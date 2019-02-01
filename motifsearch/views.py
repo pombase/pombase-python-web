@@ -7,10 +7,18 @@ from motifsearch.search import Search
 
 search = None
 
-def query(request, pattern):
+def query(request):
     global search
     if search == None:
         search = Search(os.environ['PEPTIDE_PATH'])
+
+    pattern = request.GET.get('pattern', '').strip()
+
+    if len(pattern) < 2:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'pattern too short'
+        })
 
     return JsonResponse({
         'status': 'OK',
@@ -18,4 +26,4 @@ def query(request, pattern):
     })
 
 def ping(request):
-    return JsonResponse({ 'status': 'OK' });
+    return JsonResponse({ 'status': 'OK' })
