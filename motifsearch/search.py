@@ -16,6 +16,7 @@ class Search:
         for line in lines:
             if line[0] == '>':
                 if gene_name != '':
+                    seq = re.sub(r"\*$", "", seq)
                     self.peptides.update({gene_name: seq})
                 gene_name = re.sub(r':pep$', '', line[1:])
                 seq = ''
@@ -23,6 +24,7 @@ class Search:
                 seq += line
 
         if gene_name != '':
+            seq = re.sub(r"\*$", "", seq)
             self.peptides.update({gene_name: seq})
 
     def motif(self, search_text, match_count = 20, context = 25):
