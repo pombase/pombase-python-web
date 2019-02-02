@@ -27,35 +27,66 @@ class Search:
             seq = re.sub(r"\*$", "", seq)
             self.peptides.update({gene_name: seq})
 
-    def motif(self, search_text, match_count = 20, context = 25):
-        """Search all peptides of the regular expression 'patt'
+    def motif(self, search_text, max_genes = 20, context = 25):
+        """Search all peptides of the regular expression 'search_text'
+returning an array like:
+    [
+         {
+             'gene_id': "some_id",
+             'matches': [
+                 {
+                     'start': 100,
+                     'end': 110,
+                     'match': 'CADR',
+                     'before': 'ACDCWDAEIQCSYGWIECVG',
+                     'after': 'SAYDLSVHSKATKTPLVVQE'
+                 },
+                 {
+                    ...
+                 }
+             ]
+             'motif_match_count': 4
+         },
+         {
+           ...
+         }
+    ]
         """
         patt = re.compile(search_text, re.IGNORECASE)
-        ret = []
+
+        gene_matches = []
+
         for key, seq in self.peptides.items():
-            if len(ret) < 20:
-                pep_res = []
-                for m in patt.finditer(seq):
-                    if len(pep_res) < match_count:
-                        before_start = m.start() - context
-                        if before_start < 0:
-                            before_start = 0
-                        hit = {
-                            'start': m.start() + 1,
-                            'end': m.end(),
-                            'match': m.group(),
-                            'before': seq[before_start:m.start()],
-                            'after': seq[m.end():m.end() + context],
-                        }
-                        pep_res.append(hit)
-                    else:
-                        break
-                if len(pep_res) > 0:
+            pep_res = []
+            pep_res_count = 0
+            for m in patt.finditer(seq):
+                if len(gene_matches) >= max_genes:
                     pep_matches = {
-                        'peptide_id': key,
-                        'matches': pep_res,
+                        'gene_id': key
                     }
-                    ret.append(pep_matches)
-            else:
-                break
-        return ret
+                    gene_matches.append(pep_matches)
+                    break
+
+                pep_res_count += 1
+                if len(pep_res) < 20:
+                    before_start = m.start() - context
+                    if before_start < 0:
+                        before_start = 0
+                    hit = {
+                        'start': m.start() + 1,
+                        'end': m.end(),
+                        'match': m.group(),
+                        'before': seq[before_start:m.start()],
+                        'after': seq[m.end():m.end() + context],
+                    }
+                    pep_res.append(hit)
+                else:
+                    break
+            if len(pep_res) > 0:
+                pep_matches = {
+                    'gene_id': key,
+                    'matches': pep_res,
+                    'match_count': pep_res_count
+                }
+                gene_matches.append(pep_matches)
+        return gene_matches

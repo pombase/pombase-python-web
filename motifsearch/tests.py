@@ -21,7 +21,7 @@ class SearchTest(TestCase):
         result = self._search.motif('RSLYED')
         self.assertEqual(len(result), 1)
         res0 = result[0]
-        self.assertEqual(res0['peptide_id'], 'SPAC1002.02')
+        self.assertEqual(res0['gene_id'], 'SPAC1002.02')
         res0_matches = res0['matches']
         self.assertEqual(len(res0_matches), 1)
         match0 = res0_matches[0]
