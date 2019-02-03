@@ -27,7 +27,7 @@ class Search:
             seq = re.sub(r"\*$", "", seq)
             self.peptides.update({gene_name: seq})
 
-    def motif(self, search_text, max_genes = 20, context = 25):
+    def motif(self, search_text, max_genes = 100, context = 25):
         """Search all peptides of the regular expression 'search_text'
 returning an array like:
     [
