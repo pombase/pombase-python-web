@@ -44,3 +44,15 @@ class SearchTest(TestCase):
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['match'], 'ENDLEEDD')
 
+    def test_simple_aa_group(self):
+        result = self._search.motif('ZAHZ')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result[0]['matches']), 1)
+        self.assertEqual(result[0]['matches'][0]['match'], 'QAHQ')
+
+    def test_aa_group_class(self):
+        result = self._search.motif('[01].[4]7AHZ')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result[0]['matches']), 1)
+        self.assertEqual(result[0]['matches'][0]['match'], 'TGKQAHQ')
+
