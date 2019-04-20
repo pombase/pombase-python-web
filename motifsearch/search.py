@@ -72,7 +72,7 @@ class Search:
                 if gene_name != '':
                     seq = re.sub(r"\*$", "", seq)
                     self.peptides.update({gene_name: seq})
-                gene_name = re.sub(r':pep$', '', line[1:])
+                gene_name = re.sub(r':pep.*$', '', line[1:])
                 seq = ''
             else:
                 seq += line
