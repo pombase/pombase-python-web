@@ -12,6 +12,7 @@ def query(request):
     if search == None:
         search = Search(os.environ['PEPTIDE_PATH'])
 
+    scope = request.GET.get('scope', '').strip()
     pattern = request.GET.get('pattern', '').strip()
 
     if len(pattern) < 1:
@@ -22,7 +23,7 @@ def query(request):
 
     return JsonResponse({
         'status': 'OK',
-        'gene_matches': search.motif(pattern)
+        'gene_matches': search.motif(scope, pattern)
     })
 
 def ping(request):

@@ -81,7 +81,7 @@ class Search:
             seq = re.sub(r"\*$", "", seq)
             self.peptides.update({gene_name: seq})
 
-    def motif(self, search_text, max_genes = 100, context = 25):
+    def motif(self, scope, search_text, max_genes = 100, context = 25):
         """Search all peptides of the regular expression 'search_text'
 returning an array like:
     [
@@ -116,19 +116,19 @@ returning an array like:
 
         gene_matches = []
 
-        for key, seq in self.peptides.items():
+        def add_match(gene_id, gene_matches, seq):
             pep_res = []
             pep_res_count = 0
             for m in patt.finditer(seq):
                 if len(gene_matches) >= max_genes:
                     pep_matches = {
-                        'gene_id': key
+                        'gene_id': gene_id
                     }
                     gene_matches.append(pep_matches)
                     break
 
                 pep_res_count += 1
-                if len(pep_res) < 20:
+                if len(pep_res) < 20 or scope != 'all':
                     before_start = m.start() - context
                     if before_start < 0:
                         before_start = 0
@@ -144,9 +144,18 @@ returning an array like:
                     break
             if len(pep_res) > 0:
                 pep_matches = {
-                    'gene_id': key,
+                    'gene_id': gene_id,
                     'matches': pep_res,
                     'match_count': pep_res_count
                 }
                 gene_matches.append(pep_matches)
+
+        if scope == 'all':
+            for gene_id, seq in self.peptides.items():
+                add_match(gene_id, gene_matches, seq)
+        else:
+            # look up just one gene
+            if scope in self.peptides:
+                add_match(scope, gene_matches, self.peptides[scope])
+
         return gene_matches

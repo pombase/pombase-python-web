@@ -14,11 +14,11 @@ class SearchTest(TestCase):
         self._search = Search(data_path)
 
     def test_all_results(self):
-        result = self._search.motif('^M')
+        result = self._search.motif('all', '^M')
         self.assertEqual(len(result), 5)
 
     def test_RSLYED(self):
-        result = self._search.motif('RSLYED')
+        result = self._search.motif('all', 'RSLYED')
         self.assertEqual(len(result), 1)
         res0 = result[0]
         self.assertEqual(res0['gene_id'], 'SPAC1002.02')
@@ -32,26 +32,26 @@ class SearchTest(TestCase):
         self.assertEqual(match0['after'], 'SAENKVDSSKNTEANFPITLPKVLP')
 
     def test_FdotL(self):
-        result = self._search.motif('F.L')
+        result = self._search.motif('all', 'F.L')
         self.assertEqual(len(result), 2)
         self.assertEqual(len(result[0]['matches']), 2)
         self.assertEqual(result[0]['matches'][1]['match'], 'FIL')
         self.assertEqual(result[1]['matches'][0]['match'], 'FNL')
 
     def test_END_dot_start_EDD(self):
-        result = self._search.motif('END.*EDD')
+        result = self._search.motif('all', 'END.*EDD')
         self.assertEqual(len(result), 1)
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['match'], 'ENDLEEDD')
 
     def test_simple_aa_group(self):
-        result = self._search.motif('ZAHZ')
+        result = self._search.motif('all', 'ZAHZ')
         self.assertEqual(len(result), 2)
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['match'], 'QAHQ')
 
     def test_aa_group_class(self):
-        result = self._search.motif('[01].[4]7AHZ')
+        result = self._search.motif('all', '[01].[4]7AHZ')
         self.assertEqual(len(result), 1)
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['match'], 'TGKQAHQ')
