@@ -21,7 +21,7 @@ class Search:
         }
         aa_group_codes = "".join(self.aa_group_code_lookup.keys())
         self.aa_group_codes_re = re.compile("([" + aa_group_codes + "])")
-        self.char_class_re = re.compile(r"(\[|\])")
+        self.brackets_re = re.compile(r"(\[|\]|\{|\})")
 
     # substitute AA group codes in the argument
     # if the AA code is outside a character class, substitute a char class
@@ -30,7 +30,7 @@ class Search:
     #   eg. '[CZ]C' -> [CAGS]C'
     def substitute_group_codes(self, text):
         # split by "[" and "]"
-        search_text_bits = self.char_class_re.split(text)
+        search_text_bits = self.brackets_re.split(text)
 
         processed_text = ''
 
@@ -47,13 +47,37 @@ class Search:
             return txt
 
         in_class = False
+        in_curlies = False
+
+        def open_class():
+            nonlocal in_class
+            in_class = True
+
+        def close_class():
+            nonlocal in_class
+            in_class = False
+
+        def open_curly():
+            nonlocal in_curlies
+            in_curlies = True
+
+        def close_curly():
+            nonlocal in_curlies
+            in_curlies = False
+
+        table = {
+            '[': open_class,
+            ']': close_class,
+            '{': open_curly,
+            '}': close_curly,
+        }
+
         for bit in search_text_bits:
-            if bit == '[':
-                in_class = True
+            if bit in table:
+                table[bit]()
                 processed_text += bit
             else:
-                if bit == ']':
-                    in_class = False
+                if in_curlies:
                     processed_text += bit
                 else:
                     processed_text += subst_group_codes_helper(bit, in_class)

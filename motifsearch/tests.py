@@ -6,8 +6,6 @@ from motifsearch.search import Search
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = CURRENT_DIR + '/test_data'
 
-print(CURRENT_DIR)
-
 class SearchTest(TestCase):
     def setUp(self):
         data_path = DATA_DIR + '/test_pep.fasta'
@@ -55,4 +53,15 @@ class SearchTest(TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['match'], 'TGKQAHQ')
+
+    def test_curlies(self):
+        result = self._search.motif('all', 'FD{2,3}')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result[0]['matches']), 1)
+        self.assertEqual(result[0]['matches'][0]['match'], 'FDD')
+        self.assertEqual(result[0]['matches'][0]['after'], 'LQLTPLQRKLMGLPEGGSTSGKHLT')
+        result = self._search.motif('all', 'F{3}I')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['matches'][0]['match'], 'FFFI')
+        self.assertEqual(len(result[0]['matches']), 1)
 
