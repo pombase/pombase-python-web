@@ -75,6 +75,9 @@ def gene_ex_violin(request):
     ax.tick_params(axis='y', which='both', labelsize=14);
     ax.set_xticklabels(plot_order, fontsize=8);
 
+    for col in ax.collections:
+        col.set_edgecolor('#999')
+
     response = HttpResponse(content_type="image/png")
     fig.savefig(response, format="png")
 
