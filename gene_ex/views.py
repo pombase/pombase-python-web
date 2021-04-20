@@ -44,11 +44,14 @@ def read_gene_ex_df():
     return (plot_order, df)
 
 
-plot_order, gene_ex_df = read_gene_ex_df()
+plot_order, gene_ex_df = None, None
 
 
 def gene_ex_violin(request):
-    global gene_ex_df
+    global plot_order, gene_ex_df
+
+    if plot_order == None:
+       plot_order, gene_ex_df = read_gene_ex_df()
 
     genes_param = request.GET.get('genes', '').strip()
     genes = genes_param.split(',')
