@@ -57,16 +57,23 @@ def gene_ex_violin(request):
     genes = genes_param.split(',')
     genes_df = gene_ex_df[gene_ex_df['gene'].isin(genes)]
 
-    fig, ax = plt.subplots(figsize=(20, 8))
+    fig, ax = plt.subplots(figsize=(12, 6.5))
 
-    vp = sns.violinplot(ax=ax, order=plot_order, scale="width", data=gene_ex_df, palette="Set3", x='dataset_name', y="log_average_copies_per_cell", inner="box")
+    fig.legend(fontsize='x-large', title_fontsize='40')
+
+    sns.set(font_scale=0.5)
+
+    vp = sns.violinplot(ax=ax, order=plot_order, scale="width", data=gene_ex_df, palette="Pastel1", x='dataset_name', y="log_average_copies_per_cell", inner="box")
 
     if len(genes) > 0:
-        sns.swarmplot(ax=ax, order=plot_order, data=genes_df, size=10, x='dataset_name', y="log_average_copies_per_cell", color="lightblue", edgecolor="black", linewidth=1)
+        sns.swarmplot(ax=ax, order=plot_order, data=genes_df, size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
 
-    ax.set_xlabel('Gene expression dataset name', fontsize=14)
-    ax.set_ylabel('log10(average number of molecules per cell)', fontsize=14)
+    ax.set_xlabel('Gene expression dataset', fontsize=12)
+    ax.set_ylabel('log10(average number of molecules per cell)', fontsize=13)
     sns.despine()
+
+    ax.tick_params(axis='y', which='both', labelsize=14);
+    ax.set_xticklabels(plot_order, fontsize=8);
 
     response = HttpResponse(content_type="image/png")
     fig.savefig(response, format="png")
