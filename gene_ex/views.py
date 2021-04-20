@@ -63,7 +63,7 @@ def gene_ex_violin(request):
 
     sns.set(font_scale=0.5)
 
-    vp = sns.violinplot(ax=ax, order=plot_order, scale="width", data=gene_ex_df, palette="Pastel1", x='dataset_name', y="log_average_copies_per_cell", inner="box")
+    vp = sns.violinplot(ax=ax, order=plot_order, scale="width", data=gene_ex_df, color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell", inner="box")
 
     if len(genes) > 0:
         sns.swarmplot(ax=ax, order=plot_order, data=genes_df, size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
