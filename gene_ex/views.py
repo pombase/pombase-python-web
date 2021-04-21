@@ -16,18 +16,22 @@ def read_config():
     with open(os.environ['WEBSITE_CONFIG_JSON_PATH'], "r") as json_file:
         website_config = json.load(json_file)
 
-        plot_order = []
+        protein_plot_order = []
+        rna_plot_order = []
         plot_conf = {}
 
         for conf in website_config['gene_expresion']['violin_plots']:
             key = (conf['pubmed_id'], conf['level_type'], conf['during'])
-            plot_order.append(conf['display_name'])
+            if conf['level_type'] == 'protein level':
+                protein_plot_order.append(conf['display_name'])
+            else:
+                rna_plot_order.append(conf['display_name'])
             plot_conf[key] = conf['display_name']
 
-        return (plot_order, plot_conf)
+        return (protein_plot_order, rna_plot_order, plot_conf)
 
 def read_gene_ex_df():
-    plot_order, plot_config = read_config()
+    protein_plot_order, rna_plot_order, plot_config = read_config()
 
     file_name = os.environ['GENE_EX_TSV_PATH']
 
@@ -41,42 +45,62 @@ def read_gene_ex_df():
 
     df['log_average_copies_per_cell'] = np.log10(df['average_copies_per_cell']).fillna(0)
 
-    return (plot_order, df)
+    protein_df = df[df['term_name'] == 'protein level']
+    rna_df = df[df['term_name'] == 'RNA level']
+
+    return (protein_plot_order, rna_plot_order, protein_df, rna_df)
 
 
-plot_order, gene_ex_df = None, None
+protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df = None, None, None, None
 
 
 def gene_ex_violin(request):
-    global plot_order, gene_ex_df
+    global protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df
 
-    if plot_order == None:
-       plot_order, gene_ex_df = read_gene_ex_df()
+    if protein_plot_order == None:
+        protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df = read_gene_ex_df()
+
+    plot_order = [protein_plot_order, rna_plot_order]
 
     genes_param = request.GET.get('genes', '').strip()
     genes = genes_param.split(',')
-    genes_df = gene_ex_df[gene_ex_df['gene'].isin(genes)]
 
-    fig, ax = plt.subplots(figsize=(12, 6.5))
+    frames = [protein_gene_ex_df, rna_gene_ex_df]
 
-    fig.legend(fontsize='x-large', title_fontsize='40')
+    gene_frames = [frame[frame['gene'].isin(genes)] for frame in frames]
+
+    gridspec = {
+        'width_ratios': [frames[0]['dataset_name'].nunique(), frames[1]['dataset_name'].nunique()]
+    }
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6.5), gridspec_kw=gridspec)
+
+#    fig.legend(fontsize='x-large', title_fontsize='30')
 
     sns.set(font_scale=0.5)
 
-    vp = sns.violinplot(ax=ax, order=plot_order, scale="width", data=gene_ex_df, color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell", inner="box")
+    axes[0].title.set_text('Protein expression')
+    axes[1].title.set_text('RNA expression')
 
-    if len(genes) > 0:
-        sns.swarmplot(ax=ax, order=plot_order, data=genes_df, size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
 
-    ax.set_xlabel('Gene expression dataset', fontsize=12)
-    ax.set_ylabel('log10(average number of molecules per cell)', fontsize=13)
+    for idx in [0,1]:
+        ax = axes[idx]
+        ax.title.set_fontsize(17)
+        vp = sns.violinplot(ax=ax, order=plot_order[idx], scale="width", data=frames[idx], color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell", inner="box")
+
+        if len(gene_frames[idx]) > 0:
+            sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
+
+        ax.set_xlabel('Dataset', fontsize=12)
+        ax.set_ylabel('log10(average number of molecules per cell)', fontsize=13)
+
+        for col in ax.collections:
+            col.set_edgecolor('#999')
+
+        ax.tick_params(axis='y', which='both', labelsize=14);
+        ax.set_xticklabels(plot_order[idx], fontsize=8);
+
+
     sns.despine()
-
-    ax.tick_params(axis='y', which='both', labelsize=14);
-    ax.set_xticklabels(plot_order, fontsize=8);
-
-    for col in ax.collections:
-        col.set_edgecolor('#999')
 
     response = HttpResponse(content_type="image/png")
     fig.savefig(response, format="png")
