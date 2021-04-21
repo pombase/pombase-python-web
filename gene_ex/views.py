@@ -90,14 +90,15 @@ def gene_ex_violin(request):
         if len(gene_frames[idx]) > 0:
             sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
 
-        ax.set_xlabel('Dataset', fontsize=12)
+#        ax.set_xlabel('Dataset', fontsize=12)
+        ax.set_xlabel('', fontsize=12)
         ax.set_ylabel('log10(average number of molecules per cell)', fontsize=13)
 
         for col in ax.collections:
             col.set_edgecolor('#999')
 
         ax.tick_params(axis='y', which='both', labelsize=14);
-        ax.set_xticklabels(plot_order[idx], fontsize=8);
+        ax.set_xticklabels(plot_order[idx], fontsize=9);
 
 
     sns.despine()
