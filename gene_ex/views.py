@@ -91,8 +91,19 @@ def gene_ex_violin(request):
         ax.title.set_fontsize(17)
         vp = sns.violinplot(ax=ax, order=plot_order[idx], scale="width", data=frames[idx], color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell", inner="box")
 
-        if len(gene_frames[idx]) > 0:
-            sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=10, x='dataset_name', y="log_average_copies_per_cell", color="red", linewidth=1)
+        gene_count = len(gene_frames[idx])
+
+        if gene_count > 0:
+            swarm_dot_size = 10
+            if gene_count >= 5 and gene_count < 30:
+                swarm_dot_size = 6
+            else:
+                if gene_count > 60:
+                    swarm_dot_size = 3.5
+                else:
+                    swarm_dot_size = 5
+
+            sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=swarm_dot_size, x='dataset_name', y="log_average_copies_per_cell", color="red")
 
 #        ax.set_xlabel('Dataset', fontsize=12)
         ax.set_xlabel('', fontsize=12)
