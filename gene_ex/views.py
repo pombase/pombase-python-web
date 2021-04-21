@@ -65,6 +65,8 @@ def gene_ex_violin(request):
     plot_size = request.GET.get('plot_size', '').strip()
     if plot_size == 'large':
         plt.rcParams['savefig.dpi'] = 175
+    else:
+        plt.rcParams['savefig.dpi'] = 100
 
     genes_param = request.GET.get('genes', '').strip()
     genes = genes_param.split(',')
