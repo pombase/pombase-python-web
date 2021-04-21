@@ -62,6 +62,10 @@ def gene_ex_violin(request):
 
     plot_order = [protein_plot_order, rna_plot_order]
 
+    plot_size = request.GET.get('plot_size', '').strip()
+    if plot_size == 'large':
+        plt.rcParams['savefig.dpi'] = 175
+
     genes_param = request.GET.get('genes', '').strip()
     genes = genes_param.split(',')
 
