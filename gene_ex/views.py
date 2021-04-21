@@ -87,24 +87,30 @@ def gene_ex_violin(request):
     axes[0].title.set_text('Protein expression')
     axes[1].title.set_text('RNA expression')
 
+    gene_count = len(genes)
+
+    print(gene_count)
+
+    swarm_dot_size = 10
+
+    if gene_count > 0:
+        if gene_count >= 5:
+            swarm_dot_size = 7
+        if gene_count >= 30:
+            swarm_dot_size = 5
+        if gene_count >= 60:
+            swarm_dot_size = 3.5
+        if gene_count >= 130:
+            swarm_dot_size = 2.5
+
+        print(swarm_dot_size)
 
     for idx in [0,1]:
         ax = axes[idx]
         ax.title.set_fontsize(17)
         vp = sns.violinplot(ax=ax, order=plot_order[idx], scale="width", data=frames[idx], color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell", inner="box")
 
-        gene_count = len(gene_frames[idx])
-
         if gene_count > 0:
-            swarm_dot_size = 10
-            if gene_count >= 5 and gene_count < 30:
-                swarm_dot_size = 6
-            else:
-                if gene_count > 60:
-                    swarm_dot_size = 3.5
-                else:
-                    swarm_dot_size = 5
-
             sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=swarm_dot_size, x='dataset_name', y="log_average_copies_per_cell", color="red")
 
 #        ax.set_xlabel('Dataset', fontsize=12)
