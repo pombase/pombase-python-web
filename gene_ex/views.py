@@ -19,6 +19,7 @@ def read_config():
         protein_plot_order = []
         rna_plot_order = []
         plot_conf = {}
+        pubmed_ids = []
 
         for conf in website_config['gene_expresion']['violin_plots']:
             key = (conf['pubmed_id'], conf['level_type'], conf['during'])
@@ -27,21 +28,23 @@ def read_config():
             else:
                 rna_plot_order.append(conf['display_name'])
             plot_conf[key] = conf['display_name']
+            if not conf['pubmed_id'] in pubmed_ids:
+                pubmed_ids.append(conf['pubmed_id'])
 
-        return (protein_plot_order, rna_plot_order, plot_conf)
+        return (protein_plot_order, rna_plot_order, plot_conf, pubmed_ids)
 
 def read_gene_ex_df():
-    protein_plot_order, rna_plot_order, plot_config = read_config()
+    protein_plot_order, rna_plot_order, plot_config, pubmed_ids = read_config()
 
     file_name = os.environ['GENE_EX_TSV_PATH']
 
     df = pd.read_csv(file_name, sep="\t", header=0)
     df = df[~df['average_copies_per_cell'].str.startswith('>')]
     df['average_copies_per_cell'] = df['average_copies_per_cell'].astype('float64')
-    df = df[(df['first_author'] == 'Marguerat') | (df['first_author'] == 'Carpy')]
+    df = df[df.reference.isin(pubmed_ids)]
     df.loc[df['average_copies_per_cell'] < 0.0001, 'average_copies_per_cell'] = np.NaN
 
-    df['dataset_name'] = df.apply(lambda x: plot_config[(x['reference'], x['term_name'], x['during'])],axis=1)
+    df['dataset_name'] = df.apply(lambda x: plot_config[(x['reference'], x['term_name'], x['during_term_name'])],axis=1)
 
     df['log_average_copies_per_cell'] = np.log10(df['average_copies_per_cell']).fillna(0)
 
