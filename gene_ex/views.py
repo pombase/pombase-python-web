@@ -89,8 +89,6 @@ def gene_ex_violin(request):
 
     gene_count = len(genes)
 
-    print(gene_count)
-
     swarm_dot_size = 10
 
     if gene_count > 0:
@@ -102,8 +100,6 @@ def gene_ex_violin(request):
             swarm_dot_size = 3.5
         if gene_count >= 130:
             swarm_dot_size = 2.5
-
-        print(swarm_dot_size)
 
     for idx in [0,1]:
         ax = axes[idx]
