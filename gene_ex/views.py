@@ -21,13 +21,13 @@ def read_config():
         plot_conf = {}
         pubmed_ids = []
 
-        for conf in website_config['gene_expresion']['violin_plots']:
+        for conf in website_config['gene_expression']['datasets']:
             key = (conf['pubmed_id'], conf['level_type'], conf['during'])
             if conf['level_type'] == 'protein level':
-                protein_plot_order.append(conf['display_name'])
+                protein_plot_order.append(conf['plot_display_name'])
             else:
-                rna_plot_order.append(conf['display_name'])
-            plot_conf[key] = conf['display_name']
+                rna_plot_order.append(conf['plot_display_name'])
+            plot_conf[key] = conf['plot_display_name']
             if not conf['pubmed_id'] in pubmed_ids:
                 pubmed_ids.append(conf['pubmed_id'])
 
