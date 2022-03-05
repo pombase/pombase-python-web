@@ -1,4 +1,4 @@
-import re
+import regex
 
 class Search:
     def __init__(self, data_path):
@@ -20,8 +20,8 @@ class Search:
             "Z": "ACDEGHKNQRST",
         }
         aa_group_codes = "".join(self.aa_group_code_lookup.keys())
-        self.aa_group_codes_re = re.compile("([" + aa_group_codes + "])")
-        self.brackets_re = re.compile(r"(\[|\]|\{|\})")
+        self.aa_group_codes_re = regex.compile("([" + aa_group_codes + "])")
+        self.brackets_re = regex.compile(r"(\[|\]|\{|\})")
 
     # substitute AA group codes in the argument
     # if the AA code is outside a character class, substitute a char class
@@ -36,13 +36,13 @@ class Search:
 
         def subst_group_codes_helper(txt, in_class):
             for code, aa_letters in self.aa_group_code_lookup.items():
-                sub_re = re.compile(code, flags=re.IGNORECASE)
+                sub_re = regex.compile(code, flags=regex.IGNORECASE)
                 if in_class:
                     repl_text = aa_letters
                 else:
                     repl_text = '[' + aa_letters + ']'
 
-                txt = re.sub(sub_re, repl_text, txt)
+                txt = regex.sub(sub_re, repl_text, txt)
 
             return txt
 
@@ -94,15 +94,15 @@ class Search:
         for line in lines:
             if line[0] == '>':
                 if gene_name != '':
-                    seq = re.sub(r"\*$", "", seq)
+                    seq = regex.sub(r"\*$", "", seq)
                     self.peptides.update({gene_name: seq})
-                gene_name = re.sub(r':pep.*$', '', line[1:])
+                gene_name = regex.sub(r':pep.*$', '', line[1:])
                 seq = ''
             else:
                 seq += line
 
         if gene_name != '':
-            seq = re.sub(r"\*$", "", seq)
+            seq = regex.sub(r"\*$", "", seq)
             self.peptides.update({gene_name: seq})
 
     def motif(self, scope, search_text, max_genes = 100, context = 25):
@@ -136,14 +136,16 @@ returning an array like:
         else:
             processed_search_text = search_text
 
-        patt = re.compile(processed_search_text, re.IGNORECASE)
+        patt = regex.compile(processed_search_text, regex.IGNORECASE)
+
+        print(processed_search_text)
 
         gene_matches = []
 
         def add_match(gene_id, gene_matches, seq):
             pep_res = []
             pep_res_count = 0
-            for m in patt.finditer(seq):
+            for m in patt.finditer(seq, timeout=2):
                 if len(gene_matches) >= max_genes:
                     pep_matches = {
                         'gene_id': gene_id
