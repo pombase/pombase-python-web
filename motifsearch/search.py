@@ -138,8 +138,6 @@ returning an array like:
 
         patt = regex.compile(processed_search_text, regex.IGNORECASE)
 
-        print(processed_search_text)
-
         gene_matches = []
 
         def add_match(gene_id, gene_matches, seq):
