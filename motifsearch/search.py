@@ -89,28 +89,28 @@ class Search:
             lines = f.read().splitlines()
 
         seq = ''
-        gene_name = ''
+        peptide_id = ''
 
         for line in lines:
             if line[0] == '>':
-                if gene_name != '':
+                if peptide_id != '':
                     seq = regex.sub(r"\*$", "", seq)
-                    self.peptides.update({gene_name: seq})
-                gene_name = regex.sub(r':pep.*$', '', line[1:])
+                    self.peptides.update({peptide_id: seq})
+                peptide_id = regex.sub(r':pep.*$', '', line[1:])
                 seq = ''
             else:
                 seq += line
 
-        if gene_name != '':
+        if peptide_id != '':
             seq = regex.sub(r"\*$", "", seq)
-            self.peptides.update({gene_name: seq})
+            self.peptides.update({peptide_id: seq})
 
     def motif(self, scope, search_text, max_genes = 500, context = 25):
         """Search all peptides of the regular expression 'search_text'
 returning an array like:
     [
          {
-             'gene_id': "some_id",
+             'peptide_id': "some_id",
              'matches': [
                  {
                      'start': 100,
@@ -138,17 +138,17 @@ returning an array like:
 
         patt = regex.compile(processed_search_text, regex.IGNORECASE)
 
-        gene_matches = []
+        peptide_matches = []
 
-        def add_match(gene_id, gene_matches, seq):
+        def add_match(peptide_id, peptide_matches, seq):
             pep_res = []
             pep_res_count = 0
             for m in patt.finditer(seq, timeout=2):
-                if len(gene_matches) >= max_genes:
+                if len(peptide_matches) >= max_genes:
                     pep_matches = {
-                        'gene_id': gene_id
+                        'peptide_id': peptide_id
                     }
-                    gene_matches.append(pep_matches)
+                    peptide_matches.append(pep_matches)
                     break
 
                 pep_res_count += 1
@@ -168,18 +168,18 @@ returning an array like:
                     break
             if len(pep_res) > 0:
                 pep_matches = {
-                    'gene_id': gene_id,
+                    'peptide_id': peptide_id,
                     'matches': pep_res,
                     'match_count': pep_res_count
                 }
-                gene_matches.append(pep_matches)
+                peptide_matches.append(pep_matches)
 
         if scope == 'all':
-            for gene_id, seq in self.peptides.items():
-                add_match(gene_id, gene_matches, seq)
+            for peptide_id, seq in self.peptides.items():
+                add_match(peptide_id, peptide_matches, seq)
         else:
-            # look up just one gene
+            # look up just one ID
             if scope in self.peptides:
-                add_match(scope, gene_matches, self.peptides[scope])
+                add_match(scope, peptide_matches, self.peptides[scope])
 
-        return gene_matches
+        return peptide_matches

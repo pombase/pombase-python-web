@@ -23,7 +23,7 @@ def query(request):
 
     return JsonResponse({
         'status': 'OK',
-        'gene_matches': search.motif(scope, pattern)
+        'peptide_matches': search.motif(scope, pattern)
     })
 
 def ping(request):
