@@ -65,3 +65,10 @@ class SearchTest(TestCase):
         self.assertEqual(result[0]['matches'][0]['match'], 'FFFI')
         self.assertEqual(len(result[0]['matches']), 1)
 
+    def test_one_gene(self):
+        result = self._search.motif('SPAC1002.02', 'VFARSL')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['gene_id'], 'SPAC1002.02')
+        self.assertEqual(len(result[0]['matches']), 1)
+        self.assertEqual(result[0]['matches'][0]['end'], 14)
+        self.assertEqual(result[0]['matches'][0]['before'], 'MASTFSQS')
