@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Alphafold structure view example</title>
+    <link rel="stylesheet" href="lib/style.css">
+
+    <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
+    <script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
+
+    <script>
+        function customize() {
+            viewerInstance.canvas.setBgColor({r:255, g:255, b:255})
+        }
+    </script>
+
+    <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.msp-plugin ::-webkit-scrollbar-thumb {
+  background-color: #474748 !important;
+}
+.viewerSection {
+  margin: 0;
+}
+#myViewer {
+  float: left;
+  width: 600px;
+  height: 400px;
+  position: relative;
+}
+    </style>
+  </head>
+
+  <body onload="customize()">
+    <div><a href="https://alphafold.ebi.ac.uk/entry/{{protein_id}}">View full {{protein_id}} Alphafold page</a></div>
+
+    <div class="viewerSection">
+      <div id="myViewer"></div>
+    </div>
+
+    <script>
+var viewerInstance = new PDBeMolstarPlugin();
+
+var options = {
+  customData: {
+    url: 'https://alphafold.ebi.ac.uk/files/AF-{{protein_id}}-F1-model_v1.cif',
+    format: 'cif',
+  },
+  alphafoldView: true,
+  bgColor: { r: 255, g: 255, b: 255 },
+  hideControls: true,
+};
+
+var viewerContainer = document.getElementById('myViewer');
+
+viewerInstance.render(viewerContainer, options);
+    </script>
+  </body>
+
+</html>
