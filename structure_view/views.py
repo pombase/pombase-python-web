@@ -1,13 +1,16 @@
 from django.shortcuts import render
 
 def index(request):
-    protein_id = request.GET.get('protein_id', '').strip()
+    id = request.GET.get('id', '').strip()
     structure_type = request.GET.get('structure_type', '').strip()
 
-    context = {
-        'protein_id': protein_id
-    }
     if structure_type == 'alphafold':
-        return render(request, 'structure_view/index.html', context)
+        url = f'https://alphafold.ebi.ac.uk/files/AF-{id}-F1-model_v4.cif'
     else:
-        return render(request, 'structure_view/pdb_index.html', context)
+        url = f'https://www.ebi.ac.uk/pdbe/model-server/v1/{id}/full?encoding=cif'
+
+    context = {
+        'url': url
+    }
+
+    return render(request, 'structure_view/index.html', context)
