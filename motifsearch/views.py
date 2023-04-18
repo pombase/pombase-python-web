@@ -1,6 +1,5 @@
 import os
 
-from django.shortcuts import render
 from django.http import JsonResponse
 
 from motifsearch.search import Search
@@ -9,7 +8,7 @@ search = None
 
 def query(request):
     global search
-    if search == None:
+    if search is None:
         search = Search(os.environ['PEPTIDE_PATH'])
 
     scope = request.GET.get('scope', '').strip()
