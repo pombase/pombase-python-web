@@ -116,7 +116,7 @@ def gene_ex_violin(request):
                        color="#bfcfef", x='dataset_name', y="log_average_copies_per_cell",
                        inner="box")
 
-        if gene_count > 0:
+        if gene_count > 0 and not gene_frames[idx].empty:
             sns.swarmplot(ax=ax, order=plot_order[idx], data=gene_frames[idx], size=swarm_dot_size,
                           x='dataset_name', y="log_average_copies_per_cell", color="red")
 
