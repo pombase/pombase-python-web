@@ -101,8 +101,12 @@ def gene_ex_violin(request):
         if gene_count >= 30:
             swarm_dot_size = 5
         if gene_count >= 60:
-            swarm_dot_size = 3.5
+            swarm_dot_size = 3.8
         if gene_count >= 130:
+            swarm_dot_size = 3.2
+        if gene_count >= 160:
+            swarm_dot_size = 2.8
+        if gene_count >= 200:
             swarm_dot_size = 2.5
 
     for idx in [0,1]:
