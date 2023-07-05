@@ -4,21 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protein features for {{gene_uniquename}} </title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-
     <script src="https://cdn.jsdelivr.net/npm/@rcsb/rcsb-saguaro/build/rcsb-saguaro.js" type="text/javascript"></script>
   </head>
   <body>
-
-
-
     <div id="pfv" style="margin-top:50px" ></div>
 
-
-
     <script language="javascript" type="text/javascript">
-
 window.onload = (event) => {
 
 fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
@@ -47,7 +38,7 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
 
     const colours = {
       'TM domains': '#44f',
-      'Disordered regions': '#575',
+      'Disordered regions': '#292',
       'Low complexity regions': '#545',
       'Coiled coils': '#9922aa',
       'Variants': '#f00',
@@ -57,7 +48,7 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
       if (track.features.length > 0) {
         let conf = {
           trackId: track.name,
-          trackHeight: 20,
+          trackHeight: 25,
           trackColor: "#fcfcfc",
           displayType: track.display_type,
           displayColor: colours[track.name] || '#ba6',
@@ -77,7 +68,7 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
 
     const boardConfigData = {
       length: data.sequence.length,
-      trackWidth: 940,
+      trackWidth: 800,
       includeAxis: true
     };
 
@@ -87,18 +78,8 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
       rowConfigData,
       elementId
     });
-
-/*
-    const elementId = "pfv";
-    const pfv = new RcsbFv.Create({
-      boardConfig,
-      rowConfig,
-      elementId
-    });
-*/
   });
 };
-
     </script>
   </body>
 </html>
