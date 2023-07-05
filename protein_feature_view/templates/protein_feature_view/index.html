@@ -54,11 +54,28 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
           displayColor: colours[track.name] || '#ba6',
           rowTitle: track.name,
           trackData: track.features.map(feature => {
-            return {
+            const firstPos = feature.positions[0];
+            const lastPos = feature.positions[feature.positions.length - 1];
+            const newFeature = {
               id: feature.id,
-              begin: feature.positions[0][0],
-              end: feature.positions[0][1],
+              begin: firstPos[0],
+              end: lastPos[1],
             };
+
+            if (feature.positions.length > 1) {
+              let gaps = [];
+              for (let i = 0; i < feature.positions.length - 1; i++) {
+                const current = feature.positions[i];
+                const next = feature.positions[i+1];
+                gaps.push({
+                  begin: current[1],
+                  end: next[0],
+                });
+              }
+              newFeature.gaps = gaps;
+            }
+
+            return newFeature;
           }),
         };
 
