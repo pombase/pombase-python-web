@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'gene_ex',
     'motifsearch',
     'structure_view',
+    'protein_feature_view',
 ]
 
 MIDDLEWARE = [
