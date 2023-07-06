@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protein features for {{gene_uniquename}} </title>
-    <script src="https://cdn.jsdelivr.net/npm/@rcsb/rcsb-saguaro/build/rcsb-saguaro.js" type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/themes/light-border.css" rel="stylesheet">
   </head>
   <body>
     <div id="pfv" style="margin-top:50px" ></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@rcsb/rcsb-saguaro/build/rcsb-saguaro.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.umd.min.js "></script>
 
     <script language="javascript" type="text/javascript">
 window.onload = (event) => {
@@ -60,6 +65,7 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
             const lastPos = feature.positions[feature.positions.length - 1];
             const newFeature = {
               id: feature.id,
+              displayName: feature.display_name,
               begin: firstPos[0],
               end: lastPos[1],
             };
@@ -85,10 +91,32 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
       }
     });
 
+    const tooltips = {};
+
     const boardConfigData = {
       length: data.sequence.length,
       trackWidth: 800,
-      includeAxis: true
+      includeAxis: true,
+      elementEnterCallBack: function(obj, e) {
+        if (obj.displayName) {
+          const tip = tippy(e.target);
+          tip.setContent(obj.displayName + "<div>new line</div>");
+          const props = { theme: 'light-border', allowHTML: true };
+          if (e.offsetX > 600) {
+            // avoid ovelapping the right hand controls
+            props.placement = 'left';
+          }
+          tip.setProps(props);
+          tip.show();
+          tooltips[obj.id] = tip;
+        }
+      },
+      elementLeaveCallBack: function(obj, e) {
+        if (obj.id && tooltips[obj.id]) {
+          const tip = tooltips[obj.id];
+          tip.destroy();
+        }
+      },
     };
 
     const elementId = "pfv";
