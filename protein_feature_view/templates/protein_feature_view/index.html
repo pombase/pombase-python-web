@@ -100,7 +100,7 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
       elementEnterCallBack: function(obj, e) {
         if (obj.displayName) {
           const tip = tippy(e.target);
-          tip.setContent(obj.displayName + "<div>new line</div>");
+          tip.setContent(obj.displayName);
           const props = { theme: 'light-border', allowHTML: true };
           if (e.offsetX > 600) {
             // avoid ovelapping the right hand controls
