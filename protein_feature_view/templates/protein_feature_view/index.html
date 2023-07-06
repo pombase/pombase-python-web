@@ -22,8 +22,6 @@ fetch("https://desktop.kmr.nz/api/v1/dataset/latest/protein_features/{{gene_uniq
     return response.json();
   })
   .then((data) => {
-    console.log(data);
-
     let rowConfigData = [
       {
         trackId: "sequenceTrack",
