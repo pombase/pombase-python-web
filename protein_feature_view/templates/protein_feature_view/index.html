@@ -78,11 +78,15 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
               let gaps = [];
               for (let i = 0; i < feature.positions.length - 1; i++) {
                 const current = feature.positions[i];
+                const currentEnd = current[1];
                 const next = feature.positions[i+1];
-                gaps.push({
-                  begin: current[1],
-                  end: next[0],
-                });
+                const nextStart = next[0];
+                if (currentEnd < nextStart - 1) {
+                  gaps.push({
+                    begin: currentEnd,
+                    end: nextStart,
+                  });
+                }
               }
               newFeature.gaps = gaps;
             }
