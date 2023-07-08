@@ -57,42 +57,50 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
 
     data.tracks.map(track => {
       if (track.features.length > 0) {
-        let conf = {
+        const trackData = [];
+
+        const makeTrackData = (feature) => {
+          const firstPos = feature.positions[0];
+          const lastPos = feature.positions[feature.positions.length - 1];
+          const newFeature = {
+            id: feature.id + firstPos + '..' + lastPos,
+            displayName: feature.display_name,
+            begin: firstPos[0],
+            end: lastPos[1],
+          };
+
+          if (feature.positions.length > 1) {
+            let gaps = [];
+            for (let i = 0; i < feature.positions.length - 1; i++) {
+              const current = feature.positions[i];
+              const currentEnd = current[1];
+              const next = feature.positions[i+1];
+              const nextStart = next[0];
+              if (currentEnd < nextStart - 1) {
+                gaps.push({
+                  begin: currentEnd,
+                  end: nextStart,
+                });
+              }
+            }
+            newFeature.gaps = gaps;
+          }
+
+          return newFeature;
+        };
+
+        for (const feature of track.features) {
+          trackData.push(makeTrackData(feature));
+        }
+
+        const conf = {
           trackId: track.name,
           trackHeight: 25,
           trackColor: "#fcfcfc",
           displayType: track.display_type,
           displayColor: colours[track.name] || '#ba6',
           rowTitle: track.name,
-          trackData: track.features.map(feature => {
-            const firstPos = feature.positions[0];
-            const lastPos = feature.positions[feature.positions.length - 1];
-            const newFeature = {
-              id: feature.id,
-              displayName: feature.display_name,
-              begin: firstPos[0],
-              end: lastPos[1],
-            };
-
-            if (feature.positions.length > 1) {
-              let gaps = [];
-              for (let i = 0; i < feature.positions.length - 1; i++) {
-                const current = feature.positions[i];
-                const currentEnd = current[1];
-                const next = feature.positions[i+1];
-                const nextStart = next[0];
-                if (currentEnd < nextStart - 1) {
-                  gaps.push({
-                    begin: currentEnd,
-                    end: nextStart,
-                  });
-                }
-              }
-              newFeature.gaps = gaps;
-            }
-
-            return newFeature;
-          }),
+          trackData,
         };
 
         rowConfigData.push(conf);
