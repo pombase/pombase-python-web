@@ -66,6 +66,10 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
         colour: '#f00',
         allowGaps: false
       },
+      'Partial deletions': {
+        colour: '#73a',
+        allowGaps: false
+      },
       'Modifications': {
         colour: '#00f',
         allowGaps: false
@@ -125,7 +129,7 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
 
         const conf = {
           trackId: track.name,
-          trackHeight: 25,
+          trackHeight: 20,
           trackColor: "#fcfcfc",
           displayType: track.display_type,
           displayColor: typeConfig[track.name]?.colour || '#ba6',
