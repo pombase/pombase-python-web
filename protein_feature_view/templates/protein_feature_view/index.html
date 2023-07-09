@@ -45,14 +45,35 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
       }
     ];
 
-    const colours = {
-      'TM domains': '#44f',
-      'Disordered regions': '#292',
-      'Low complexity': '#0aa',
-      'Coiled coils': '#a5a',
-      'Mutants': '#f00',
-      'Modifications': '#00f',
-      'Pfam families': '#aa0',
+    const typeConfig = {
+      'TM domains': {
+        colour: '#44f',
+        allowGaps: true
+      },
+      'Disordered regions': {
+        colour: '#292',
+        allowGaps: true
+      },
+      'Low complexity': {
+        colour: '#0aa',
+        allowGaps: true
+      },
+      'Coiled coils': {
+        colour: '#a5a',
+        allowGaps: true
+      },
+      'Mutants': {
+        colour: '#f00',
+        allowGaps: false
+      },
+      'Modifications': {
+        colour: '#00f',
+        allowGaps: false
+      },
+      'Pfam families': {
+        colour: '#aa0',
+        allowGaps: true
+      },
     }
 
     data.tracks.map(track => {
@@ -65,17 +86,17 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name,
-            begin: firstPos[0],
-            end: lastPos[1],
+            begin: firstPos[1],
+            end: lastPos[2],
           };
 
           if (feature.positions.length > 1) {
             let gaps = [];
             for (let i = 0; i < feature.positions.length - 1; i++) {
               const current = feature.positions[i];
-              const currentEnd = current[1];
+              const currentEnd = current[2];
               const next = feature.positions[i+1];
-              const nextStart = next[0];
+              const nextStart = next[1];
               if (currentEnd < nextStart - 1) {
                 gaps.push({
                   begin: currentEnd,
@@ -90,7 +111,16 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
         };
 
         for (const feature of track.features) {
-          trackData.push(makeTrackData(feature));
+          const allowGaps = typeConfig[track.name]?.allowGaps || false;
+          if (allowGaps) {
+            trackData.push(makeTrackData(feature));
+          } else {
+            for (const position of feature.positions) {
+              let featureCopy = { ... feature };
+              featureCopy.positions = [position];
+              trackData.push(makeTrackData(featureCopy));
+            }
+          }
         }
 
         const conf = {
@@ -98,8 +128,9 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
           trackHeight: 25,
           trackColor: "#fcfcfc",
           displayType: track.display_type,
-          displayColor: colours[track.name] || '#ba6',
+          displayColor: typeConfig[track.name]?.colour || '#ba6',
           rowTitle: track.name,
+          includeTooltip: true,
           trackData,
         };
 
