@@ -28,6 +28,10 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
     return response.json();
   })
   .then((data) => {
+    if (!data.tracks) {
+      document.getElementById('pfv').innerHTML = 'No features found for {{gene_uniquename}}';
+    }
+
     let rowConfigData = [
       {
         trackId: "sequenceTrack",
