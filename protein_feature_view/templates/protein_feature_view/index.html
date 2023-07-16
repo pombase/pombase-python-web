@@ -131,9 +131,15 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
           }
         }
 
+        let trackHeight = 20;
+
+        if (trackData.length > 10 && track.name == 'Partial deletions') {
+          trackHeight = 12;
+        }
+
         const conf = {
           trackId: track.name,
-          trackHeight: 20,
+          trackHeight,
           trackColor: "#fcfcfc",
           displayType: track.display_type,
           displayColor: typeConfig[track.name]?.colour || '#ba6',
