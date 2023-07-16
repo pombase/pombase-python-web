@@ -3,6 +3,8 @@ from django.http import HttpResponse
 import os
 import json
 
+import io
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -131,7 +133,10 @@ def gene_ex_violin(request):
 
     sns.despine()
 
-    response = HttpResponse(content_type="image/png")
-    fig.savefig(response, format="png")
+    imgdata = io.BytesIO()
+
+    plt.savefig(imgdata, format="svg")
+
+    response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     return response
