@@ -72,7 +72,8 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
       },
       'Partial deletions': {
         colour: '#73a',
-        allowGaps: true
+        allowGaps: true,
+        invertGaps: true
       },
       'Modifications': {
         colour: '#00f',
@@ -117,11 +118,44 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
 
           return newFeature;
         };
+        const makeTrackDataInvertGaps = (feature) => {
+          const sequence = data.sequence;
+
+          const firstPos = 1;
+          const lastPos = sequence.length - 1;
+          const newFeature = {
+            id: feature.id + firstPos + '..' + lastPos,
+            displayName: feature.display_name,
+            begin: firstPos,
+            end: lastPos,
+          };
+
+          let gaps = [];
+          for (let i = 0; i < feature.positions.length; i++) {
+            const current = feature.positions[i];
+            const begin = current[1];
+            const end = current[2];
+
+            gaps.push({
+              begin,
+              end,
+            });
+
+            newFeature.gaps = gaps;
+          }
+
+          return newFeature;
+        };
 
         for (const feature of track.features) {
           const allowGaps = typeConfig[track.name]?.allowGaps || false;
           if (allowGaps) {
-            trackData.push(makeTrackData(feature));
+            const invertGaps = typeConfig[track.name]?.invertGaps || false;
+            if (invertGaps) {
+              trackData.push(makeTrackDataInvertGaps(feature))
+            } else {
+              trackData.push(makeTrackData(feature));
+            }
           } else {
             for (const position of feature.positions) {
               let featureCopy = { ... feature };
