@@ -23,7 +23,7 @@
     <script language="javascript" type="text/javascript">
 window.onload = (event) => {
 
-fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
+fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquename}}")
   .then((response) => {
     return response.json();
   })
@@ -68,7 +68,7 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
       },
       'Mutants': {
         colour: '#f00',
-        allowGaps: false
+        allowGaps: '{{full_or_widget}}' == 'full',
       },
       'Partial deletions': {
         colour: '#73a',
@@ -201,13 +201,13 @@ fetch("/api/v1/dataset/latest/protein_features/{{gene_uniquename}}")
       elementEnterCallBack: function(obj, e) {
         if (obj.displayName) {
           const tip = tippy(e.target);
+          const props = { theme: 'light-border', maxWidth: '800px', allowHTML: true };
+          tip.setProps(props);
           tip.setContent(obj.displayName);
-          const props = { theme: 'light-border', allowHTML: true };
           if (e.offsetX > 600) {
             // avoid ovelapping the right hand controls
             props.placement = 'left';
           }
-          tip.setProps(props);
           tip.show();
           tooltips[obj.id] = tip;
         }
