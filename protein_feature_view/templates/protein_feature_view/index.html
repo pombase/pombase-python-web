@@ -41,6 +41,7 @@ fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquen
   .then((data) => {
     if (!data.tracks) {
       noData();
+      return;
     }
 
     let hasFeatures = false;
@@ -100,6 +101,8 @@ fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquen
 
     data.tracks.map(track => {
       if (track.features.length > 0) {
+        hasFeatures = true;
+
         const trackData = [];
 
         const makeTrackData = (feature) => {
