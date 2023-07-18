@@ -17,13 +17,21 @@
   .rcsbDecorator_circle {
     display: none;
   }
+  .no-features {
+    font-size: 120%;
+    padding: 1em;
+  }
   </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@rcsb/rcsb-saguaro/build/rcsb-saguaro.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.umd.min.js"></script>
 
-    <script language="javascript" type="text/javascript">
+  <script language="javascript" type="text/javascript">
+function noData() {
+  document.getElementById('pfv').innerHTML = '<div class="no-features">No features available for {{gene_uniquename}}</div>';
+}
+
 window.onload = (event) => {
 
 fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquename}}")
@@ -32,8 +40,10 @@ fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquen
   })
   .then((data) => {
     if (!data.tracks) {
-      document.getElementById('pfv').innerHTML = 'No features found for {{gene_uniquename}}';
+      noData();
     }
+
+    let hasFeatures = false;
 
     let rowConfigData = [
       {
@@ -194,6 +204,11 @@ fetch("/api/v1/dataset/latest/protein_features/{{full_or_widget}}/{{gene_uniquen
         rowConfigData.push(conf);
       }
     });
+
+    if (!hasFeatures) {
+      noData();
+      return;
+    }
 
     const tooltips = {};
 
