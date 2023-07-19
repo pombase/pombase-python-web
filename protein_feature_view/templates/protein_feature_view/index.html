@@ -203,7 +203,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           displayType: track.display_type,
           displayColor: typeConfig[track.name]?.colour || '#ba6',
           rowTitle: track.name,
-          includeTooltip: true,
+          includeTooltip: false,
           trackData,
         };
 
