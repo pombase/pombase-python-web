@@ -205,6 +205,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
         let trackHeight = 20;
 
+        if (fullOrWidget == 'widget') {
+          trackHeight = 25;
+        }
+
         if (track.name == 'Partial deletions') {
           if (trackData.length > 25) {
             trackHeight = 10;
