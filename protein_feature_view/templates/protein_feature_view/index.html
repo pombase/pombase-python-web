@@ -93,7 +93,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       'Mutant positions': {
         colour: '#f94',
         allowGaps: true,
-        helpText: 'Positions where there is a mutation in at least one allele'
+        helpText: '<div>Positions where there is a mutation in at least one allele</div>' +
+          (fullOrWidget == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
       },
       'Mutants': {
         colour: '#f00',
@@ -108,12 +109,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       },
       'Modifications': {
         colour: '#00f',
-        allowGaps: false
+        allowGaps: false,
+        helpText: 'Curated modified residues',
       },
       'Pfam families': {
         colour: '#aa0',
         allowGaps: true,
-        helpText: 'Pfam domain information from InterPro',
+        helpText: 'Pfam domains from InterPro',
       },
     };
 
@@ -291,7 +293,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
             content: conf.helpText,
           });
           let props = { ... tippyProps };
-          props.placement = 'bottom-end';
+          props.placement = 'right';
           tip.setProps(props);
         }
       }
