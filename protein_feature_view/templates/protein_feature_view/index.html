@@ -207,7 +207,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
         let trackHeight = 20;
 
-        if (fullOrWidget == 'widget') {
+        if (fullOrWidget == 'widget' && track.name != 'Modifications') {
           trackHeight = 25;
         }
 
