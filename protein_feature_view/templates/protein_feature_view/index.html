@@ -222,6 +222,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       length: data.sequence.length,
       trackWidth: 800,
       includeAxis: true,
+      rowTitleWidth: 170,
+      hideRowGlow: false,
+      highlightHoverElement: false,
+      highlightHoverPosition: false,
       elementEnterCallBack: function(obj, e) {
         if (obj.displayName) {
           const tip = tippy(e.target);
