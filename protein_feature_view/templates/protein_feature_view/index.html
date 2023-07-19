@@ -66,31 +66,45 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       }
     ];
 
-    const typeConfig = {
+    let typeConfig = {
+      'Sequence': {
+        helpText: 'Zoom in to see residues',
+      },
       'TM domains': {
         colour: '#44f',
-        allowGaps: true
+        allowGaps: true,
+        helpText: 'Trans-membrane domains calculated with TMHMM (Krogh et al. 2001)'
       },
       'Disordered regions': {
         colour: '#292',
-        allowGaps: true
+        allowGaps: true,
+        helpText: 'Disordered regions from Pfam version 34.0 (El-Gebali et al. 2019)'
       },
       'Low complexity': {
         colour: '#0aa',
-        allowGaps: true
+        allowGaps: true,
+        helpText: 'Low complexity regions from Pfam version 34.0 (El-Gebali et al. 2019)'
       },
       'Coiled coils': {
         colour: '#a5a',
-        allowGaps: true
+        allowGaps: true,
+        helpText: 'Coiled coils from Pfam version 34.0 (El-Gebali et al. 2019)'
+      },
+      'Mutant positions': {
+        colour: '#f94',
+        allowGaps: true,
+        helpText: 'Positions where there is a mutation in at least one allele'
       },
       'Mutants': {
         colour: '#f00',
         allowGaps: true,
+        helpText: 'Curated alleles',
       },
       'Partial deletions': {
-        colour: '#73a',
+        colour: '#15e',
         allowGaps: true,
-        invertGaps: true
+        invertGaps: true,
+        helpText: 'Curated partial deletions',
       },
       'Modifications': {
         colour: '#00f',
@@ -98,9 +112,14 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       },
       'Pfam families': {
         colour: '#aa0',
-        allowGaps: true
+        allowGaps: true,
+        helpText: 'Pfam domain information from InterPro',
       },
-    }
+    };
+
+    Object.keys(typeConfig).forEach(key => {
+      typeConfig[key.toUpperCase()] = typeConfig[key];
+    });
 
     data.tracks.map(track => {
       if (track.features.length > 0) {
@@ -216,6 +235,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       return;
     }
 
+    const tippyProps = { theme: 'light-border', maxWidth: '800px', allowHTML: true };
+
     const tooltips = {};
 
     const boardConfigData = {
@@ -229,7 +250,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       elementEnterCallBack: function(obj, e) {
         if (obj.displayName) {
           const tip = tippy(e.target);
-          const props = { theme: 'light-border', maxWidth: '800px', allowHTML: true };
+          let props = { ... tippyProps };
           tip.setProps(props);
           tip.setContent(obj.displayName);
           if (e.offsetX > 600) {
@@ -253,6 +274,23 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       boardConfigData,
       rowConfigData,
       elementId
+    });
+
+    pfv.then(() => {
+      const titles = document.getElementsByClassName('rcsbFvRowTitleText');
+
+      for (const el of titles) {
+        const trackName = el.innerText.trim();
+        const conf = typeConfig[trackName];
+        if (conf && conf.helpText) {
+          const tip = tippy(el, {
+            content: conf.helpText,
+          });
+          let props = { ... tippyProps };
+          props.placement = 'bottom-end';
+          tip.setProps(props);
+        }
+      }
     });
   });
 };
