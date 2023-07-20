@@ -242,7 +242,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
     }
 
     const tippyProps = {
-      theme: 'light-border', maxWidth: '800px', allowHTML: true,
+      theme: 'light-border', maxWidth: '550px', allowHTML: true,
       followCursor: 'initial',
     };
 
@@ -261,8 +261,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const tip = tippy(e.target);
           let props = { ... tippyProps };
           tip.setProps(props);
-          tip.setContent(obj.displayName);
-          if (e.offsetX > 600) {
+          tip.setContent(obj.displayName.replaceAll(',', ',&ZeroWidthSpace;'));
+          if (e.offsetX > 700 || obj.displayName.length > 60 && e.offsetX > 500) {
             // avoid ovelapping the right hand controls
             props.placement = 'left';
           }
