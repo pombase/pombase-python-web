@@ -173,7 +173,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           let gaps = [];
           for (let i = 0; i < feature.positions.length; i++) {
             const current = feature.positions[i];
-            const begin = current[1];
+            const begin = current[1] - 1;
             const end = current[2] + 1;
 
             gaps.push({
