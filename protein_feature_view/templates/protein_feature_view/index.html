@@ -260,12 +260,12 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         if (obj.displayName) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
-          tip.setProps(props);
           tip.setContent(obj.displayName.replaceAll(',', ',&ZeroWidthSpace;'));
           if (e.offsetX > 700 || obj.displayName.length > 60 && e.offsetX > 500) {
             // avoid ovelapping the right hand controls
             props.placement = 'left';
           }
+          tip.setProps(props);
           tip.show();
           tooltips[obj.id] = tip;
         }
