@@ -248,9 +248,11 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
     const tooltips = {};
 
+    const trackWidth = fullOrWidget == 'widget' ? 800 : 1000;
+
     const boardConfigData = {
       length: data.sequence.length,
-      trackWidth: 800,
+      trackWidth,
       includeAxis: true,
       rowTitleWidth: 170,
       hideRowGlow: false,
@@ -261,7 +263,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const tip = tippy(e.target);
           let props = { ... tippyProps };
           tip.setContent(obj.displayName.replaceAll(',', ',&ZeroWidthSpace;'));
-          if (e.offsetX > 700 || obj.displayName.length > 60 && e.offsetX > 500) {
+          if (e.offsetX > trackWidth - 100 ||
+              obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
             // avoid ovelapping the right hand controls
             props.placement = 'left';
           }
