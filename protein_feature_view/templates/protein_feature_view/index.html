@@ -21,6 +21,9 @@
     font-size: 120%;
     padding: 1em;
   }
+  .phenotype-name::before {
+    content: '  - ';
+  }
   </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@rcsb/rcsb-saguaro/build/rcsb-saguaro.js" type="text/javascript"></script>
@@ -135,6 +138,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name,
+            annotated_terms: feature.annotated_terms,
             begin: firstPos[1],
             end: lastPos[2],
           };
@@ -166,6 +170,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name,
+            annotated_terms: feature.annotated_terms,
             begin: firstPos,
             end: lastPos,
           };
@@ -262,7 +267,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         if (obj.displayName) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
-          tip.setContent(obj.displayName.replaceAll(',', ',&ZeroWidthSpace;'));
+          let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
+          if (obj.annotated_terms && obj.annotated_terms.length > 0) {
+            for (annotated_term of obj.annotated_terms) {
+              content += '<div class="phenotype-name">' + annotated_term.name + '</div>';
+            }
+          }
+          tip.setContent(content);
           if (e.offsetX > trackWidth - 100 ||
               obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
             // avoid ovelapping the right hand controls
