@@ -125,6 +125,17 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       },
     };
 
+    const modColours = {
+      'MOD:00046': '#6e60ff',
+      'MOD:00047': '#d6009e',
+      'MOD:01148': '#ff006b',
+      'MOD:01149': '#ff7145',
+      'MOD:00048': '#efbb3e',
+      'MOD:00696': '#c99851',
+      'MOD:00006': '#7bce6e',
+      '_': '#337570',
+    };
+
     Object.keys(typeConfig).forEach(key => {
       typeConfig[key.toUpperCase()] = typeConfig[key];
     });
@@ -141,10 +152,19 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name,
-            annotated_terms: feature.annotated_terms,
             begin: firstPos[1],
             end: lastPos[2],
           };
+
+          if (track.name == 'Modifications') {
+            if (feature.annotated_terms && feature.annotated_terms[0]) {
+              const modTermid = feature.annotated_terms[0].id;
+              displayColour = modColours[modTermid] || modColours['_'];
+              newFeature.color = displayColour;
+            }
+          } else {
+            newFeature.annotated_terms = feature.annotated_terms;
+          }
 
           if (feature.positions.length > 1) {
             let gaps = [];
