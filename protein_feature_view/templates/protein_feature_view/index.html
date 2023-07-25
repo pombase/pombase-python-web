@@ -21,10 +21,10 @@
     font-size: 120%;
     padding: 1em;
   }
-  .phenotype-name::before {
+  .sub-content::before {
     content: '  - ';
   }
-  .phenotype-name {
+  .sub-content {
     font-size: 90%;
   }
   </style>
@@ -162,6 +162,9 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
               displayColour = modColours[modTermid] || modColours['_'];
               newFeature.color = displayColour;
             }
+            if (feature.display_extension) {
+              newFeature.display_extension = feature.display_extension;
+            }
           } else {
             newFeature.annotated_terms = feature.annotated_terms;
           }
@@ -293,9 +296,16 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
           if (obj.annotated_terms && obj.annotated_terms.length > 0) {
             for (annotated_term of obj.annotated_terms) {
-              content += '<div class="phenotype-name">' + annotated_term.name + '</div>';
+              content += '<div class="sub-content">' + annotated_term.name + '</div>';
             }
           }
+
+          if (obj.display_extension) {
+            for (ext of obj.display_extension) {
+              content += '<div class="sub-content">' + ext + '</div>';
+            }
+          }
+
           tip.setContent(content);
           if (e.offsetX > trackWidth - 100 ||
               obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
