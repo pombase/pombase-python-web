@@ -74,51 +74,51 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
     let typeConfig = {
       'Sequence': {
-        helpText: 'Zoom in to see residues',
+        helpText: 'Zoom in to see individual residues',
       },
       'TM domains': {
         colour: '#44f',
         allowGaps: true,
-        helpText: 'Trans-membrane domains calculated with TMHMM (Krogh et al. 2001)'
+        helpText: 'Trans-membrane domains calculated with TMHMM'
       },
       'Disordered regions': {
         colour: '#292',
         allowGaps: true,
-        helpText: 'Disordered regions from Pfam version 34.0 (El-Gebali et al. 2019)'
+        helpText: 'Disordered regions from Pfam'
       },
       'Low complexity': {
         colour: '#0aa',
         allowGaps: true,
-        helpText: 'Low complexity regions from Pfam version 34.0 (El-Gebali et al. 2019)'
+        helpText: 'Low complexity regions from Pfam'
       },
       'Coiled coils': {
         colour: '#a5a',
         allowGaps: true,
-        helpText: 'Coiled coils from Pfam version 34.0 (El-Gebali et al. 2019)'
+        helpText: 'Coiled coil regions from Pfam'
       },
-      'Mutant positions': {
+      'AA substitutions': {
         colour: '#f94',
         allowGaps: true,
-        helpText: '<div>Positions where there is a mutation in at least one allele</div>' +
+        helpText: '<div>Positions where there are one or more amino acid substitutions</div>' +
           (fullOrWidget == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
       },
       'Mutants': {
         colour: '#f00',
         allowGaps: true,
-        helpText: 'Curated alleles',
+        helpText: 'Curated amino acid substitution alleles',
       },
       'Partial deletions': {
         colour: '#15e',
         allowGaps: true,
         invertGaps: true,
-        helpText: 'Curated partial deletions',
+        helpText: 'Curated alleles with partial amino acid deletions',
       },
       'Modifications': {
         colour: '#00f',
         allowGaps: false,
         helpText: 'Curated modified residues',
       },
-      'Pfam families': {
+      'Pfam domains': {
         colour: '#aa0',
         allowGaps: true,
         helpText: 'Pfam domains from InterPro',
