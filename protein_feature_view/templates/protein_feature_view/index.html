@@ -96,13 +96,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         allowGaps: true,
         helpText: 'Coiled coil regions from Pfam'
       },
-      'AA substitutions': {
+      'AA substitution positions': {
         colour: '#f94',
         allowGaps: true,
         helpText: '<div>Positions where there are one or more amino acid substitutions</div>' +
           (fullOrWidget == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
       },
-      'Mutants': {
+      'AA substitution alleles': {
         colour: '#f00',
         allowGaps: true,
         helpText: 'Curated amino acid substitution alleles',
@@ -281,13 +281,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
     const tooltips = {};
 
-    const trackWidth = fullOrWidget == 'widget' ? 800 : 1000;
+    const trackWidth = fullOrWidget == 'widget' ? 770 : 970;
 
     const boardConfigData = {
       length: data.sequence.length,
       trackWidth,
       includeAxis: true,
-      rowTitleWidth: 170,
+      rowTitleWidth: 205,
       hideRowGlow: false,
       highlightHoverElement: false,
       highlightHoverPosition: false,
