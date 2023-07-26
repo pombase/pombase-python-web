@@ -343,6 +343,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
             content: conf.helpText,
           });
           let props = { ... tippyProps };
+          delete props['followCursor'];
           props.placement = 'right';
           tip.setProps(props);
         }
