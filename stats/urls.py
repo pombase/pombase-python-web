@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('cumulative_pub_stats_by_month/',
-         views.cumulative_pub_stats_by_month,
-         name='cumulative_pub_stats_by_month')
+    path('cumulative_curated_by_year/',
+         views.cumulative_curated_by_year,
+         name='cumulative_curated_by_year')
 ]

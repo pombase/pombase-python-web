@@ -33,7 +33,7 @@ def read_gene_ex_df(config):
         curatable = []
         curated = []
 
-        cumulative_data = stats['cumulative_pub_stats_by_month']['data']
+        cumulative_data = stats['cumulative_curated_by_month']['data']
 
         d = {'curatable': curatable, 'curated': curated }
 
@@ -51,10 +51,10 @@ def read_gene_ex_df(config):
 
 config = read_config()
 
-def cumulative_pub_stats_by_month(request):
+def cumulative_curated_by_year(request):
     df = read_gene_ex_df(config)
 
-    ax = sns.lineplot(data=df[['curated', 'curatable']], color="blue")
+    ax = sns.lineplot(data=df, color="blue")
 
     ax.xaxis.set_major_locator(MultipleLocator(2))
 
