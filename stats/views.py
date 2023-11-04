@@ -2,6 +2,7 @@ from django.http import HttpResponse
 
 import os
 import json
+import re
 
 import io
 
@@ -10,6 +11,8 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 
+from matplotlib.ticker import MultipleLocator
+
 sns.set_theme(style="whitegrid")
 
 def read_config():
@@ -17,6 +20,8 @@ def read_config():
         website_config = json.load(json_file)
 
         return website_config
+
+year_dec_re = re.compile('^(\d\d\d\d)-12')
 
 def read_gene_ex_df(config):
     min_year = config['stats_page']['curated_vs_curatable_min_year']
@@ -30,15 +35,18 @@ def read_gene_ex_df(config):
 
         cumulative_data = stats['cumulative_pub_stats_by_month']['data']
 
-        d = {'date': date, 'curatable': curatable, 'curated': curated }
+        d = {'curatable': curatable, 'curated': curated }
 
         for row in cumulative_data:
-            if row[0] >= str(min_year):
-                date.append(row[0])
-                curatable.append(row[1])
-                curated.append(row[2])
+            row_date = row[0]
+            if row_date >= str(min_year):
+                m = year_dec_re.match(row_date)
+                if m:
+                   curatable.append(row[1])
+                   curated.append(row[2])
+                   date.append(m.group(1))
 
-        return pd.DataFrame(data=d)
+        return pd.DataFrame(data=d, index=date)
 
 
 config = read_config()
@@ -46,7 +54,11 @@ config = read_config()
 def cumulative_pub_stats_by_month(request):
     df = read_gene_ex_df(config)
 
-    sns.lineplot(data=df[['curated', 'curatable']], color="blue")
+    print(df)
+
+    ax = sns.lineplot(data=df[['curated', 'curatable']], color="blue")
+
+    ax.xaxis.set_major_locator(MultipleLocator(2))
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg")
