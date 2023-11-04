@@ -54,8 +54,6 @@ config = read_config()
 def cumulative_pub_stats_by_month(request):
     df = read_gene_ex_df(config)
 
-    print(df)
-
     ax = sns.lineplot(data=df[['curated', 'curatable']], color="blue")
 
     ax.xaxis.set_major_locator(MultipleLocator(2))
