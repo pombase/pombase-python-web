@@ -8,12 +8,9 @@ import io
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 import seaborn as sns
 
 from matplotlib.ticker import MultipleLocator
-
-sns.set_theme(style="whitegrid")
 
 def read_config():
     with open(os.environ['WEBSITE_CONFIG_JSON_PATH'], "r") as json_file:
@@ -23,7 +20,7 @@ def read_config():
 
 year_dec_re = re.compile('^(\d\d\d\d)-12')
 
-def read_gene_ex_df(config):
+def make_by_year_df(config, raw_stat_type):
     min_year = config['stats_page']['curated_vs_curatable_min_year']
 
     with open(os.environ['DETAILED_STATS_JSON'], "r") as json_file:
@@ -33,28 +30,32 @@ def read_gene_ex_df(config):
         curatable = []
         curated = []
 
-        cumulative_data = stats['cumulative_curated_by_month']['data']
+        data = stats[raw_stat_type]['data']
 
         d = {'curatable': curatable, 'curated': curated }
 
-        for row in cumulative_data:
+        for row in data:
             row_date = row[0]
             if row_date >= str(min_year):
-                m = year_dec_re.match(row_date)
-                if m:
-                   curatable.append(row[1])
-                   curated.append(row[2])
-                   date.append(m.group(1))
+                date.append(row_date)
+                curatable.append(row[1])
+                curated.append(row[2])
 
         return pd.DataFrame(data=d, index=date)
 
-
 config = read_config()
 
-def cumulative_curated_by_year(request):
-    df = read_gene_ex_df(config)
+def make_plot(raw_stat_type, column_name=None):
+    df = make_by_year_df(config, raw_stat_type)
 
-    ax = sns.lineplot(data=df, color="blue")
+    plt.figure().clear()
+    plt.rcParams['savefig.dpi'] = 15
+    sns.set_theme(style="whitegrid")
+
+    if 'cumulative' in raw_stat_type:
+        ax = sns.lineplot(data=df, color="blue")
+    else:
+        ax = sns.barplot(x=df.index, y=df[column_name], color="blue")
 
     ax.xaxis.set_major_locator(MultipleLocator(2))
 
@@ -64,3 +65,12 @@ def cumulative_curated_by_year(request):
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     return response
+
+def cumulative_curated_by_year(_):
+    return make_plot('cumulative_curated_by_year')
+
+def curated_by_year(_):
+    return make_plot('curated_by_year', 'curated')
+
+def curatable_by_year(_):
+    return make_plot('curated_by_year', 'curatable')
