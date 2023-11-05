@@ -20,9 +20,7 @@ def read_config():
 
 year_dec_re = re.compile('^(\d\d\d\d)-12')
 
-def make_by_year_df(config, raw_stat_type):
-    min_year = config['stats_page']['curated_vs_curatable_min_year']
-
+def make_by_year_df(config, raw_stat_type, min_year):
     with open(os.environ['DETAILED_STATS_JSON'], "r") as json_file:
         stats = json.load(json_file)
 
@@ -36,7 +34,7 @@ def make_by_year_df(config, raw_stat_type):
 
         for row in data:
             row_date = row[0]
-            if row_date >= str(min_year):
+            if min_year == None or row_date >= str(min_year):
                 date.append(row_date)
                 curatable.append(row[1])
                 curated.append(row[2])
@@ -46,21 +44,29 @@ def make_by_year_df(config, raw_stat_type):
 config = read_config()
 
 def make_plot(raw_stat_type, column_name=None):
-    df = make_by_year_df(config, raw_stat_type)
+    min_year = config['stats_page']['curated_vs_curatable_min_year']
+    if column_name == 'curatable':
+        min_year = None
+
+    df = make_by_year_df(config, raw_stat_type, min_year)
 
     plt.figure().clear()
     plt.rcParams['savefig.dpi'] = 15
     sns.set_theme(style="whitegrid")
+    plt.tight_layout()
 
     if 'cumulative' in raw_stat_type:
-        ax = sns.lineplot(data=df, color="blue")
+        ax = sns.lineplot(data=df)
     else:
-        ax = sns.barplot(x=df.index, y=df[column_name], color="blue")
+        ax = sns.barplot(x=df.index, y=df[column_name], color="#8192ca")
 
-    ax.xaxis.set_major_locator(MultipleLocator(2))
+    if column_name == 'curatable':
+        ax.xaxis.set_major_locator(MultipleLocator(10))
+    else:
+        ax.xaxis.set_major_locator(MultipleLocator(2))
 
     imgdata = io.BytesIO()
-    plt.savefig(imgdata, format="svg")
+    plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches='tight')
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
