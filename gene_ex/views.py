@@ -63,6 +63,8 @@ protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df = None, N
 def gene_ex_violin(request):
     global protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df
 
+    plt.figure().clear()
+
     if protein_plot_order is None:
         protein_plot_order, rna_plot_order, protein_gene_ex_df, rna_gene_ex_df = read_gene_ex_df()
 
