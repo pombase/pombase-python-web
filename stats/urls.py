@@ -15,10 +15,10 @@ urlpatterns = [
     path('ltp_genes_per_pub_per_year_range',
          views.ltp_genes_per_pub_per_year_range,
          name='ltp_genes_per_pub_per_year_range')
-    path('ltp_genes_per_pub_per_year_range',
-         views.ltp_genes_per_pub_per_year_range,
-         name='ltp_genes_per_pub_per_year_range'),
-    path('ltp_genes_per_pub_per_year_range',
-         views.ltp_genes_per_pub_per_year_range,
-         name='ltp_genes_per_pub_per_year_range')
+    path('ltp_annotations_per_pub_per_year_range',
+         views.ltp_annotations_per_pub_per_year_range,
+         name='ltp_annotations_per_pub_per_year_range'),
+    path('htp_annotations_per_pub_per_year_range',
+         views.htp_annotations_per_pub_per_year_range,
+         name='htp_annotations_per_pub_per_year_range')
 ]
