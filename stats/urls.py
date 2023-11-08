@@ -17,7 +17,7 @@ urlpatterns = [
          name='ltp_genes_per_pub_per_year_range')
     path('ltp_genes_per_pub_per_year_range',
          views.ltp_genes_per_pub_per_year_range,
-         name='ltp_genes_per_pub_per_year_range')
+         name='ltp_genes_per_pub_per_year_range'),
     path('ltp_genes_per_pub_per_year_range',
          views.ltp_genes_per_pub_per_year_range,
          name='ltp_genes_per_pub_per_year_range')
