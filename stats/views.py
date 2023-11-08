@@ -49,6 +49,8 @@ def make_by_year_range_df(raw_stat_type):
     with open(os.environ["DETAILED_STATS_JSON"], "r") as json_file:
         stats = json.load(json_file)
 
+        headers = stats[raw_stat_type]["header"][1::]
+
         data = stats[raw_stat_type]["data"]
 
         date_ranges = []
@@ -57,9 +59,9 @@ def make_by_year_range_df(raw_stat_type):
         for row in data:
             date_range = row[0]
             date_ranges.append(date_range)
-            frame_rows.append(row[1::])
+            frame_rows.append(row[1])
 
-        return pd.DataFrame(data=frame_rows, index=date_ranges)
+        return pd.DataFrame(data={headers[0]: frame_rows}, index=date_ranges)
 
 
 config = read_config()
@@ -104,10 +106,12 @@ def make_year_range_plot(raw_stat_type):
     plt.tight_layout()
     plt.margins(x=0.5)
 
-    ax = sns.barplot(x=df.index, y=df[0], color="#8192ca")
+    ax = sns.barplot(x=df.index, y=df[df.columns[0]], color="#8192ca")
 
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
-    ax.bar_label(ax.containers[0], fmt='%.1f')
+    ax.bar_label(ax.containers[0], fmt="%.1f")
+
+    ax.set(ylabel=df.columns[0].replace("_", " "))
 
     #    ax.xaxis.set_major_locator(MultipleLocator(2))
 
