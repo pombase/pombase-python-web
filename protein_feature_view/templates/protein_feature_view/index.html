@@ -79,49 +79,63 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       'TM domains': {
         colour: '#44f',
         allowGaps: true,
-        helpText: 'Trans-membrane domains calculated with TMHMM'
+        helpText: 'Trans-membrane domains calculated with TMHMM',
+        includeCoords: true,
+        singular: 'TM domain',
       },
       'Disordered regions': {
         colour: '#292',
         allowGaps: true,
-        helpText: 'Disordered regions from Pfam'
+        helpText: 'Disordered regions from Pfam',
+        includeCoords: true,
+        singular: 'Disordered region',
       },
       'Low complexity': {
         colour: '#0aa',
         allowGaps: true,
-        helpText: 'Low complexity regions from Pfam'
+        helpText: 'Low complexity regions from Pfam',
+        includeCoords: true,
+        singular: 'Low complexity',
       },
       'Coiled coils': {
         colour: '#a5a',
         allowGaps: true,
-        helpText: 'Coiled coil regions from Pfam'
+        helpText: 'Coiled coil regions from Pfam',
+        includeCoords: true,
+        singular: 'Coiled coil',
       },
       'AA substitution positions': {
         colour: '#f94',
         allowGaps: true,
         helpText: '<div>Positions where there are one or more amino acid substitutions</div>' +
           (fullOrWidget == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
+        singular: 'AA substitution position',
       },
       'AA substitution alleles': {
         colour: '#f00',
         allowGaps: true,
         helpText: 'Curated amino acid substitution alleles',
+        singular: 'AA substitution allele',
       },
       'Partial deletions': {
         colour: '#15e',
         allowGaps: true,
         invertGaps: true,
         helpText: 'Curated alleles with partial amino acid deletions',
+        singular: 'Partial deletion',
       },
       'Modifications': {
         colour: '#00f',
         allowGaps: false,
         helpText: 'Curated modified residues',
+        singular: 'Modification',
       },
       'Pfam domains': {
         colour: '#aa0',
         allowGaps: true,
         helpText: 'Pfam domains from InterPro',
+        includeCoords: true,
+        singular: 'Pfam domain',
       },
     };
 
@@ -146,6 +160,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       if (track.features.length > 0) {
         hasFeatures = true;
 
+        const trackConfig = typeConfig[track.name];
+
         const trackData = [];
 
         const makeTrackData = (feature) => {
@@ -153,9 +169,11 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const lastPos = feature.positions[feature.positions.length - 1];
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
-            displayName: feature.display_name,
+            displayName: feature.display_name || trackConfig.singular,
             begin: firstPos[1],
             end: lastPos[2],
+            trackName: track.name,
+            trackConfig: trackConfig,
           };
 
           if (track.name == 'Modifications') {
@@ -221,9 +239,9 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         };
 
         for (const feature of track.features) {
-          const allowGaps = typeConfig[track.name]?.allowGaps || false;
+          const allowGaps = trackConfig?.allowGaps || false;
           if (allowGaps) {
-            const invertGaps = typeConfig[track.name]?.invertGaps || false;
+            const invertGaps = trackConfig?.invertGaps || false;
             if (invertGaps) {
               trackData.push(makeTrackDataInvertGaps(feature))
             } else {
@@ -292,10 +310,16 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       highlightHoverElement: false,
       highlightHoverPosition: false,
       elementEnterCallBack: function(obj, e) {
-        if (obj.displayName) {
+        const includeCoords = obj.trackConfig && obj.trackConfig.includeCoords;
+        if (obj.displayName || includeCoords) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
           let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
+
+          if (includeCoords) {
+            content += '<div>' + obj.begin + '..' + obj.end + '</div>';
+          }
+
           if (obj.annotated_terms && obj.annotated_terms.length > 0) {
             for (annotated_term of obj.annotated_terms) {
               content += '<div class="sub-content">' + annotated_term.name + '</div>';
@@ -309,6 +333,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           }
 
           tip.setContent(content);
+
           if (e.offsetX > trackWidth - 100 ||
               obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
             // avoid ovelapping the right hand controls
