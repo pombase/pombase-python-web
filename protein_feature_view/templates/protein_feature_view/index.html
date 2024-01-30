@@ -146,7 +146,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       'MOD:01155': '#0f6',
       'MOD:00408': '#f88',
       'MOD:01875': '#60f',
-      '_': '#337570',
+      '_': '#666',
     };
 
     Object.keys(typeConfig).forEach(key => {
@@ -176,10 +176,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           if (track.name == 'Modifications') {
             if (feature.annotated_terms && feature.annotated_terms[0]) {
               const modFeatureGroup = feature.feature_group;
-              if (modFeatureGroup) {
-                displayColour = modColours[modFeatureGroup.termid] || modColours['_'];
+              newFeature.color = modColours['_'];
+              if (modFeatureGroup && modColours[modFeatureGroup.termid]) {
+                newFeature.color = modColours[modFeatureGroup.termid];
               }
-              newFeature.color = displayColour;
             }
             if (feature.display_extension) {
               newFeature.display_extension = feature.display_extension;
