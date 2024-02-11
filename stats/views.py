@@ -151,3 +151,50 @@ def ltp_annotations_per_pub_per_year_range(_):
 
 def htp_annotations_per_pub_per_year_range(_):
     return make_year_range_plot('htp_annotations_per_pub_per_year_range')
+
+def community_response_rates(_):
+    data = detailed_stats['community_response_rates']
+
+    years = []
+    response_rates = []
+
+    x_min = 9999
+    x_max = 0
+
+    y_max = 0
+
+    for row in data:
+        years.append(row['year'])
+        response_rates.append(row['response_rate'])
+        if row['year'] < x_min:
+            x_min = row['year']
+        if row['year'] > x_max:
+            x_max = row['year']
+        if row['response_rate']:
+            y_max = row['response_rate']
+
+    df = pd.DataFrame(index=years, data={'response_rate': response_rates})
+
+    plt.figure().clear()
+    plt.rcParams["savefig.dpi"] = 15
+    sns.set_theme(style="whitegrid")
+    plt.tight_layout()
+    plt.margins(x=0.5)
+    y_max = y_max+5
+    plt.ylim(0,y_max)
+    plt.xlim(x_min, x_max)
+
+    ax = sns.lineplot(data=df)
+
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
+    ax.set(ylabel=df.columns[0].replace("_", " "))
+
+    #    ax.xaxis.set_major_locator(MultipleLocator(2))
+
+    imgdata = io.BytesIO()
+    plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+
+    response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    return response
