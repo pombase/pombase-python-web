@@ -19,19 +19,29 @@ def read_config():
 
         return website_config
 
+def read_detailed_stats():
+    with open(os.environ["DETAILED_STATS_JSON"], "r") as json_file:
+        stats = json.load(json_file)
+
+        return stats
+
+
+config = read_config()
+
+detailed_stats = read_detailed_stats()
+
 
 year_dec_re = re.compile("^(\d\d\d\d)-12")
 
 
 def make_by_year_df(config, raw_stat_type, min_year):
-    with open(os.environ["DETAILED_STATS_JSON"], "r") as json_file:
-        stats = json.load(json_file)
+
 
         date = []
         curatable = []
         curated = []
 
-        data = stats[raw_stat_type]["data"]
+        data = detailed_stats[raw_stat_type]["data"]
 
         d = {"curatable": curatable, "curated": curated}
 
@@ -46,12 +56,9 @@ def make_by_year_df(config, raw_stat_type, min_year):
 
 
 def make_by_year_range_df(raw_stat_type):
-    with open(os.environ["DETAILED_STATS_JSON"], "r") as json_file:
-        stats = json.load(json_file)
+        headers = detailed_stats[raw_stat_type]["header"][1::]
 
-        headers = stats[raw_stat_type]["header"][1::]
-
-        data = stats[raw_stat_type]["data"]
+        data = detailed_stats[raw_stat_type]["data"]
 
         date_ranges = []
         frame_rows = []
@@ -63,8 +70,6 @@ def make_by_year_range_df(raw_stat_type):
 
         return pd.DataFrame(data={headers[0]: frame_rows}, index=date_ranges)
 
-
-config = read_config()
 
 
 def make_plot(raw_stat_type, column_name=None):
