@@ -109,7 +109,13 @@ def make_year_range_plot(raw_stat_type):
     ax = sns.barplot(x=df.index, y=df[df.columns[0]], color="#8192ca")
 
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
-    ax.bar_label(ax.containers[0], fmt="%.1f")
+
+    fontsize = 14
+
+    if 'htp' in raw_stat_type:
+        fontsize = 12
+
+    ax.bar_label(ax.containers[0], fmt="%.1f", fontsize=fontsize)
 
     ax.set(ylabel=df.columns[0].replace("_", " "))
 
