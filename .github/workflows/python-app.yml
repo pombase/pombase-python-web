@@ -24,4 +24,5 @@ jobs:
     - name: Run tests
       run: |
         echo '{}' > /tmp/test_config.json
-        WEBSITE_CONFIG_JSON_PATH=/tmp/test_config.json python manage.py test
+        echo '{}' > /tmp/test_detailed_stats.json
+        WEBSITE_CONFIG_JSON_PATH=/tmp/test_config.json DETAILED_STATS_JSON=/tmp/test_detailed_stats.json python manage.py test
