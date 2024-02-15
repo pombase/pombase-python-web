@@ -35,8 +35,6 @@ year_dec_re = re.compile("^(\d\d\d\d)-12")
 
 
 def make_by_year_df(config, raw_stat_type, min_year):
-
-
         date = []
         curatable = []
         curated = []
@@ -49,8 +47,8 @@ def make_by_year_df(config, raw_stat_type, min_year):
             row_date = row[0]
             if min_year is None or row_date >= str(min_year):
                 date.append(row_date)
-                curatable.append(row[1])
-                curated.append(row[2])
+                curatable.append(row[1][0])
+                curated.append(row[1][1])
 
         return pd.DataFrame(data=d, index=date)
 
