@@ -71,7 +71,7 @@ def make_by_year_range_df(raw_stat_type):
 
 
 def make_plot(raw_stat_type, column_name=None):
-    min_year = config["stats_page"]["curated_vs_curatable_min_year"]
+    min_year = config["stats"]["curated_vs_curatable_min_year"]
     if column_name == "curatable":
         min_year = None
 
