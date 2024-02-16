@@ -196,3 +196,77 @@ def community_response_rates(_):
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     return response
+
+
+def raw_cumulative_annotation_type_counts_by_year():
+    raw_stats = detailed_stats['cumulative_annotation_type_counts_by_year']
+
+    years = []
+    df_data = {}
+
+    for (idx, header_name) in enumerate(raw_stats['header']):
+        df_data[header_name] = []
+
+    for row in raw_stats['data']:
+        row_year = row[0]
+        years.append(row_year)
+        row_data = row[1]
+
+        for (idx, header_name) in enumerate(raw_stats['header']):
+            df_data[header_name].append(row_data[idx])
+
+    raw_df = pd.DataFrame(index=years, data=df_data)
+
+    return raw_df
+
+def cumulative_annotation_type_counts_by_year(_):
+    raw_df = raw_cumulative_annotation_type_counts_by_year()
+
+    stats_config = config['stats']
+    min_year = stats_config['annotation_type_counts_min_year']
+    group_config = stats_config['annotation_type_groups']
+
+    raw_index = raw_df.index
+
+    df = pd.DataFrame(index=raw_index, data={})
+
+    for group_conf in group_config:
+        cv_names = group_conf['cv_names']
+        for cv_name in cv_names:
+            if cv_name not in raw_df.columns:
+                raw_df[cv_name] = 0
+        df[group_conf['display_name']] = raw_df[cv_names].sum(axis=1)
+
+
+    df = df[df.index >= str(min_year-1)]
+    df.rename(index={f"{min_year-1}": f"<{min_year}"}, inplace=True)
+
+    plt.figure().clear()
+
+    plt.rcParams["savefig.dpi"] = 15
+
+    sns.set_palette('pastel')
+    sns.set(rc={"figure.figsize":(8, 4)})
+    sns.set_theme(style="whitegrid")
+
+    plt.tight_layout()
+    plt.margins(x=0.5)
+
+    ax = df.plot(kind='bar', stacked=True)
+
+    for container in ax.containers:
+        plt.setp(container, width=0.8)
+
+
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
+    #    ax.set(ylabel=df.columns[0].replace("_", " "))
+
+    #    ax.xaxis.set_major_locator(MultipleLocator(2))
+
+    imgdata = io.BytesIO()
+    plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+
+    response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    return response

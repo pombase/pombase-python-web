@@ -23,5 +23,8 @@ urlpatterns = [
          name='htp_annotations_per_pub_per_year_range'),
     path('community_response_rates',
          views.community_response_rates,
-         name='community_response_rates')
+         name='community_response_rates'),
+    path('cumulative_annotation_type_counts_by_year',
+         views.cumulative_annotation_type_counts_by_year,
+         name='cumulative_annotation_type_counts_by_year')
 ]
