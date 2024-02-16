@@ -7,6 +7,7 @@ import re
 import io
 
 import matplotlib.pyplot as plt
+from matplotlib import rcdefaults
 import pandas as pd
 import seaborn as sns
 
@@ -78,8 +79,10 @@ def make_plot(raw_stat_type, column_name=None):
     df = make_by_year_df(config, raw_stat_type, min_year)
 
     plt.figure().clear()
+    sns.set(rc={"figure.figsize":(6, 4)})
     plt.rcParams["savefig.dpi"] = 15
     sns.set_theme(style="whitegrid")
+
     plt.tight_layout()
 
     if "cumulative" in raw_stat_type:
@@ -92,8 +95,11 @@ def make_plot(raw_stat_type, column_name=None):
     else:
         ax.xaxis.set_major_locator(MultipleLocator(2))
 
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+    rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
@@ -104,8 +110,10 @@ def make_year_range_plot(raw_stat_type):
     df = make_by_year_range_df(raw_stat_type)
 
     plt.figure().clear()
+    sns.set(rc={"figure.figsize":(6, 4)})
     plt.rcParams["savefig.dpi"] = 15
     sns.set_theme(style="whitegrid")
+
     plt.tight_layout()
     plt.margins(x=0.5)
 
@@ -126,6 +134,7 @@ def make_year_range_plot(raw_stat_type):
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+    rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
@@ -174,10 +183,13 @@ def community_response_rates(_):
     df = pd.DataFrame(index=years, data={'response_rate': response_rates})
 
     plt.figure().clear()
+    sns.set(rc={"figure.figsize":(6, 4)})
     plt.rcParams["savefig.dpi"] = 15
     sns.set_theme(style="whitegrid")
+
     plt.tight_layout()
     plt.margins(x=0.5)
+
     y_max = y_max+5
     plt.ylim(0,y_max)
     plt.xlim(x_min, x_max)
@@ -192,6 +204,7 @@ def community_response_rates(_):
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+    rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
@@ -242,15 +255,14 @@ def cumulative_annotation_type_counts_by_year(_):
     df.rename(index={f"{min_year-1}": f"<{min_year}"}, inplace=True)
 
     plt.figure().clear()
-
+    sns.set(rc={"figure.figsize":(12, 4)})
     plt.rcParams["savefig.dpi"] = 15
-
-    sns.set_palette('pastel')
-    sns.set(rc={"figure.figsize":(8, 4)})
     sns.set_theme(style="whitegrid")
 
     plt.tight_layout()
     plt.margins(x=0.5)
+
+    sns.set_palette('pastel')
 
     ax = df.plot(kind='bar', stacked=True)
 
@@ -266,6 +278,7 @@ def cumulative_annotation_type_counts_by_year(_):
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+    rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
