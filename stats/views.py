@@ -264,7 +264,7 @@ def cumulative_annotation_type_counts_by_year(_):
 
     sns.set_palette('pastel')
 
-    ax = df.plot(kind='bar', stacked=True)
+    ax = df.plot(kind='bar', stacked=True, edgecolor='none')
 
     for container in ax.containers:
         plt.setp(container, width=0.8)
