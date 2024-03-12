@@ -262,7 +262,7 @@ def cumulative_annotation_type_counts_by_year(_):
     plt.tight_layout()
     plt.margins(x=0.5)
 
-    sns.set_palette('pastel')
+    sns.set_palette('Paired')
 
     ax = df.plot(kind='bar', stacked=True, edgecolor='none')
 
