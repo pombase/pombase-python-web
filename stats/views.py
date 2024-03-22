@@ -250,7 +250,7 @@ def cumulative_annotation_type_counts_by_year(_):
                 raw_df[cv_name] = 0
         df[group_conf['display_name']] = raw_df[cv_names].sum(axis=1)
 
-
+    df.drop('unknown', inplace=True)
     df = df[df.index >= str(min_year-1)]
     df.rename(index={f"{min_year-1}": f"<{min_year}"}, inplace=True)
 
