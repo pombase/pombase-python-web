@@ -13,12 +13,17 @@ import seaborn as sns
 
 from matplotlib.ticker import MultipleLocator
 
+default_dpi=600
+default_font_scale=1.4
+small_figsize=(8,5)
+wide_figsize=(12,5)
 
 def read_config():
     with open(os.environ["WEBSITE_CONFIG_JSON_PATH"], "r") as json_file:
         website_config = json.load(json_file)
 
         return website_config
+
 
 def read_detailed_stats():
     with open(os.environ["DETAILED_STATS_JSON"], "r") as json_file:
@@ -79,29 +84,32 @@ def make_plot(raw_stat_type, column_name=None):
     df = make_by_year_df(config, raw_stat_type, min_year)
 
     plt.figure().clear()
-    sns.set(rc={"figure.figsize":(6, 4)})
-    plt.rcParams["savefig.dpi"] = 15
-    sns.set_theme(style="whitegrid")
+    sns.set(style="whitegrid", font_scale=default_font_scale)
+    fig, ax = plt.subplots(dpi=default_dpi, figsize=small_figsize)
 
     plt.tight_layout()
 
     if "cumulative" in raw_stat_type:
-        ax = sns.lineplot(data=df)
+        sns.lineplot(ax=ax, data=df)
     else:
-        ax = sns.barplot(x=df.index, y=df[column_name], color="#8192ca")
+        sns.barplot(ax=ax, x=df.index, y=df[column_name], color="#8192ca")
+
+    ax.set_xlim(auto=True)
 
     if column_name == "curatable":
         ax.xaxis.set_major_locator(MultipleLocator(10))
     else:
         ax.xaxis.set_major_locator(MultipleLocator(2))
 
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    ax.tick_params(axis='x', labelrotation = 45)
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
     rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    plt.close()
 
     return response
 
@@ -110,14 +118,12 @@ def make_year_range_plot(raw_stat_type):
     df = make_by_year_range_df(raw_stat_type)
 
     plt.figure().clear()
-    sns.set(rc={"figure.figsize":(6, 4)})
-    plt.rcParams["savefig.dpi"] = 15
-    sns.set_theme(style="whitegrid")
+    sns.set(style="whitegrid", font_scale=default_font_scale)
+    fig, ax = plt.subplots(dpi=default_dpi, figsize=small_figsize)
 
     plt.tight_layout()
-    plt.margins(x=0.5)
 
-    ax = sns.barplot(x=df.index, y=df[df.columns[0]], color="#8192ca")
+    sns.barplot(ax=ax, x=df.index, y=df[df.columns[0]], color="#8192ca")
 
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
 
@@ -130,13 +136,13 @@ def make_year_range_plot(raw_stat_type):
 
     ax.set(ylabel=df.columns[0].replace("_", " "))
 
-    #    ax.xaxis.set_major_locator(MultipleLocator(2))
-
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
     rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    plt.close()
 
     return response
 
@@ -158,6 +164,7 @@ def ltp_annotations_per_pub_per_year_range(_):
 
 def htp_annotations_per_pub_per_year_range(_):
     return make_year_range_plot('htp_annotations_per_pub_per_year_range')
+
 
 def community_response_rates(_):
     data = detailed_stats['community_response_rates']
@@ -183,30 +190,29 @@ def community_response_rates(_):
     df = pd.DataFrame(index=years, data={'response_rate': response_rates})
 
     plt.figure().clear()
-    sns.set(rc={"figure.figsize":(6, 4)})
-    plt.rcParams["savefig.dpi"] = 15
-    sns.set_theme(style="whitegrid")
+    sns.set(style="whitegrid", font_scale=default_font_scale)
+    fig, ax = plt.subplots(dpi=default_dpi, figsize=small_figsize)
 
     plt.tight_layout()
-    plt.margins(x=0.5)
 
     y_max = y_max+5
-    plt.ylim(0,y_max)
-    plt.xlim(x_min, x_max)
 
-    ax = sns.lineplot(data=df)
+    sns.lineplot(ax=ax, data=df)
 
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    ax.set_ylim(0,y_max)
+    ax.set_xlim(x_min, x_max)
+    sns.move_legend(ax, "upper left")
 
     ax.set(ylabel=df.columns[0].replace("_", " "))
-
-    #    ax.xaxis.set_major_locator(MultipleLocator(2))
+    ax.tick_params(axis='x', labelrotation = 45)
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
     rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    plt.close()
 
     return response
 
@@ -232,8 +238,11 @@ def raw_cumulative_annotation_type_counts_by_year():
 
     return raw_df
 
+
 def cumulative_annotation_type_counts_by_year(_):
     raw_df = raw_cumulative_annotation_type_counts_by_year()
+
+    raw_df.to_pickle('/tmp/raw_types.pickle')
 
     stats_config = config['stats']
     min_year = stats_config['annotation_type_counts_min_year']
@@ -250,36 +259,33 @@ def cumulative_annotation_type_counts_by_year(_):
                 raw_df[cv_name] = 0
         df[group_conf['display_name']] = raw_df[cv_names].sum(axis=1)
 
+    df.to_pickle('/tmp/types.pickle')
+
     df.drop('unknown', inplace=True)
     df = df[df.index >= str(min_year-1)]
     df.rename(index={f"{min_year-1}": f"<{min_year}"}, inplace=True)
 
     plt.figure().clear()
-    sns.set(rc={"figure.figsize":(12, 4)})
-    plt.rcParams["savefig.dpi"] = 15
-    sns.set_theme(style="whitegrid")
+    sns.set(style="whitegrid", font_scale=default_font_scale)
+    fig, ax = plt.subplots(dpi=default_dpi, figsize=wide_figsize)
 
     plt.tight_layout()
-    plt.margins(x=0.5)
 
     sns.set_palette('Paired')
 
-    ax = df.plot(kind='bar', stacked=True, edgecolor='none')
+    df.plot(ax=ax, kind='bar', stacked=True, edgecolor='none')
 
     for container in ax.containers:
         plt.setp(container, width=0.8)
 
-
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
-
-    #    ax.set(ylabel=df.columns[0].replace("_", " "))
-
-    #    ax.xaxis.set_major_locator(MultipleLocator(2))
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
     rcdefaults()
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    plt.close()
 
     return response
