@@ -88,6 +88,7 @@ def make_plot(raw_stat_type, column_name=None):
     fig, ax = plt.subplots(dpi=default_dpi, figsize=small_figsize)
 
     plt.tight_layout()
+    plt.margins(x=0)
 
     if "cumulative" in raw_stat_type:
         sns.lineplot(ax=ax, data=df)
