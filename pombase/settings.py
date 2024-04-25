@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'motifsearch',
     'structure_view',
     'protein_feature_view',
+    'gocam_viz',
 ]
 
 MIDDLEWARE = [
