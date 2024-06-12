@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'gene_ex',
     'motifsearch',
     'structure_view',
+    'rna_2d_structure',
     'protein_feature_view',
     'gocam_viz',
 ]
