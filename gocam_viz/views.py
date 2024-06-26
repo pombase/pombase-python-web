@@ -11,8 +11,6 @@ def index(request):
 
     gocam_viz_html = f"<wc-gocam-viz style='--button-background: #2598c5; --button-background-hover: #2598c5; -- --button-color: #fff; --panel-header-border-width: 1px; --panel-header-border-color: #ddd; --border-color: #d1c4e9; --panel-header-padding: 0.2em; --panel-header-background: #f2f2f2; --graph-height: {graph_height}px;' id='gocam-1' api-url='https://api.geneontology.xyz/gocam/%ID/raw' gocam-id='{gocam_id}'></wc-gocam-viz>";
 
-    print(gocam_viz_html)
-
     context = {
 #        'full_or_widget': full_or_widget,
 #        'gene_uniquename': gene_uniquename
