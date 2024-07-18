@@ -37,9 +37,6 @@ config = read_config()
 detailed_stats = read_detailed_stats()
 
 
-year_dec_re = re.compile("^(\d\d\d\d)-12")
-
-
 def make_by_year_df(config, raw_stat_type, min_year):
         date = []
         curatable = []
