@@ -110,7 +110,9 @@ def make_plot(raw_stat_type, column_name=None):
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
-    plt.close()
+    plt.cla()
+    fig.clf();
+    plt.close('all')
 
     return response
 
@@ -143,7 +145,9 @@ def make_year_range_plot(raw_stat_type):
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
-    plt.close()
+    plt.cla()
+    fig.clf();
+    plt.close('all')
 
     return response
 
@@ -213,7 +217,9 @@ def community_response_rates(_):
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
-    plt.close()
+    plt.cla()
+    fig.clf();
+    plt.close('all')
 
     return response
 
@@ -287,6 +293,8 @@ def cumulative_annotation_type_counts_by_year(_):
 
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
-    plt.close()
+    plt.cla()
+    fig.clf()
+    plt.close('all')
 
     return response
