@@ -105,7 +105,7 @@ class Search:
             seq = regex.sub(r"\*$", "", seq)
             self.peptides.update({peptide_id: seq})
 
-    def motif(self, scope, search_text, max_genes = 500, context = 25):
+    def motif(self, scope, search_text, max_gene_details = 500, context = 25):
         """Search all peptides of the regular expression 'search_text'
 returning an array like:
     [
@@ -144,7 +144,7 @@ returning an array like:
             pep_res = []
             pep_res_count = 0
             for m in patt.finditer(seq, timeout=2):
-                if len(peptide_matches) >= max_genes:
+                if len(peptide_matches) >= max_gene_details:
                     pep_matches = {
                         'peptide_id': peptide_id
                     }

@@ -72,3 +72,17 @@ class SearchTest(TestCase):
         self.assertEqual(len(result[0]['matches']), 1)
         self.assertEqual(result[0]['matches'][0]['end'], 14)
         self.assertEqual(result[0]['matches'][0]['before'], 'MASTFSQS')
+
+    def test_max_genes(self):
+        result = self._search.motif('all', 'F', max_gene_details = 999)
+        count = 0
+        for res in result:
+            if 'matches' in res:
+                count += 1
+        self.assertEqual(count, 5)
+        result = self._search.motif('all', 'F', max_gene_details = 2)
+        count = 0
+        for res in result:
+            if 'matches' in res:
+                count += 1
+        self.assertEqual(count, 2)
