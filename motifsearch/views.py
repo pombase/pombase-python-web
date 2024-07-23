@@ -18,7 +18,10 @@ def query(request):
     if max_gene_details.isdigit():
         max_gene_details = int(max_gene_details)
     else:
-        max_gene_details = 500
+        if max_gene_details == 'all':
+            max_gene_details = -1
+        else:
+            max_gene_details = 500
 
     if len(pattern) < 1:
         return JsonResponse({

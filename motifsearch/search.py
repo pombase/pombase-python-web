@@ -144,7 +144,7 @@ returning an array like:
             pep_res = []
             pep_res_count = 0
             for m in patt.finditer(seq, timeout=2):
-                if len(peptide_matches) >= max_gene_details:
+                if max_gene_details != -1 and len(peptide_matches) >= max_gene_details:
                     pep_matches = {
                         'peptide_id': peptide_id
                     }
