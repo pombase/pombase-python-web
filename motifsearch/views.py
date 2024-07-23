@@ -13,6 +13,12 @@ def query(request):
 
     scope = request.GET.get('scope', '').strip()
     pattern = request.GET.get('pattern', '').strip()
+    max_gene_details = request.GET.get('max_gene_details')
+
+    if max_gene_details.isdigit():
+        max_gene_details = int(max_gene_details)
+    else:
+        max_gene_details = 500
 
     if len(pattern) < 1:
         return JsonResponse({
@@ -22,7 +28,7 @@ def query(request):
 
     return JsonResponse({
         'status': 'OK',
-        'peptide_matches': search.motif(scope, pattern)
+        'peptide_matches': search.motif(scope, pattern, max_gene_details = max_gene_details)
     })
 
 def ping(request):
