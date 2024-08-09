@@ -167,6 +167,20 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         includeCoords: true,
         singular: 'Chain',
       },
+      'Glycosylation sites': {
+        colour: '#a72',
+        allowGaps: true,
+        helpText: 'Glycosylation sites imported from UniProt',
+        includeCoords: true,
+        singular: 'Glycosylation site',
+      },
+      'Disulfide bonds': {
+        colour: '#7a2',
+        allowGaps: true,
+        helpText: 'Disulfide bonds imported from UniProt',
+        includeCoords: true,
+        singular: 'Disulfide bond',
+      },
       'AA substitution positions': {
         colour: '#f94',
         allowGaps: true,
