@@ -395,7 +395,11 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
 
           if (includeCoords) {
-            content += '<div>' + obj.begin + '..' + obj.end + '</div>';
+            if (obj.begin == obj.end) {
+              content += '<div>Position: ' + obj.begin + '</div>';
+            } else {
+              content += '<div>' + obj.begin + '..' + obj.end + '</div>';
+            }
           }
 
           if (obj.annotated_terms && obj.annotated_terms.length > 0) {
