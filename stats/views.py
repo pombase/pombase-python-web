@@ -2,7 +2,6 @@ from django.http import HttpResponse
 
 import os
 import json
-import re
 
 import io
 
@@ -108,7 +107,7 @@ def make_plot(raw_stat_type, column_name=None):
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     plt.cla()
-    fig.clf();
+    fig.clf()
     plt.close('all')
 
     return response
@@ -143,7 +142,7 @@ def make_year_range_plot(raw_stat_type):
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     plt.cla()
-    fig.clf();
+    fig.clf()
     plt.close('all')
 
     return response
@@ -215,7 +214,7 @@ def community_response_rates(_):
     response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
 
     plt.cla()
-    fig.clf();
+    fig.clf()
     plt.close('all')
 
     return response
