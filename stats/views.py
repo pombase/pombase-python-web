@@ -37,11 +37,35 @@ detailed_stats = read_detailed_stats()
 
 
 def make_by_year_df(config, raw_stat_type, min_year):
+    data = detailed_stats[raw_stat_type]["data"]
+
+    if raw_stat_type == "cumulative_curated_by_year":
+        dates = []
+        uncurated_counts = []
+        community_curated_counts = []
+        admin_curated_counts = []
+
+        d = {"Community curated": community_curated_counts,
+             config["database_name"] + " curated": admin_curated_counts,
+             "Uncurated": uncurated_counts}
+
+        for row in data:
+            row_date = row[0]
+            if min_year is None or row_date >= str(min_year):
+                dates.append(row_date)
+                curatable = row[1][0]
+                community_curated = row[1][1]
+                admin_curated = row[1][2]
+                uncurated = curatable - community_curated - admin_curated
+                uncurated_counts.append(uncurated)
+                community_curated_counts.append(community_curated)
+                admin_curated_counts.append(admin_curated)
+
+        return pd.DataFrame(data=d, index=dates)
+    else:
         date = []
         curatable = []
         curated = []
-
-        data = detailed_stats[raw_stat_type]["data"]
 
         d = {"curatable": curatable, "curated": curated}
 
@@ -87,7 +111,7 @@ def make_plot(raw_stat_type, column_name=None):
     plt.margins(x=0)
 
     if "cumulative" in raw_stat_type:
-        sns.lineplot(ax=ax, data=df)
+        df.plot(ax=ax, kind='bar',stacked=True, width=0.8, edgecolor='none')
     else:
         sns.barplot(ax=ax, x=df.index, y=df[column_name], color="#8192ca")
 
