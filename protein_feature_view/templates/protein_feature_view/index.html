@@ -156,6 +156,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       'Propeptides': {
         colour: '#a08',
         allowGaps: true,
+/*        invertGaps: true, */
         helpText: 'Propeptides imported from UniProt',
         includeCoords: true,
         singular: 'Propeptide',
@@ -240,6 +241,20 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       typeConfig[key.toUpperCase()] = typeConfig[key];
     });
 
+    const makeExtraContent = (feature, trackConfig) => {
+      if (trackConfig.includeCoords) {
+        const firstPos = feature.positions[0][1];
+        const lastPos = feature.positions[feature.positions.length - 1][2];
+        if (firstPos == lastPos) {
+          return '<div>Position: ' + firstPos + '</div>';
+        } else {
+          return '<div>' + firstPos + '..' + lastPos + '</div>';
+        }
+      }
+
+      return undefined;
+    };
+
     data.tracks.map(track => {
       if (track.features.length > 0) {
         hasFeatures = true;
@@ -251,9 +266,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         const makeTrackData = (feature) => {
           const firstPos = feature.positions[0];
           const lastPos = feature.positions[feature.positions.length - 1];
+
+          const popupExtraContent = makeExtraContent(feature, trackConfig);
+
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name || trackConfig.singular,
+            popupExtraContent: popupExtraContent,
             begin: firstPos[1],
             end: lastPos[2],
             trackName: track.name,
@@ -299,12 +318,18 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
           const firstPos = 1;
           const lastPos = sequence.length;
+
+          const popupExtraContent = makeExtraContent(feature, trackConfig);
+
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
-            displayName: feature.display_name,
+            displayName: feature.display_name || trackConfig.singular,
+            popupExtraContent: popupExtraContent,
             annotated_terms: feature.annotated_terms,
             begin: firstPos,
             end: lastPos,
+            trackName: track.name,
+            trackConfig: trackConfig,
           };
 
           let gaps = [];
@@ -396,18 +421,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       highlightHoverElement: false,
       highlightHoverPosition: false,
       elementEnterCallBack: function(obj, e) {
-        const includeCoords = obj.trackConfig && obj.trackConfig.includeCoords;
-        if (obj.displayName || includeCoords) {
+        if (obj.displayName) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
           let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
 
-          if (includeCoords) {
-            if (obj.begin == obj.end) {
-              content += '<div>Position: ' + obj.begin + '</div>';
-            } else {
-              content += '<div>' + obj.begin + '..' + obj.end + '</div>';
-            }
+          if (obj.popupExtraContent) {
+            content += obj.popupExtraContent;
           }
 
           if (obj.annotated_terms && obj.annotated_terms.length > 0) {
