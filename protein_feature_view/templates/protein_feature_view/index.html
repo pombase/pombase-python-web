@@ -24,7 +24,10 @@
   .sub-content::before {
     content: '  - ';
   }
-  .sub-content {
+  .feature-display-name, .sub-content {
+    font-weight: bold;
+  }
+  .evidence {
     font-size: 90%;
   }
   </style>
@@ -255,6 +258,9 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
       if (feature.assigned_by) {
         content += '<div>Assigned by: ' + feature.assigned_by + '</div>\n';
       }
+      if (feature.evidence) {
+        content += '<div class="evidence">Evidence: ' + feature.evidence + '</div>\n';
+      }
 
       return content;
     };
@@ -276,7 +282,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name || trackConfig.singular,
-            popupExtraContent: popupExtraContent,
+            popupExtraContent,
             begin: firstPos[1],
             end: lastPos[2],
             trackName: track.name,
@@ -328,7 +334,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           const newFeature = {
             id: feature.id + firstPos + '..' + lastPos,
             displayName: feature.display_name || trackConfig.singular,
-            popupExtraContent: popupExtraContent,
+            popupExtraContent,
             annotated_terms: feature.annotated_terms,
             begin: firstPos,
             end: lastPos,
@@ -428,11 +434,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         if (obj.displayName) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
-          let content = '<div>' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
-
-          if (obj.popupExtraContent) {
-            content += obj.popupExtraContent;
-          }
+          let content = '<div class="feature-display-name">' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
 
           if (obj.annotated_terms && obj.annotated_terms.length > 0) {
             for (annotated_term of obj.annotated_terms) {
@@ -444,6 +446,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
             for (ext of obj.display_extension) {
               content += '<div class="sub-content">' + ext + '</div>';
             }
+          }
+
+          if (obj.popupExtraContent) {
+            content += obj.popupExtraContent;
           }
 
           tip.setContent(content);
