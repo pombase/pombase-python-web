@@ -242,17 +242,21 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
     });
 
     const makeExtraContent = (feature, trackConfig) => {
+      let content = '';
       if (trackConfig.includeCoords) {
         const firstPos = feature.positions[0][1];
         const lastPos = feature.positions[feature.positions.length - 1][2];
         if (firstPos == lastPos) {
-          return '<div>Position: ' + firstPos + '</div>';
+          content += '<div>Position: ' + firstPos + '</div>\n';
         } else {
-          return '<div>' + firstPos + '..' + lastPos + '</div>';
+          content += '<div>' + firstPos + '..' + lastPos + '</div>\n';
         }
       }
+      if (feature.assigned_by) {
+        content += '<div>Assigned by: ' + feature.assigned_by + '</div>\n';
+      }
 
-      return undefined;
+      return content;
     };
 
     data.tracks.map(track => {
