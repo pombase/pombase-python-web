@@ -255,14 +255,14 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           content += '<div>' + firstPos + '..' + lastPos + '</div>\n';
         }
       }
+      if (feature.evidence) {
+        content += '<div class="evidence">Evidence: ' + feature.evidence + '</div>\n';
+      }
       if (feature.author_and_year) {
         content += '<div class="author-and-year">' + feature.author_and_year + '</div>\n';
       }
       if (feature.assigned_by) {
         content += '<div>Imported from: ' + feature.assigned_by + '</div>\n';
-      }
-      if (feature.evidence) {
-        content += '<div class="evidence">Evidence: ' + feature.evidence + '</div>\n';
       }
 
       return content;
