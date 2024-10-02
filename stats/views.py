@@ -44,10 +44,12 @@ def make_by_year_df(config, raw_stat_type, min_year):
         uncurated_counts = []
         community_curated_counts = []
         admin_curated_counts = []
+        uncuratable_counts = []
 
-        d = {"Community curated": community_curated_counts,
-             config["database_name"] + " curated": admin_curated_counts,
-             "Uncurated": uncurated_counts}
+        d = {"Other": uncuratable_counts,
+             "Uncurated": uncurated_counts,
+             "Community curated": community_curated_counts,
+             config["database_name"] + " curated": admin_curated_counts}
 
         for row in data:
             row_date = row[0]
@@ -56,10 +58,12 @@ def make_by_year_df(config, raw_stat_type, min_year):
                 curatable = row[1][0]
                 community_curated = row[1][1]
                 admin_curated = row[1][2]
+                uncuratable = row[1][3]
                 uncurated = curatable - community_curated - admin_curated
                 uncurated_counts.append(uncurated)
                 community_curated_counts.append(community_curated)
                 admin_curated_counts.append(admin_curated)
+                uncuratable_counts.append(uncuratable)
 
         return pd.DataFrame(data=d, index=dates)
     else:
@@ -111,6 +115,9 @@ def make_plot(raw_stat_type, column_name=None):
     plt.margins(x=0)
 
     if "cumulative" in raw_stat_type:
+        colours = ["#aaa", "#4b71b4", "#e58b5a", "#293"]
+        sns.set_palette(sns.color_palette(colours))
+
         df.plot(ax=ax, kind='bar',stacked=True, width=0.8, edgecolor='none')
     else:
         sns.barplot(ax=ax, x=df.index, y=df[column_name], color="#8192ca")
@@ -123,6 +130,10 @@ def make_plot(raw_stat_type, column_name=None):
         ax.xaxis.set_major_locator(MultipleLocator(2))
 
     ax.tick_params(axis='x', labelrotation = 45)
+
+    if "cumulative" in raw_stat_type:
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles[::-1], labels[::-1], loc='upper left')
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
