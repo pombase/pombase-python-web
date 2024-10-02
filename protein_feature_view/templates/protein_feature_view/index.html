@@ -285,6 +285,11 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
               newFeature.display_extension = feature.display_extension;
             }
           } else {
+            if (track.name == 'AA substitution alleles' || track.name == 'Partial deletions') {
+              if (!feature.inviable_or_abnormal) {
+                newFeature.color = '#999';
+              }
+            }
             newFeature.annotated_terms = feature.annotated_terms;
           }
 
@@ -324,7 +329,16 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
             end: lastPos,
             trackName: track.name,
             trackConfig: trackConfig,
+            color: track.colour,
           };
+
+          if (track.name == 'AA substitution alleles' || track.name == 'Partial deletions') {
+            if (feature.inviable_or_abnormal) {
+              newFeature.color = track.colour;
+            } else {
+              newFeature.color = '#999';
+            }
+          }
 
           let gaps = [];
           for (let i = 0; i < feature.positions.length; i++) {
