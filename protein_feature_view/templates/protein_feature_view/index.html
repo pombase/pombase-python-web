@@ -189,7 +189,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         singular: 'AA substitution allele',
       },
       'Partial deletions': {
-        colour: '#15e',
+        colour: '#f00',
         allowGaps: true,
         invertGaps: true,
         helpText: 'Curated alleles with partial amino acid deletions',
@@ -211,10 +211,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
     };
 
     const modColours = {
-      'MOD:01875': '#86a8f4',
+      'MOD:01875': '#2b8',
       'MOD:01155': '#d2d27e',
       'MOD:00408': '#f88',
-      'MOD:00696': '#2b8',
+      'MOD:00696': '#86a8f4',
       'MOD:00427': '#c6f',
       'MOD:00764': '#d6009e',
       'MOD:00905': '#ff9943',
@@ -286,8 +286,14 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
             }
           } else {
             if (track.name == 'AA substitution alleles' || track.name == 'Partial deletions') {
-              if (!feature.inviable_or_abnormal) {
-                newFeature.color = '#999';
+              if (feature.viability_level) {
+                if (feature.viability_level == 'normal') {
+                  newFeature.color = '#999';
+                } else {
+                  if (feature.viability_level == 'abnormal') {
+                    newFeature.color = '#292';
+                  }
+                }
               }
             }
             newFeature.annotated_terms = feature.annotated_terms;
@@ -333,10 +339,16 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
           };
 
           if (track.name == 'AA substitution alleles' || track.name == 'Partial deletions') {
-            if (feature.inviable_or_abnormal) {
-              newFeature.color = track.colour;
-            } else {
-              newFeature.color = '#999';
+            if (feature.viability_level) {
+              if (feature.viability_level == 'normal') {
+                newFeature.color = '#999';
+              } else {
+                if (feature.viability_level == 'abnormal') {
+                  newFeature.color = '#292';
+                } else {
+                  newFeature.color = track.colour;
+                }
+              }
             }
           }
 
