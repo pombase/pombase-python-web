@@ -77,8 +77,11 @@ def make_by_year_df(config, raw_stat_type, min_year):
             row_date = row[0]
             if min_year is None or row_date >= str(min_year):
                 date.append(row_date)
-                curatable.append(row[1][0])
-                curated.append(row[1][1])
+                curatable_count = row[1][0]
+                community_curated_count = row[1][1]
+                admin_curated_count = row[1][2]
+                curatable.append(curatable_count)
+                curated.append(community_curated_count+admin_curated_count)
 
         return pd.DataFrame(data=d, index=date)
 
