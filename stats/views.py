@@ -47,9 +47,9 @@ def make_by_year_df(config, raw_stat_type, min_year):
         uncuratable_counts = []
 
         d = {"Other": uncuratable_counts,
-             "Uncurated": uncurated_counts,
              "Community curated": community_curated_counts,
-             config["database_name"] + " curated": admin_curated_counts}
+             config["database_name"] + " curated": admin_curated_counts,
+             "Uncurated": uncurated_counts}
 
         for row in data:
             row_date = row[0]
