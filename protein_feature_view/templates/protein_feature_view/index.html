@@ -55,11 +55,14 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
 
     let hasFeatures = false;
 
+    let titleFlagColor = '#ddd';
+
     let rowConfigData = [
       {
         trackId: "sequenceTrack",
         trackHeight: 20,
         trackColor: "#F9F9F9",
+        titleFlagColor,
         displayType: "sequence",
         nonEmptyDisplay: true,
         rowTitle: "Sequence",
@@ -398,10 +401,33 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
     };
 
     data.tracks.map(track => {
+      let trackConfig;
+      let trackHeight = 22;
+      let borderWidth = 1;
+      titleFlagColor = '#ddd';
+
+      if (scope == 'widget' && track.name != 'Modifications') {
+        trackHeight = 25;
+      }
+
+      if (scope !== 'widget' && track.name.toLowerCase().startsWith("pfam")) {
+        titleFlagColor = '#bb9922';
+      }
+      if (track.name.toLowerCase().startsWith("pfam ")) {
+        trackConfig = typeConfig['Pfam'];
+        borderWidth = 0;
+        trackHeight = 16;
+      } else {
+        trackConfig = typeConfig[track.name.toUpperCase()];
+      }
+
+      if (!trackConfig) {
+        console.log("no configuration for: ", track.name);
+        return;
+      }
+
       if (track.features.length > 0) {
         hasFeatures = true;
-
-        const trackConfig = typeConfig[track.name];
 
         const trackData = [];
 
@@ -535,12 +561,6 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           }
         }
 
-        let trackHeight = 20;
-
-        if (scope == 'widget' && track.name != 'Modifications') {
-          trackHeight = 25;
-        }
-
         if (track.name == 'Partial deletions') {
           if (trackData.length > 25) {
             trackHeight = 10;
@@ -555,6 +575,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           trackId: track.name,
           trackHeight,
           trackColor: "#fcfcfc",
+          titleFlagColor,
+          borderWidth,
           displayType: typeConfig[track.name]?.displayType || track.display_type,
           displayColor: typeConfig[track.name]?.colour || '#ba6',
           rowTitle: track.name,
