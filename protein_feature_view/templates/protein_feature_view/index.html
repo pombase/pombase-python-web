@@ -35,7 +35,7 @@
 
   <script language="javascript" type="text/javascript">
 const geneUniquename = '{{gene_uniquename}}';
-const fullOrWidget = '{{full_or_widget}}';
+const scope = '{{scope}}';
 
 function noData() {
   document.getElementById('pfv').innerHTML = '<div class="no-features">No features available for ' + geneUniquename + '</div>';
@@ -43,7 +43,7 @@ function noData() {
 
 window.onload = (event) => {
 
-fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniquename)
+fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
   .then((response) => {
     return response.json();
   })
@@ -180,7 +180,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
         colour: '#f94',
         allowGaps: true,
         helpText: '<div>Positions where there are one or more amino acid substitutions</div>' +
-          (fullOrWidget == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
+          (scope == 'widget' ? '<div>Visit the full feature viewer to see allele details</div>' : ''),
         singular: 'AA substitution position',
       },
       'AA substitution alleles': {
@@ -390,7 +390,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
         let trackHeight = 20;
 
-        if (fullOrWidget == 'widget' && track.name != 'Modifications') {
+        if (scope == 'widget' && track.name != 'Modifications') {
           trackHeight = 25;
         }
 
@@ -431,7 +431,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + fullOrWidget + "/" + geneUniq
 
     const tooltips = {};
 
-    const trackWidth = fullOrWidget == 'widget' ? 770 : 970;
+    const trackWidth = scope == 'full' ? 970 : 650;
 
     const boardConfigData = {
       length: data.sequence.length,
