@@ -45,6 +45,57 @@ function noData() {
   document.getElementById('pfv').innerHTML = '<div class="no-features">No features available for ' + geneUniquename + '</div>';
 }
 
+const tooltips = {};
+
+const tippyProps = {
+  theme: 'light-border', maxWidth: '550px', allowHTML: true,
+  followCursor: 'horizontal',
+};
+
+const trackWidth = scope == 'full' ? 970 : 650;
+
+const elementEnterCallBack = (obj, e) => {
+  if (obj.displayName) {
+    const tip = tippy(e.target);
+    let props = { ... tippyProps };
+    let content = '<div class="feature-display-name">' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
+
+    if (obj.annotated_terms && obj.annotated_terms.length > 0) {
+      for (annotated_term of obj.annotated_terms) {
+        content += '<div class="sub-content">' + annotated_term.name + '</div>';
+      }
+    }
+
+    if (obj.display_extension) {
+      for (ext of obj.display_extension) {
+        content += '<div class="sub-content">' + ext + '</div>';
+      }
+    }
+
+    if (obj.popupExtraContent) {
+      content += obj.popupExtraContent;
+    }
+
+    tip.setContent(content);
+
+    if (e.offsetX > trackWidth - 100 ||
+        obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
+      // avoid ovelapping the right hand controls
+      props.placement = 'left';
+    }
+    tip.setProps(props);
+    tip.show();
+    tooltips[obj.id] = tip;
+  }
+};
+
+const elementLeaveCallBack = (obj, e) => {
+  if (obj.id && tooltips[obj.id]) {
+    const tip = tooltips[obj.id];
+    tip.destroy();
+  }
+};
+
 window.onload = (event) => {
 
 fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
@@ -592,15 +643,6 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       return;
     }
 
-    const tippyProps = {
-      theme: 'light-border', maxWidth: '550px', allowHTML: true,
-      followCursor: 'horizontal',
-    };
-
-    const tooltips = {};
-
-    const trackWidth = scope == 'full' ? 970 : 650;
-
     const boardConfigData = {
       length: data.sequence.length,
       trackWidth,
@@ -614,48 +656,14 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           window.top.postMessage({selectedProteinFeatureId: obj.matchId}, '*');
         }
 
-        if (obj.displayName) {
-          const tip = tippy(e.target);
-          let props = { ... tippyProps };
-          let content = '<div class="feature-display-name">' + obj.displayName.replaceAll(',', ',&ZeroWidthSpace;') + '</div>';
-
-          if (obj.annotated_terms && obj.annotated_terms.length > 0) {
-            for (annotated_term of obj.annotated_terms) {
-              content += '<div class="sub-content">' + annotated_term.name + '</div>';
-            }
-          }
-
-          if (obj.display_extension) {
-            for (ext of obj.display_extension) {
-              content += '<div class="sub-content">' + ext + '</div>';
-            }
-          }
-
-          if (obj.popupExtraContent) {
-            content += obj.popupExtraContent;
-          }
-
-          tip.setContent(content);
-
-          if (e.offsetX > trackWidth - 100 ||
-              obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
-            // avoid ovelapping the right hand controls
-            props.placement = 'left';
-          }
-          tip.setProps(props);
-          tip.show();
-          tooltips[obj.id] = tip;
-        }
+        elementEnterCallBack(obj, e);
       },
       elementLeaveCallBack: function(obj, e) {
         if (obj.matchId) {
           window.top.postMessage({selectedProteinFeatureId: null}, '*');
         }
 
-        if (obj.id && tooltips[obj.id]) {
-          const tip = tooltips[obj.id];
-          tip.destroy();
-        }
+        elementLeaveCallBack(obj, e);
       },
     };
 
