@@ -96,6 +96,8 @@ const elementLeaveCallBack = (obj, e) => {
   }
 };
 
+const locationsById = {};
+
 window.onload = (event) => {
 
 fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
@@ -594,6 +596,12 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         };
 
         for (const feature of track.features) {
+          const locations = [];
+          for (const position of feature.positions) {
+            locations.push({ begin: position[1], end: position[2] });
+          }
+          locationsById[feature.id] = locations;
+
           const allowGaps = trackConfig?.allowGaps || false;
           if (allowGaps) {
             const invertGaps = trackConfig?.invertGaps || false;
@@ -691,6 +699,18 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         }
       }
     });
+
+    window.addEventListener("message", receiveMessage, false);
+
+    function receiveMessage(event) {
+      if (event.data) {
+        const id = event.data.selectedProteinFeatureId;
+        if (id) {
+          const elements = locationsById[id];
+          pfv.setSelection({ elements, mode: 'hover' });
+        }
+      }
+    }
   });
 };
     </script>
