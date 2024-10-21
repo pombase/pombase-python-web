@@ -664,6 +664,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           window.top.postMessage({selectedProteinFeatureId: obj.matchId}, '*');
         }
 
+        pfv.setSelection({ elements: [], mode: 'hover' });
+
         elementEnterCallBack(obj, e);
       },
       elementLeaveCallBack: function(obj, e) {
@@ -703,6 +705,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
     window.addEventListener("message", receiveMessage, false);
 
     function receiveMessage(event) {
+      pfv.setSelection({ elements: [], mode: 'hover' });
       if (event.data) {
         const id = event.data.selectedProteinFeatureId;
         if (id) {
