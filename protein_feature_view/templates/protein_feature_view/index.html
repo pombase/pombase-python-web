@@ -307,6 +307,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         includeCoords: true,
         singular: 'PIRSF match',
       },
+      'PROSITE_Profiles': {
+        colour: '#89c',
+        allowGaps: false,
+        helpText: 'PROSITE Profile matches imported from InterPro',
+        includeCoords: true,
+        singular: 'PROSITE Profile match',
+      },
       'Pfam': {
         colour: '#b92',
         allowGaps: true,
