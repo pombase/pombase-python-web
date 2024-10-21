@@ -610,6 +610,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       highlightHoverElement: false,
       highlightHoverPosition: false,
       elementEnterCallBack: function(obj, e) {
+        if (obj.matchId) {
+          window.top.postMessage({selectedProteinFeatureId: obj.matchId}, '*');
+        }
+
         if (obj.displayName) {
           const tip = tippy(e.target);
           let props = { ... tippyProps };
@@ -644,6 +648,10 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         }
       },
       elementLeaveCallBack: function(obj, e) {
+        if (obj.matchId) {
+          window.top.postMessage({selectedProteinFeatureId: null}, '*');
+        }
+
         if (obj.id && tooltips[obj.id]) {
           const tip = tooltips[obj.id];
           tip.destroy();
