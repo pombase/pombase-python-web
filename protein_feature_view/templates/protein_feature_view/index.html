@@ -435,7 +435,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           const popupExtraContent = makeExtraContent(feature, trackConfig);
 
           const newFeature = {
-            id: feature.id + firstPos + '..' + lastPos,
+            id: feature.id + '-' + firstPos + '..' + lastPos,
+            matchId: feature.id,
             displayName: feature.display_name || trackConfig.singular,
             popupExtraContent,
             begin: firstPos[1],
@@ -498,7 +499,8 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           const popupExtraContent = makeExtraContent(feature, trackConfig);
 
           const newFeature = {
-            id: feature.id + firstPos + '..' + lastPos,
+            id: feature.id + '-' + firstPos + '..' + lastPos,
+            matchId: feature.id,
             displayName: feature.display_name || trackConfig.singular,
             popupExtraContent,
             annotated_terms: feature.annotated_terms,
