@@ -465,9 +465,6 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       }
       const lowerCaseTrackName = track.name.toLowerCase();
       if (lowerCaseTrackName.startsWith("pfam ")) {
-        if (lowerCaseTrackName != "pfam domains") {
-          track.name = track.name.substring(5);
-        }
         trackConfig = typeConfig['Pfam'];
         borderWidth = 0;
         trackHeight = 16;
