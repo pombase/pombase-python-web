@@ -54,6 +54,10 @@ const tippyProps = {
 
 const trackWidth = scope == 'full' ? 970 : 650;
 
+let titleFlagColor = '#ddd';
+
+let rowConfigData = []
+
 const elementEnterCallBack = (obj, e) => {
   if (obj.displayName) {
     const tip = tippy(e.target);
@@ -82,6 +86,11 @@ const elementEnterCallBack = (obj, e) => {
         obj.displayName.length > 60 && e.offsetX > trackWidth - 300) {
       // avoid ovelapping the right hand controls
       props.placement = 'left';
+    } else {
+       if (rowConfigData.length <= 2) {
+         // avoid clipping the top of the popup
+         props.placement = 'bottom';
+      }
     }
     tip.setProps(props);
     tip.show();
@@ -114,7 +123,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
 
     let titleFlagColor = '#ddd';
 
-    let rowConfigData = [
+    rowConfigData.push(
       {
         trackId: "sequenceTrack",
         trackHeight: 20,
@@ -130,7 +139,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           }
         ]
       }
-    ];
+    );
 
     let typeConfig = {
       'Sequence': {
