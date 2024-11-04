@@ -53,6 +53,7 @@ const tippyProps = {
 };
 
 const trackWidth = scope == 'full' ? 970 : 650;
+const rowTitleWidth = scope == 'full' ? 240 : 205;
 
 let titleFlagColor = '#ddd';
 
@@ -213,10 +214,16 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       'Propeptides': {
         colour: '#a08',
         allowGaps: true,
-/*        invertGaps: true, */
         helpText: 'Propeptides imported from UniProt',
         includeCoords: true,
         singular: 'Propeptide',
+      },
+      'Cleavage sites': {
+        colour: '#c42',
+        allowGaps: true,
+        helpText: 'Cleavage sites curated with a position',
+        includeCoords: true,
+        singular: 'Cleavage site',
       },
       'Chains': {
         colour: '#b00',
@@ -656,7 +663,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
           borderWidth,
           displayType: typeConfig[track.name]?.displayType || track.display_type,
           displayColor: typeConfig[track.name]?.colour || '#ba6',
-          rowTitle: track.name,
+          rowTitle: typeConfig[track.name]?.displayName || track.name,
           includeTooltip: false,
           trackData,
         };
@@ -674,7 +681,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       length: data.sequence.length,
       trackWidth,
       includeAxis: true,
-      rowTitleWidth: 205,
+      rowTitleWidth,
       hideRowGlow: false,
       highlightHoverElement: false,
       highlightHoverPosition: false,
