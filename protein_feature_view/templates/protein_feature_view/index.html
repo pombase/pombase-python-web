@@ -58,6 +58,8 @@ let titleFlagColor = '#ddd';
 
 let rowConfigData = []
 
+const capitalize = s => s && String(s[0]).toUpperCase() + String(s).slice(1);
+
 const elementEnterCallBack = (obj, e) => {
   if (obj.displayName) {
     const tip = tippy(e.target);
@@ -166,19 +168,12 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         includeCoords: true,
         singular: 'Coiled coil',
       },
-      'Signal peptide': {
+      'Localization signals': {
         colour: '#f42',
         allowGaps: true,
-        helpText: 'Signal peptide regions imported from UniProt',
+        helpText: 'Localization signals imported from UniProt',
         includeCoords: true,
-        singular: 'Signal peptide',
-      },
-      'Transit peptide': {
-        colour: '#e52',
-        allowGaps: true,
-        helpText: 'Transit peptide regions imported from UniProt',
-        includeCoords: true,
-        singular: 'Transit peptide',
+        singular: 'Localization signals',
       },
       'Binding sites': {
         colour: '#52e',
@@ -508,13 +503,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         const makeTrackData = (feature) => {
           const firstPos = feature.positions[0];
           const lastPos = feature.positions[feature.positions.length - 1];
-
           const popupExtraContent = makeExtraContent(feature, trackConfig);
+          const displayName = capitalize(feature.display_name || trackConfig.singular);
 
           const newFeature = {
             id: feature.id + '-' + firstPos + '..' + lastPos,
             matchId: feature.id,
-            displayName: feature.display_name || trackConfig.singular,
+            displayName,
             popupExtraContent,
             begin: firstPos[1],
             end: lastPos[2],
