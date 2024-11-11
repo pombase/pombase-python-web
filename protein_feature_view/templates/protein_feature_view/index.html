@@ -434,6 +434,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         includeCoords: true,
         singular: 'SUPERFAMILY match',
       },
+      'Conserved motifs': {
+        colour: '#e06',
+        allowGaps: false,
+        helpText: 'Conserved motifs curated by PomBase',
+        includeCoords: true,
+        singular: 'Conserved motif'
+      }
     };
 
     const modColours = {
