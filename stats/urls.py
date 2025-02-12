@@ -26,5 +26,8 @@ urlpatterns = [
          name='community_response_rates'),
     path('cumulative_annotation_type_counts_by_year',
          views.cumulative_annotation_type_counts_by_year,
-         name='cumulative_annotation_type_counts_by_year')
+         name='cumulative_annotation_type_counts_by_year'),
+    path('cumulative_micropublications_by_year',
+         views.cumulative_micropublications_by_year,
+         name='cumulative_micropublications_by_year')
 ]

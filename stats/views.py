@@ -101,8 +101,6 @@ def make_by_year_range_df(raw_stat_type):
 
         return pd.DataFrame(data={headers[0]: frame_rows}, index=date_ranges)
 
-
-
 def make_plot(raw_stat_type, column_name=None):
     min_year = config["stats"]["curated_vs_curatable_min_year"]
     if column_name == "curatable":
@@ -132,6 +130,7 @@ def make_plot(raw_stat_type, column_name=None):
     else:
         ax.xaxis.set_major_locator(MultipleLocator(2))
 
+    ax.set_xlabel('')
     ax.tick_params(axis='x', labelrotation = 45)
 
     if "cumulative" in raw_stat_type:
@@ -172,6 +171,53 @@ def make_year_range_plot(raw_stat_type):
     ax.bar_label(ax.containers[0], fmt="%.1f", fontsize=fontsize)
 
     ax.set(ylabel=df.columns[0].replace("_", " "))
+    ax.set_xlabel('')
+
+    imgdata = io.BytesIO()
+    plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
+    rcdefaults()
+
+    response = HttpResponse(imgdata.getvalue(), content_type="image/svg+xml")
+
+    plt.cla()
+    fig.clf()
+    plt.close('all')
+
+    return response
+
+def make_basic_by_year_df(raw_stat_type):
+    headers = detailed_stats[raw_stat_type]["header"][1::]
+
+    data = detailed_stats[raw_stat_type]["data"]
+
+    dates = []
+    frame_rows = []
+
+    for row in data:
+        dates.append(row[0])
+        frame_rows.append(row[1])
+
+    return pd.DataFrame(frame_rows, columns=headers, index=dates)
+
+def make_by_year_plot(raw_stat_type):
+    df = make_basic_by_year_df(raw_stat_type)
+
+    plt.figure().clear()
+    sns.set(style="whitegrid", font_scale=default_font_scale)
+    fig, ax = plt.subplots(dpi=default_dpi, figsize=small_figsize)
+
+    plt.tight_layout()
+
+    sns.barplot(ax=ax, x=df.index, y=df[df.columns[0]], color="#8192ca")
+
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
+    fontsize = 14
+
+    ax.bar_label(ax.containers[0], fmt="%d", fontsize=fontsize)
+
+    ax.set(ylabel=df.columns[0].replace("_", " "))
+    ax.set_xlabel('')
 
     imgdata = io.BytesIO()
     plt.savefig(imgdata, format="svg", pad_inches=0.2, bbox_inches="tight")
@@ -204,6 +250,8 @@ def ltp_annotations_per_pub_per_year_range(_):
 def htp_annotations_per_pub_per_year_range(_):
     return make_year_range_plot('htp_annotations_per_pub_per_year_range')
 
+def cumulative_micropublications_by_year(_):
+    return make_by_year_plot('cumulative_micropublications_by_year');
 
 def community_response_rates(_):
     data = detailed_stats['community_response_rates']
@@ -243,6 +291,7 @@ def community_response_rates(_):
     sns.move_legend(ax, "upper left")
 
     ax.set(ylabel=df.columns[0].replace("_", " "))
+    ax.set_xlabel('')
     ax.tick_params(axis='x', labelrotation = 45)
 
     imgdata = io.BytesIO()
