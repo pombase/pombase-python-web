@@ -20,29 +20,29 @@
 
 
 <body>
-    <div id="cy"></div>
-
 <style>
-#cy {
-  width: 1800px;
-  height: 880px;
-  display: block;
-}
-.panel {
-  width: 1200px;
-  font-size: 130%;
-}
-
-.panel .sections {
+#cy-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: flex;
   flex-direction: row;
-  min-width: 0px;
 }
-
-.panel .sections div {
-  flex-grow: 1;
+#cy {
+  flex: 1 1 auto;
+  min-width: 100px;
 }
-
+#cy-panel {
+  font-size: 130%;
+  width: 24em;
+  flex: 0 0 auto;
+}
+#cy-panel .sections {
+}
+#cy-panel .sections div {
+}
 .popper-div {
   position: relative;
   background-color: #333;
@@ -53,7 +53,6 @@
   outline: 0;
   padding: 5px 9px;
 }
-
 </style>
 
 <script type="module">
@@ -471,7 +470,9 @@ const cy = window.cy = cytoscape({
 });
 </script>
 
-<div class="panel">
+  <div id="cy-container">
+    <div id="cy"></div>
+<div id="cy-panel">
   <svg height="0" width="0" style="position: absolute;">
     <defs>
       <marker id="triangle-RO:0002304" viewBox="-2 0 18 10" refX="18" refY="5" markerWidth="12" markerHeight="4" orient="auto">
@@ -625,7 +626,6 @@ const cy = window.cy = cytoscape({
 </div>
 </div>
 </div>
-
-<body>
+</div>
 </body>
 </html>
