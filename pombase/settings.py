@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rna_2d_structure',
     'protein_feature_view',
     'gocam_viz',
+    'gocam_view',
 ]
 
 MIDDLEWARE = [

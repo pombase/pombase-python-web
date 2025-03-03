@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Model</title>
+
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+  <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+</head>
+
+
+<body>
+    <div id="cy"></div>
+
+<style>
+#cy {
+  width: 1800px;
+  height: 880px;
+  display: block;
+}
+.panel {
+  width: 1200px;
+  font-size: 130%;
+}
+
+.panel .sections {
+  display: flex;
+  flex-direction: row;
+  min-width: 0px;
+}
+
+.panel .sections div {
+  flex-grow: 1;
+}
+
+.popper-div {
+  position: relative;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  outline: 0;
+  padding: 5px 9px;
+}
+
+</style>
+
+<script type="module">
+
+document.addEventListener('DOMContentLoaded', async function(){
+
+const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/{{gocam_id}}';
+
+const response = await fetch(url);
+
+const elements = await response.json();
+console.log(elements);
+
+const parentStyle = {
+}
+
+const STYLES = {
+  SIZES: {
+    DEFAULT: 5 // Maybe more later
+  },
+  COLORS: {
+    BLUE: '#6495ED',
+    PURPLE: '#800080',
+    DARK_SLATE: '#2F4F4F',
+    LIGHT_RED: '#fF9999',
+    RED: '#FF0000',
+    GREEN: '#008800',
+    LIGHT_GREEN: '#95e095',
+    PINK: '#ED6495',
+    DARK_BLUE: '#483D8B',
+    LIGHT_BLUE: '#add8e6',
+    WHITE: '#FFFAFA',
+    BLACK: 'black',
+    GREY: '#CCCCCC'
+  },
+  LINE_STYLES: {
+    SOLID: 'solid',
+    DASHED: 'dashed'
+  },
+  GLYPHS: {
+    NONE: null,
+    TEE: 'tee',
+    TRIANGLE: 'triangle',
+    SQUARE: 'square',
+    DIAMOND: 'diamond',
+    CIRCLE: 'circle',
+    CIRCLE_TRIANGLE: 'circle-triangle'
+  }
+};
+
+// Map of relations to their style configurations
+const RELATION_MAP = {
+'causally upstream of, positive effect': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'causally upstream of, positive effect',
+    color: STYLES.COLORS.LIGHT_GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'causally upstream of, negative effect': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TEE,
+    label: 'causally upstream of, negative effect',
+    color: STYLES.COLORS.LIGHT_RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'constitutively upstream of': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.CIRCLE,
+    label: 'constitutively upstream of',
+    color: STYLES.COLORS.LIGHT_GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'directly negatively regulates': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TEE,
+    label: 'directly negatively regulates',
+    color: STYLES.COLORS.RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'directly positively regulates': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'directly positively regulates',
+    color: STYLES.COLORS.GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'has input': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.CIRCLE,
+    label: 'has input',
+    color: STYLES.COLORS.BLUE,
+    width: STYLES.SIZES.DEFAULT
+  },
+'input of': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.CIRCLE,
+    label: 'input of',
+    color: STYLES.COLORS.BLUE,
+    width: STYLES.SIZES.DEFAULT
+  },
+'has output': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.CIRCLE,
+    label: 'has output',
+    color: STYLES.COLORS.PINK,
+    width: STYLES.SIZES.DEFAULT
+  },
+'indirectly negatively regulates': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TEE,
+    label: 'indirectly negatively regulates',
+    color: STYLES.COLORS.RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'indirectly positively regulates': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'indirectly positively regulates',
+    color: STYLES.COLORS.GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'is small molecule inhibitor of': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TEE,
+    label: 'is small molecule inhibitor of',
+    color: STYLES.COLORS.RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'is small molecule activator of': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'is small molecule activator of',
+    color: STYLES.COLORS.GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'negatively regulates': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TEE,
+    label: 'negatively regulates',
+    color: STYLES.COLORS.RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'positively regulates': {
+    lineStyle: STYLES.LINE_STYLES.DASHED,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'positively regulates',
+    color: STYLES.COLORS.GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'provides input for': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.CIRCLE_TRIANGLE,
+    label: 'provides input for',
+    color: STYLES.COLORS.PURPLE,
+    width: STYLES.SIZES.DEFAULT
+  },
+'directly provides input for': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.CIRCLE_TRIANGLE,
+    label: 'provides input for',
+    color: STYLES.COLORS.PURPLE,
+    width: STYLES.SIZES.DEFAULT
+  },
+'removes input for': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.SQUARE,
+    label: 'removes input for',
+    color: STYLES.COLORS.LIGHT_RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'part of': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'part of',
+    color: STYLES.COLORS.LIGHT_RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'has part': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'has part',
+    color: STYLES.COLORS.LIGHT_GREEN,
+    width: STYLES.SIZES.DEFAULT
+  },
+'enabled by': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'enabled by',
+    color: STYLES.COLORS.LIGHT_RED,
+    width: STYLES.SIZES.DEFAULT
+  },
+'DEFAULT': {
+    lineStyle: STYLES.LINE_STYLES.SOLID,
+    glyph: STYLES.GLYPHS.TRIANGLE,
+    label: 'enabled by',
+    color: STYLES.COLORS.GREY,
+    width: STYLES.SIZES.DEFAULT
+  }
+};
+
+const nodeStyle = {
+'content': 'data(display_label)',
+'width': function(el) {
+  const type = el.data()['type'];
+  if (type == 'chemical') {
+    return '110px';
+  } else {
+    return '95px'
+  }
+},
+'height': '40px',
+'background-color': function(el) {
+  const type = el.data()['type'];
+  if (type == 'chemical') {
+    return '#b2dfdb';
+  } else if (type == 'modified_protein') {
+    return '#b2bfef';
+  } else if (type == 'gene') {
+    return '#b2fbef';
+  } else if (type == 'enabled_by_gene') {
+    if (el.data()['label'] == 'molecular_function') {
+      return '#dfd3cf';
+    } else {
+      return '#c8e6c9';
+    }
+  } else if (type == 'enabled_by_complex') {
+    return '#e2bde7';
+  } else if (type == 'enabled_by_chemical') {
+    return '#fffbb5';
+  } else {
+    return '#ee7';
+  }
+},
+'border-width': 1,
+'border-color': 'black',
+'font-size': function(el) {
+  const type = el.data()['type'];
+  if (type == 'chemical') {
+    return 10;
+  } else {
+    return 12;
+  }
+},
+'text-valign': 'center',
+'color': 'black',
+'shape': function(el) {
+  const type = el.data()['type'];
+  if (type == 'chemical' || type == 'gene') {
+    return "rectangle";
+  } else {
+    return "oval";
+  }
+},
+'text-wrap': 'wrap',
+"text-max-width": 84,
+};
+
+
+const edgeStyle = {
+'curve-style': 'bezier',
+'line-style': function(el) {
+  const label = el.data()['label'];
+  return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['lineStyle'];
+},
+'target-arrow-shape': function(el) {
+  const label = el.data()['label'];
+  return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['glyph'];
+},
+'target-arrow-fill': 'filled',
+'color': 'black',
+'width': 4,
+'target-arrow-color': function(el) {
+  const label = el.data()['label'];
+  return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['color'];
+},
+'line-color': function(el) {
+  const label = el.data()['label'];
+  return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['color'];
+},
+};
+
+const layout = {
+  name: 'dagre',
+//  rankDir: 'TB',
+  rankDir: undefined,
+  align: 'UR',
+};
+
+cytoscape.use(cytoscapePopper(Popper.createPopper));
+
+const cy = window.cy = cytoscape({
+  container: document.getElementById('cy'),
+
+  layout,
+
+  minZoom: 0.1,
+  maxZoom: 8.0,
+  zoomingEnabled: true,
+  userZoomingEnabled: true,
+  wheelSensitivity: 0.25,
+  panningEnabled: true,
+  userPanningEnabled: true,
+  boxSelectionEnabled: true,
+  selectionType: 'single',
+  touchTapThreshold: 8,
+  desktopTapThreshold: 4,
+  autolock: false,
+  autoungrabify: false,
+  autounselectify: false,
+
+  elements,
+  style: [
+    {
+      selector: 'node',
+      style: nodeStyle,
+    },
+    {
+      selector: 'edge',
+      style: edgeStyle,
+    }
+  ]
+  });
+
+  cy.layout({ name: 'dagre' }).run()
+
+  setTimeout(() => {
+    cy.fit();
+    cy.center();
+  }, 10);
+
+  const mouseOut = (event) => {
+    if (event.target.popperRefObj) {
+      event.target.popperRefObj.state.elements.popper.remove();
+      event.target.popperRefObj.destroy();
+    }
+  };
+
+  cy.on('drag', 'node', mouseOut);
+
+  cy.on('click', 'node',
+        (evt) => {
+          mouseOut(evt);
+          const dbId = evt.target.data().db_id;
+          const bits = dbId.split(":");
+          let link = undefined;
+          if (bits.length == 2) {
+            if (bits[0] == 'PomBase') {
+              link = 'https://www.pombase.org/gene/' + bits[1];
+            } else {
+              if (bits[0] == 'CHEBI') {
+                link = 'https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=' + dbId;
+              } else {
+                if (bits[0] == 'GO') {
+                  link = 'https://www.pombase.org/term/' + dbId;
+                }
+              }
+            }
+          }
+
+          if (link) {
+            window.open(link);
+          }
+        });
+
+
+  cy.elements().unbind('mouseover');
+  cy.elements().bind("mouseover", (event) => {
+    const data = event.target.data();
+    const dbId = data.db_id;
+
+    const makeContentDiv = (contentHtml) => {
+      let contentDiv = document.createElement("div");
+      contentDiv.classList.add("popper-div");
+      contentDiv.innerHTML = contentHtml
+      document.body.appendChild(contentDiv);
+      return contentDiv;
+    };
+
+    if (dbId) {
+      event.target.popperRefObj = event.target.popper({
+        content: () => {
+          const enabler_label = data.enabler_label;
+          let newContent = '<div>' + enabler_label + '</div>';
+          const dbIdBits = dbId.split(":");
+          if (dbIdBits.length == 2 && dbIdBits[0] == 'PomBase') {
+            if (enabler_label != dbIdBits[1]) {
+              newContent += '<div>' + dbIdBits[1];
+            }
+          } else {
+            newContent += '<div>' + dbId;
+          }
+
+          newContent += '<div>' + data.label + '</div><div>' +
+            data.id + '</div><div>(click to view)</div>'
+
+          return makeContentDiv(newContent);
+        },
+        popper: {
+          placement: 'right',
+        },
+      });
+    } else {
+      event.target.popperRefObj = event.target.popper({
+        content: () => {
+          return makeContentDiv(event.target.data().label);
+        }
+      });
+    }
+  });
+
+  cy.elements().unbind('mouseout');
+  cy.elements().bind("mouseout", mouseOut);
+
+});
+</script>
+
+<div class="panel">
+<div class="header" part="header">Relation Types</div>
+<div class="section regulation" part="section">
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="none" marker-end="url(#triangle-RO:0002629)">
+      </line>
+    </svg>
+    <span>direct positive regulation/activation</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="none" marker-end="url(#tee-RO:0002630)">
+      </line>
+    </svg>
+    <span>direct negative regulation/inhibition</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002407)">
+      </line>
+    </svg>
+    <span>indirect positive regulation</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002409)">
+      </line>
+    </svg>
+    <span>indirect negative regulation</span>
+  </div>
+</div>
+<div class="section input" part="section">
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#800080" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-triangle-RO:0002413)">
+      </line>
+    </svg>
+    <span>provides input for</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="none" marker-end="url(#square-RO:0012010)">
+      </line>
+    </svg>
+    <span>removes input for</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#6495ED" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002233)">
+      </line>
+    </svg>
+    <span>input of</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#ED6495" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002234)">
+      </line>
+    </svg>
+    <span>has output</span>
+  </div>
+</div>
+<div class="section upstream" part="section">
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#circle-RO:0012009)">
+      </line>
+    </svg>
+    <span>constitutively upstream</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002304)">
+      </line>
+    </svg>
+    <span>upstream positive effect</span>
+  </div>
+  <div class="item">
+    <svg height="30" width="60">
+      <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002305)">
+      </line>
+    </svg>
+    <span>upstream negative effect</span>
+  </div>
+</div>
+
+</div>
+
+<body>
+</body>
+</html>
