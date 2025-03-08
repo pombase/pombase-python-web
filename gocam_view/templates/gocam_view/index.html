@@ -57,6 +57,8 @@
 
 <script type="module">
 
+const highlightGeneIds = {{ highlight_gene_ids|safe }};
+
 document.addEventListener('DOMContentLoaded', async function(){
 
 const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/{{gocam_id}}';
@@ -291,7 +293,16 @@ const nodeStyle = {
     return '#ee7';
   }
 },
-'border-width': 1,
+'border-width': function(el) {
+  let width = 1;
+  if (el.data()['db_id']) {
+    const bits = el.data()['db_id'].split(':');
+    if (bits[1] && highlightGeneIds.includes(bits[1])) {
+      width = 8;
+    }
+  }
+  return width;
+},
 'border-color': 'black',
 'font-size': function(el) {
   const type = el.data()['type'];
