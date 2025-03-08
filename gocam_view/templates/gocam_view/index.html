@@ -275,9 +275,13 @@ const nodeStyle = {
     return '#b2fbef';
   } else if (type == 'enabled_by_gene') {
     if (el.data()['label'] == 'molecular_function') {
-      return '#dfd3cf';
+      return '#ffd3d4';
     } else {
-      return '#c8e6c9';
+      if (el.data()['label'].startsWith('obsolete ')) {
+        return '#eee';
+      } else {
+        return '#c8e6c9';
+      }
     }
   } else if (type == 'enabled_by_complex') {
     return '#e2bde7';
