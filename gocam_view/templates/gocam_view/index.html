@@ -421,13 +421,13 @@ const cy = window.cy = cytoscape({
           let link = undefined;
           if (bits.length == 2) {
             if (bits[0] == 'PomBase') {
-              link = 'https://www.pombase.org/gene/' + bits[1];
+              link = '/gene/' + bits[1];
             } else {
               if (bits[0] == 'CHEBI') {
                 link = 'https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=' + dbId;
               } else {
                 if (bits[0] == 'GO') {
-                  link = 'https://www.pombase.org/term/' + dbId;
+                  link = '/term/' + dbId;
                 }
               }
             }
