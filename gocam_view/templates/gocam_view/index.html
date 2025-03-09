@@ -471,7 +471,11 @@ const cy = window.cy = cytoscape({
             }
           }
 
-          newContent += '</div><div>' + data.label + '</div><div>(click to view)</div>'
+          newContent += '</div><div>' + data.label + '</div>';
+
+          if (data.type == 'enabled_by_gene' || data.type == 'chemical') {
+            newContent += '<div>(click to view)</div>';
+          }
 
           return makeContentDiv(newContent);
         },
