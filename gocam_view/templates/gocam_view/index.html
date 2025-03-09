@@ -45,9 +45,10 @@
 }
 .popper-div {
   position: relative;
-  background-color: #333;
-  color: #fff;
+  background-color: #eee;
+  color: #333;
   border-radius: 4px;
+  border: 1px solid #222;
   font-size: 14px;
   line-height: 1.4;
   outline: 0;
@@ -450,19 +451,23 @@ const cy = window.cy = cytoscape({
     if (dbId) {
       event.target.popperRefObj = event.target.popper({
         content: () => {
+          let newContent = '<div>';
+
           const enabler_label = data.enabler_label;
-          let newContent = '<div>' + enabler_label + '</div>';
-          const dbIdBits = dbId.split(":");
-          if (dbIdBits.length == 2 && dbIdBits[0] == 'PomBase') {
-            if (enabler_label != dbIdBits[1]) {
-              newContent += '<div>' + dbIdBits[1];
+
+          if (enabler_label) {
+            newContent += enabler_label;
+            const dbIdBits = dbId.split(":");
+            if (dbIdBits.length == 2 && dbIdBits[0] == 'PomBase') {
+              if (enabler_label != dbIdBits[1]) {
+                newContent += ' (' + dbIdBits[1] + ')';
+              }
+            } else {
+              newContent += ' (' + dbId + ')';
             }
-          } else {
-            newContent += '<div>' + dbId;
           }
 
-          newContent += '<div>' + data.label + '</div><div>' +
-            data.id + '</div><div>(click to view)</div>'
+          newContent += '</div><div>' + data.label + '</div><div>(click to view)</div>'
 
           return makeContentDiv(newContent);
         },
