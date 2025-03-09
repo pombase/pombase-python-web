@@ -261,7 +261,7 @@ const nodeStyle = {
 'content': 'data(display_label)',
 'width': function(el) {
   const type = el.data()['type'];
-  if (type == 'chemical') {
+  if (type == 'chemical' || type == 'enabled_by_complex') {
     return '110px';
   } else {
     return '95px'
@@ -307,7 +307,7 @@ const nodeStyle = {
 'border-color': 'black',
 'font-size': function(el) {
   const type = el.data()['type'];
-  if (type == 'chemical') {
+  if (type == 'chemical' || type == 'enabled_by_complex') {
     return 10;
   } else {
     return 12;
@@ -320,7 +320,11 @@ const nodeStyle = {
   if (type == 'chemical' || type == 'gene') {
     return "rectangle";
   } else {
-    return "oval";
+    if (type == 'enabled_by_complex') {
+      return "round-rectangle";
+    } else {
+      return "oval";
+    }
   }
 },
 'text-wrap': 'wrap',
