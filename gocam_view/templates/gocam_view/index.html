@@ -257,6 +257,14 @@ const RELATION_MAP = {
   }
 };
 
+const isConnectingNode = (el) => {
+  const type = el.data()['type'];
+  if (!type.startsWith('enabled')) {
+    return false;
+  }
+  return el.data()['is_connecting_node'];
+};
+
 const nodeStyle = {
 'content': 'data(display_label)',
 'width': function(el) {
@@ -296,7 +304,7 @@ const nodeStyle = {
 },
 'background-opacity': function(el) {
   let opacity = 1;
-  if (el.data()['is_connecting_node']) {
+  if (isConnectingNode(el)) {
     opacity = 0.333
   }
   return opacity
@@ -313,7 +321,7 @@ const nodeStyle = {
 },
 'border-style': function(el) {
   let style = 'solid';
-  if (el.data()['is_connecting_node']) {
+  if (isConnectingNode(el)) {
     style = 'dashed';
   }
   return style;
@@ -321,7 +329,7 @@ const nodeStyle = {
 'border-dash-pattern': [6,6],
   'border-color': function(el) {
   let colour = 'black';
-  if (el.data()['is_connecting_node']) {
+  if (isConnectingNode(el)) {
     colour = '#666';
   }
   return colour
