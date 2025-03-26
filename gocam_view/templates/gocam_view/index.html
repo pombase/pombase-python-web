@@ -294,6 +294,13 @@ const nodeStyle = {
     return '#ee7';
   }
 },
+'background-opacity': function(el) {
+  let opacity = 1;
+  if (el.data()['is_connecting_node']) {
+    opacity = 0.333
+  }
+  return opacity
+},
 'border-width': function(el) {
   let width = 1;
   if (el.data()['db_id']) {
@@ -304,7 +311,21 @@ const nodeStyle = {
   }
   return width;
 },
-'border-color': 'black',
+'border-style': function(el) {
+  let style = 'solid';
+  if (el.data()['is_connecting_node']) {
+    style = 'dashed';
+  }
+  return style;
+},
+'border-dash-pattern': [6,6],
+  'border-color': function(el) {
+  let colour = 'black';
+  if (el.data()['is_connecting_node']) {
+    colour = '#666';
+  }
+  return colour
+ },
 'font-size': function(el) {
   const type = el.data()['type'];
   if (type == 'chemical' || type == 'enabled_by_complex') {
