@@ -62,7 +62,10 @@ const highlightGeneIds = {{ highlight_gene_ids|safe }};
 
 document.addEventListener('DOMContentLoaded', async function(){
 
-const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/{{gocam_id}}';
+const gocamId = '{{gocam_id}}';
+const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
+
+const isMergedModel = gocamId.toLowerCase().includes("merge");
 
 const response = await fetch(url);
 
@@ -389,11 +392,14 @@ const edgeStyle = {
 },
 };
 
-const layout = {
+const dagLayout = {
   name: 'dagre',
 //  rankDir: 'TB',
   rankDir: undefined,
   align: 'UR',
+};
+
+const mergedLayout = {
 };
 
 cytoscape.use(cytoscapePopper(Popper.createPopper));
@@ -401,7 +407,16 @@ cytoscape.use(cytoscapePopper(Popper.createPopper));
 const cy = window.cy = cytoscape({
   container: document.getElementById('cy'),
 
-  layout,
+  layout: isMergedModel ? mergedLayout : dagLayout,
+
+  ready: function() {
+    if (isMergedModel) {
+      const func = () => {
+        this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof', animate: false}).run();
+      };
+      func();
+    }
+  },
 
   minZoom: 0.1,
   maxZoom: 8.0,
@@ -431,7 +446,9 @@ const cy = window.cy = cytoscape({
   ]
   });
 
-  cy.layout({ name: 'dagre' }).run()
+  if (!isMergedModel) {
+    cy.layout({ name: 'dagre' }).run();
+  }
 
   setTimeout(() => {
     cy.fit();
