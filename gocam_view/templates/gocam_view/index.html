@@ -265,6 +265,17 @@ const isConnectingNode = (el) => {
   return el.data()['is_connecting_node'];
 };
 
+const isSelected = (el) => {
+  if (el.data()['db_id']) {
+    const bits = el.data()['db_id'].split(':');
+    if (bits[1] && highlightGeneIds.includes(bits[1])) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const nodeStyle = {
 'content': 'data(display_label)',
 'width': function(el) {
@@ -310,13 +321,7 @@ const nodeStyle = {
   return opacity
 },
 'border-width': function(el) {
-  let width = 1;
-  if (el.data()['db_id']) {
-    const bits = el.data()['db_id'].split(':');
-    if (bits[1] && highlightGeneIds.includes(bits[1])) {
-      width = 6;
-    }
-  }
+  let width = isSelected(el) ? 5 : 1;
   return width;
 },
 'border-style': function(el) {
@@ -327,13 +332,13 @@ const nodeStyle = {
   return style;
 },
 'border-dash-pattern': [6,6],
-  'border-color': function(el) {
+'border-color': function(el) {
   let colour = 'black';
-  if (isConnectingNode(el)) {
+  if (!isSelected(el) && isConnectingNode(el)) {
     colour = '#666';
   }
   return colour
- },
+},
 'font-size': function(el) {
   const type = el.data()['type'];
   if (type == 'chemical' || type == 'enabled_by_complex') {
