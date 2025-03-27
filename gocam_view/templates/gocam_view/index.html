@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 const gocamId = '{{gocam_id}}';
 const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
 
-const isMergedModel = gocamId.toLowerCase().includes("merge");
+const isMergedModel = gocamId.toLowerCase() != gocamId;
 
 const response = await fetch(url);
 
