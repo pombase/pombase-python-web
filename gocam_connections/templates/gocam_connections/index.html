@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Model</title>
+
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+  <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
+</head>
+
+
+<body>
+    <div id="cy"></div>
+
+<style>
+#cy {
+  width: 100%;
+  height: 780px;
+  display: block;
+}
+.panel {
+  width: 1200px;
+  font-size: 130%;
+}
+
+.panel .sections {
+  display: flex;
+  flex-direction: row;
+  min-width: 0px;
+}
+
+.panel .sections div {
+  flex-grow: 1;
+}
+
+.popper-div {
+  position: relative;
+  background-color: #eee;
+  color: #111;
+  border: 2px solid #999;
+  font-size: 15px;
+  line-height: 1.4;
+  outline: 0;
+  padding: 5px 9px;
+  max-width: 40em;
+}
+</style>
+
+<script type="module">
+
+document.addEventListener('DOMContentLoaded', async function(){
+  const url = 'https://desktop.kmr.nz/api/v1/dataset/latest/data/gocam/model_connections';
+  const response = await fetch(url);
+
+  const modelConnections = await response.json();
+
+  const elements = {
+    nodes: modelConnections.nodes.map(node => { node.label = node.title; return { data: node } }),
+    edges: modelConnections.edges.map(edge => { edge.weight = 0; return { data: edge } }),
+  };
+
+  const nodeStyle = {
+    'content': 'data(title)',
+    'width': '150px',
+    'height': '80px',
+    'background-color': '#ee8',
+    'border-width': 1,
+    'border-style': 'solid',
+    'border-color': 'black',
+    'font-size': 10,
+    'text-valign': 'center',
+    'color': 'black',
+    'shape': 'round-rectangle',
+    'text-wrap': 'wrap',
+    'text-max-width': 150,
+  };
+
+  const edgeStyle = {
+    'curve-style': 'bezier',
+    'line-style': 'solid',
+    'color': '#666',
+    'width': 4,
+    'line-color': 'black'
+  };
+
+//  cytoscape.use(cytoscapePopper(Popper.createPopper));
+
+  const cy = window.cy = cytoscape({
+    container: document.getElementById('cy'),
+
+    ready: function(){
+      this.layout({name: 'fcose', step: 'all', fit: false,
+                   randomize: true,
+                   quality: 'proof',
+                   animate: false}).run();
+    },
+
+    minZoom: 0.1,
+    maxZoom: 8.0,
+    zoomingEnabled: true,
+    userZoomingEnabled: true,
+    wheelSensitivity: 0.25,
+    panningEnabled: true,
+    userPanningEnabled: true,
+    boxSelectionEnabled: true,
+    selectionType: 'single',
+    touchTapThreshold: 8,
+    desktopTapThreshold: 4,
+    autolock: false,
+    autoungrabify: false,
+    autounselectify: false,
+
+    elements,
+
+    style: [
+      {
+        selector: 'node',
+        style: nodeStyle,
+      },
+      {
+        selector: 'edge',
+        style: edgeStyle,
+      }
+    ]
+  });
+
+
+  setTimeout(() => {
+    cy.fit();
+    cy.center();
+  }, 10);
+
+  const mouseOut = (event) => {
+    if (event.target.popperRefObj) {
+      event.target.popperRefObj.state.elements.popper.remove();
+      event.target.popperRefObj.destroy();
+    }
+  };
+
+  cy.on('drag', 'node', mouseOut);
+
+  cy.on('click', 'node',
+        (evt) => {
+          mouseOut(evt);
+          const id = evt.target.data().id.replace("gomodel:","");
+          const link = '/pombase_gocam_view/full/' + id;
+          window.open(link);
+        });
+
+  cy.elements().unbind('mouseover');
+  cy.elements().bind("mouseover", (event) => {
+    const data = event.target.data();
+    const dbId = data.db_id;
+
+    const makeContentDiv = (contentHtml) => {
+      let contentDiv = document.createElement("div");
+      contentDiv.classList.add("popper-div");
+      contentDiv.innerHTML = contentHtml
+      document.body.appendChild(contentDiv);
+      return contentDiv;
+    };
+
+    if (dbId) {
+      event.target.popperRefObj = event.target.popper({
+        content: () => {
+          let newContent = '<div>' + data.label + ' - ' + data.type + '</div>';
+          const enabler_label = data.enabler_label;
+          newContent += '<div>' + enabler_label + ' ';
+          const dbIdBits = dbId.split(":");
+          if (dbIdBits.length == 2 && dbIdBits[0] == 'PomBase') {
+            if (enabler_label != dbIdBits[1]) {
+              newContent += dbIdBits[1] + '</div>';
+            }
+          } else {
+            newContent += dbId + '</div>';
+          }
+
+          newContent += '<div>' + data.id + '</div><div>(click to view)</div>'
+
+          return makeContentDiv(newContent);
+        },
+        popper: {
+          placement: 'right',
+        },
+      });
+    } else {
+      event.target.popperRefObj = event.target.popper({
+        content: () => {
+          return makeContentDiv('<div>' + event.target.data().label +
+                  '</div><div>(click to view)</div>');
+        }
+      });
+    }
+  });
+
+  cy.elements().unbind('mouseout');
+  cy.elements().bind("mouseout", mouseOut);
+
+});
+</script>
+
+</body>
+</html>

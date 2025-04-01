@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'protein_feature_view',
     'gocam_viz',
     'gocam_view',
+    'gocam_connections',
 ]
 
 MIDDLEWARE = [
