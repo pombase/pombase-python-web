@@ -520,6 +520,15 @@ const cy = window.cy = cytoscape({
 
   cy.on('drag', 'node', mouseOut);
 
+  const contentDiv = document.getElementById("node-details");
+
+  cy.on('click', (event) => {
+    if (event.target === cy) {
+      // click on the background
+      contentDiv.innerHTML = '';
+    }
+  });
+
   cy.elements().bind("click", (event) => {
     const data = event.target.data();
     const nodeId = data.node_id;
@@ -601,8 +610,9 @@ const cy = window.cy = cytoscape({
         }
       }
 
-      const contentDiv = document.getElementById("node-details");
       contentDiv.innerHTML = newContent;
+    } else {
+      contentDiv.innerHTML = '';
     }
   });
 
