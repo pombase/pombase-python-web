@@ -44,6 +44,11 @@
 }
 #node-details .part-of-process div {
   padding-left: 1em;
+  text-indent: -1.5em;
+}
+#node-details .term-link {
+  padding-left: 1.5em;
+  text-indent:-1.5em;
 }
 #cy-panel .sections {
 }
@@ -52,6 +57,13 @@
 .header {
   margin: 0.2em 0 0.5em 0;
   font-size: 110%;
+}
+.models {
+  padding-top: 0.2em;
+}
+.model-id {
+  padding-left: 1em;
+  font-size: 95%;
 }
 .popper-div {
   position: relative;
@@ -559,7 +571,7 @@ const cy = window.cy = cytoscape({
               data.occurs_in.other_component;
         const label = component.label;
         const id = component.id;
-        newContent += '<div>occurs in: ' + makeLink(id, label) + '</div>';
+        newContent += '<div class="term-link">occurs in: ' + makeLink(id, label) + '</div>';
       }
 
       if (data.located_in) {
@@ -567,13 +579,13 @@ const cy = window.cy = cytoscape({
               data.located_in.other_component;
         const label = component.label;
         const id = component.id;
-        newContent += '<div>located in: ' + makeLink(id, label) + '</div>';
+        newContent += '<div class="term-link">located in: ' + makeLink(id, label) + '</div>';
       }
 
       if (data.part_of_process) {
         const label = data.part_of_process.label;
         const id = data.part_of_process.id;
-        newContent += '<div class="part-of-process">part of: ' + makeLink(id, label);
+        newContent += '<div class="part-of-process term-link">part of: ' + makeLink(id, label);
         const parent = data.part_of_process.part_of_parent;
         if (parent) {
           newContent += '<div>part of: ' + makeLink(parent.id, parent.label) + '</div>';
