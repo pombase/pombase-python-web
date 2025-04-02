@@ -99,6 +99,8 @@ function capitalizeInitial(val) {
 
 const highlightGeneIds = {{ highlight_gene_ids|safe }};
 
+let currentNode = undefined;
+
 document.addEventListener('DOMContentLoaded', async function(){
 
 const gocamId = '{{gocam_id}}';
@@ -308,11 +310,17 @@ const isConnectingNode = (el) => {
 };
 
 const isSelected = (el) => {
-  if (el.data()['db_id']) {
+  const data = el.data();
+
+  if (data['db_id']) {
     const bits = el.data()['db_id'].split(':');
     if (bits[1] && highlightGeneIds.includes(bits[1])) {
       return true;
     }
+  }
+
+  if (currentNode && data['id'] == currentNode) {
+    return true;
   }
 
   return false;
@@ -528,14 +536,18 @@ const cy = window.cy = cytoscape({
 
   cy.on('click', (event) => {
     if (event.target === cy) {
-      // click on the background
+      // clicked on the background
       contentDiv.innerHTML = '';
+      currentNode = undefined;
     }
   });
 
   cy.elements().bind("click", (event) => {
     const data = event.target.data();
     const nodeId = data.node_id;
+    const label = data.label;
+
+    currentNode = data.id;
 
     if (nodeId) {
       const makeLink = (id, label) => {
@@ -556,9 +568,6 @@ const cy = window.cy = cytoscape({
 
         return label;
       };
-
-      const label = data.label;
-      const nodeId = data.node_id;
 
       let headerText;
 
