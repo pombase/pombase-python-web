@@ -58,6 +58,10 @@
   margin: 0.2em 0 0.5em 0;
   font-size: 110%;
 }
+.top-label-link {
+  padding-bottom: 0.2em;
+  font-size: 105%;
+}
 .models {
   padding-top: 0.2em;
 }
@@ -566,7 +570,7 @@ const cy = window.cy = cytoscape({
 
       let newContent =
           '<div class="header">' + headerText + '</div>' +
-          '<div>' + makeLink(nodeId, label) + '</div>';
+          '<div class="top-label-link">' + makeLink(nodeId, label) + '</div>';
 
       const enabler_label = data.enabler_label;
 
