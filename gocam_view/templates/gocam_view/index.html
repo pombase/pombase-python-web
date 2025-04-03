@@ -311,9 +311,9 @@ const isConnectingNode = (el) => {
 
 const isSelected = (el) => {
   const data = el.data();
-
-  if (data['db_id']) {
-    const bits = el.data()['db_id'].split(':');
+  const enablerId = data['enabler_id'];
+  if (enablerId) {
+    const bits = enablerId.split(':');
     if (bits[1] && highlightGeneIds.includes(bits[1])) {
       return true;
     }
