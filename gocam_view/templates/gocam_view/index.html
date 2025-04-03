@@ -502,36 +502,6 @@ const cy = window.cy = cytoscape({
     cy.center();
   }, 10);
 
-  const mouseOut = (event) => {
-    if (event.target.popperRefObj) {
-      event.target.popperRefObj.state.elements.popper.remove();
-      event.target.popperRefObj.destroy();
-    }
-  };
-
-  cy.elements().unbind('mouseover');
-  cy.elements().bind("mouseover", (event) => {
-    const data = event.target.data();
-    if (!data.node_id) {
-      // edge
-      const makeContentDiv = (contentHtml) => {
-        let contentDiv = document.createElement("div");
-        contentDiv.classList.add("popper-div");
-        contentDiv.innerHTML = contentHtml
-        document.body.appendChild(contentDiv);
-        return contentDiv;
-      };
-
-      event.target.popperRefObj = event.target.popper({
-        content: () => {
-          return makeContentDiv(data.label);
-        }
-      });
-    }
-  });
-
-  cy.on('drag', 'node', mouseOut);
-
   const contentDiv = document.getElementById("node-details");
 
   cy.on('click', (event) => {
@@ -628,9 +598,6 @@ const cy = window.cy = cytoscape({
       contentDiv.innerHTML = '';
     }
   });
-
-  cy.elements().unbind('mouseout');
-  cy.elements().bind("mouseout", mouseOut);
 
 });
 </script>
