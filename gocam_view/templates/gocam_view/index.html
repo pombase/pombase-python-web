@@ -544,7 +544,11 @@ const cy = window.cy = cytoscape({
       if (data.type.startsWith('enable')) {
         headerText = 'Activity';
       } else {
-        headerText = capitalizeInitial(data.type);
+        if (data.type == 'mrna') {
+          headerText = 'mRNA';
+        } else {
+          headerText = capitalizeInitial(data.type);
+        }
       }
 
       let newContent =
