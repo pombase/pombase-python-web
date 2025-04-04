@@ -331,8 +331,10 @@ const nodeStyle = {
 'content': 'data(display_label)',
 'width': function(el) {
   const type = el.data()['type'];
-  if (type == 'chemical' || type == 'enabled_by_complex') {
+  if (type == 'chemical') {
     return '110px';
+  } else if (type == 'enabled_by_complex') {
+    return '120px';
   } else {
     return '95px'
   }
@@ -360,6 +362,10 @@ const nodeStyle = {
     return '#e2bde7';
   } else if (type == 'enabled_by_chemical') {
     return '#fffbb5';
+  } else if (type == 'mrna') {
+    return '#ccf';
+  } else if (type == 'enabled_by_modified_protein') {
+    return '#d8c5ff';
   } else {
     return '#ee7';
   }
@@ -402,14 +408,14 @@ const nodeStyle = {
 'color': 'black',
 'shape': function(el) {
   const type = el.data()['type'];
-  if (type == 'chemical' || type == 'gene') {
-    return "rectangle";
-  } else {
+  if (type.startsWith('enabled_by')) {
     if (type == 'enabled_by_complex') {
       return "round-rectangle";
     } else {
       return "ellipse";
     }
+  } else {
+    return "rectangle";
   }
 },
 'text-wrap': 'wrap',
