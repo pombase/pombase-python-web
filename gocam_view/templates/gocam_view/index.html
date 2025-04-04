@@ -94,7 +94,8 @@ a:hover {
 <script type="module">
 
 function capitalizeInitial(val) {
-  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  const withSpaces = val.replaceAll('_', ' ');
+  return String(withSpaces).charAt(0).toUpperCase() + String(withSpaces).slice(1);
 }
 
 const highlightGeneIds = {{ highlight_gene_ids|safe }};
