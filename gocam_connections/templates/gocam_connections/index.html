@@ -57,7 +57,7 @@
 <script type="module">
 
 document.addEventListener('DOMContentLoaded', async function(){
-  const url = 'https://desktop.kmr.nz/api/v1/dataset/latest/data/gocam/model_connections';
+  const url = '/api/v1/dataset/latest/data/gocam/model_connections';
   const response = await fetch(url);
 
   const modelConnections = await response.json();
