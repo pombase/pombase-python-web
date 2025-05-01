@@ -88,7 +88,18 @@ document.addEventListener('DOMContentLoaded', async function(){
     'line-style': 'solid',
     'color': '#666',
     'width': 4,
-    'line-color': 'black'
+    'line-color': 'black',
+    'target-arrow-shape': function(el) {
+      const hasDirection = el.data()['has_direction'];
+      if (hasDirection) {
+        return 'triangle';
+      } else {
+        return 'none';
+      };
+    },
+    'target-arrow-fill': 'filled',
+    'target-arrow-color': 'black',
+    'arrow-scale': 2,
   };
 
 //  cytoscape.use(cytoscapePopper(Popper.createPopper));
@@ -152,6 +163,17 @@ document.addEventListener('DOMContentLoaded', async function(){
           mouseOut(evt);
           const id = evt.target.data().id.replace("gomodel:","");
           const link = '/pombase_gocam_view/full/' + id;
+          window.open(link);
+        });
+
+  cy.on('click', 'edge',
+        (evt) => {
+          const id = evt.target.data().id.replaceAll("gomodel:","").replaceAll('-', '+');
+          let link = '/pombase_gocam_view/full/' + id;
+          const enablerId = evt.target.data().enabler_id;
+          if (enablerId) {
+            link += '/' + enablerId;
+          }
           window.open(link);
         });
 
