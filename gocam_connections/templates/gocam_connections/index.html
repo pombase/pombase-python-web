@@ -109,6 +109,9 @@ document.addEventListener('DOMContentLoaded', async function(){
 
     ready: function(){
       this.layout({name: 'fcose', step: 'all', fit: false,
+                   nodeRepulsion: node => 15000,
+                   idealEdgeLength: edge => 75,
+                   numIter: 1000,
                    randomize: true,
                    quality: 'proof',
                    animate: false}).run();
