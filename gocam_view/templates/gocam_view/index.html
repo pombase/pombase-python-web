@@ -101,7 +101,7 @@ function capitalizeInitial(val) {
   return String(withSpaces).charAt(0).toUpperCase() + String(withSpaces).slice(1);
 }
 
-const highlightGeneIds = {{ highlight_gene_ids|safe }}.map(id => id.replace(/.*:/, ''));
+const highlightGeneIds = new Set({{ highlight_gene_ids|safe }}.map(id => id.replace(/.*:/, '')))
 
 let currentNode = undefined;
 
@@ -315,10 +315,16 @@ const isConnectingNode = (el) => {
 
 const isSelected = (el) => {
   const data = el.data();
+
+  const nodeIdBits = data['node_id'].split(':');
+  if (nodeIdBits[1] && highlightGeneIds.has(nodeIdBits[1])) {
+    return true;
+  }
+
   const enablerId = data['enabler_id'];
   if (enablerId) {
     const bits = enablerId.split(':');
-    if (bits[1] && highlightGeneIds.includes(bits[1])) {
+    if (bits[1] && highlightGeneIds.has(bits[1])) {
       return true;
     }
   }
@@ -327,21 +333,20 @@ const isSelected = (el) => {
     return true;
   }
 
+  if (data['has_part_genes']) {
+    for (const id of data['has_part_genes']) {
+      if (highlightGeneIds.has(id)) {
+        return true;
+      }
+    }
+  }
+
   return false;
 };
 
 const nodeStyle = {
 'content': 'data(display_label)',
-'width': function(el) {
-  const type = el.data()['type'];
-  if (type == 'chemical') {
-    return '110px';
-  } else if (type == 'enabled_by_complex') {
-    return '120px';
-  } else {
-    return '95px'
-  }
-},
+'width': '110px',
 'height': '40px',
 'background-color': function(el) {
   const type = el.data()['type'];
