@@ -7,13 +7,13 @@
 
   <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
   <script src="https://unpkg.com/layout-base/layout-base.js"></script>
-  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
   <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
-  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
 </head>
 
 
@@ -108,13 +108,17 @@ document.addEventListener('DOMContentLoaded', async function(){
     container: document.getElementById('cy'),
 
     ready: function(){
-      this.layout({name: 'fcose', step: 'all', fit: false,
-                   nodeRepulsion: node => 15000,
-                   idealEdgeLength: edge => 75,
-                   numIter: 1000,
-                   randomize: true,
-                   quality: 'proof',
-                   animate: false}).run();
+      this.layout({ name: 'dagre',
+                    nodeSep: 30,
+                    edgeSep: 30,
+                    rankDir: 'TB',
+                    spacingFactor: 1.2,
+                    acyclicer: 'greedy',
+                  }).run()
+    },
+
+    layout: {
+      name: 'dagre',
     },
 
     minZoom: 0.1,
