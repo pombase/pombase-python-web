@@ -578,11 +578,13 @@ const cy = window.cy = cytoscape({
       }
 
       if (data.occurs_in) {
-        const component = data.occurs_in.complex_component ||
-              data.occurs_in.other_component;
-        const label = component.label;
-        const id = component.id;
-        newContent += '<div class="term-link">occurs in: ' + makeLink(id, label) + '</div>';
+        for (const occursIn of data.occurs_in) {
+          const component = occursIn.complex_component ||
+                occursIn.other_component;
+          const label = component.label;
+          const id = component.id;
+          newContent += '<div class="term-link">occurs in: ' + makeLink(id, label) + '</div>';
+        }
       }
 
       if (data.located_in) {
