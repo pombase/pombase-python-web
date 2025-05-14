@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', async function(){
 const gocamId = '{{gocam_id}}';
 const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
 
-const isMergedModel = gocamId.toLowerCase() != gocamId;
+const isMegaModel = gocamId.toLowerCase() != gocamId;
+const isMergedModel = isMegaModel || gocamId.includes("+");
 
 const response = await fetch(url);
 
@@ -469,10 +470,10 @@ cytoscape.use(cytoscapePopper(Popper.createPopper));
 const cy = window.cy = cytoscape({
   container: document.getElementById('cy'),
 
-  layout: isMergedModel ? mergedLayout : dagLayout,
+  layout: isMegaModel ? mergedLayout : dagLayout,
 
   ready: function() {
-    if (isMergedModel) {
+    if (isMegaModel) {
       const func = () => {
         this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof', animate: false}).run();
       };
@@ -508,7 +509,7 @@ const cy = window.cy = cytoscape({
   ]
   });
 
-  if (!isMergedModel) {
+  if (!isMegaModel) {
     cy.layout({ name: 'dagre' }).run();
   }
 
