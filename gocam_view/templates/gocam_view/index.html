@@ -606,11 +606,11 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
-      if (data.model_ids.length > 1) {
+      if (isMergedModel) {
         newContent += '<div class="models">Models:</div>';
         for (const longModelId of data.model_ids) {
           const modelId = longModelId.replace('gomodel:', '');
-          newContent += `<div class="model-id"><a href="/pombase_gocam_view/docs/${modelId}">${modelId}</a></div>`;
+          newContent += `<div class="model-id"><a target="_blank" href="/pombase_gocam_view/docs/${modelId}">${modelId}</a></div>`;
         }
       }
 
