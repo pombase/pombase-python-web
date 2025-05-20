@@ -9,6 +9,7 @@
   <script src="https://unpkg.com/layout-base/layout-base.js"></script>
   <script src="https://unpkg.com/cose-base/cose-base.js"></script>
   <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
+  <script src="https://unpkg.com/cytoscape-svg@0.4.0/cytoscape-svg.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
@@ -38,6 +39,11 @@
   width: 22em;
   flex: 0 0 auto;
 }
+#actions {
+  min-width: 100px;
+  padding: 1em 0;
+  flex: 0 0 auto;
+}
 #node-details {
   height: 20em;
   overflow: auto;
@@ -54,6 +60,7 @@
   text-indent:-1.5em;
 }
 #cy-panel .sections {
+  font-size: 90%;
 }
 #cy-panel .sections div {
 }
@@ -95,6 +102,12 @@ a:hover {
 </style>
 
 <script type="module">
+window.getSvgUrl = function() {
+  var svgContent = window.cy.svg({scale: 1, full: true});
+  var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+  var url = URL.createObjectURL(blob);
+  return url;
+};
 
 function capitalizeInitial(val) {
   const withSpaces = val.replaceAll('_', ' ');
@@ -783,6 +796,11 @@ const cy = window.cy = cytoscape({
   </div>
 </div>
 </div>
+
+  <div id="actions">
+    <button target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
+  </div>
+
 </div>
 </div>
 </body>
