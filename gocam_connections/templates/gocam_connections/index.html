@@ -7,6 +7,8 @@
 
   <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
   <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
   <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -56,8 +58,10 @@
 
 <script type="module">
 
+const summaryType = '{{summary_type}}';
+
 document.addEventListener('DOMContentLoaded', async function(){
-  const url = '/api/v1/dataset/latest/data/gocam/model_connections';
+  const url = '/api/v1/dataset/latest/data/gocam/model_summary/' + summaryType;
   const response = await fetch(url);
 
   const modelConnections = await response.json();
@@ -108,17 +112,17 @@ document.addEventListener('DOMContentLoaded', async function(){
     container: document.getElementById('cy'),
 
     ready: function(){
-      this.layout({ name: 'dagre',
+      if (summaryType == 'all_models') {
+        this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof', animate: false}).run();
+      } else {
+        this.layout({ name: 'dagre',
                     nodeSep: 30,
                     edgeSep: 30,
                     rankDir: 'TB',
                     spacingFactor: 1.2,
                     acyclicer: 'greedy',
                   }).run()
-    },
-
-    layout: {
-      name: 'dagre',
+      }
     },
 
     minZoom: 0.1,
