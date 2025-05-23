@@ -624,7 +624,7 @@ const cy = window.cy = cytoscape({
         newContent += '<div class="models">Models:</div>';
         for (const longModelId of data.model_ids) {
           const modelId = longModelId.replace('gomodel:', '');
-          newContent += `<div class="model-id"><a target="_blank" href="/pombase_gocam_view/docs/${modelId}">${modelId}</a></div>`;
+          newContent += `<div class="model-id"><a target="_blank" href="/gocam/pombase-view/docs/${modelId}">${modelId}</a></div>`;
         }
       }
 
