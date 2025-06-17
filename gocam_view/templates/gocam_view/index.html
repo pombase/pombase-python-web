@@ -619,6 +619,13 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
+      if (data.happens_during) {
+        const label = data.happens_during.label;
+        const id = data.happens_during.id;
+        newContent += '<div class="happens-during term-link">happens during: ' + makeLink(id, label);
+        newContent += '</div>';
+      }
+
       if (isMergedModel) {
         newContent += '<div class="models">Models:</div>';
         for (const longModelId of data.model_ids) {
