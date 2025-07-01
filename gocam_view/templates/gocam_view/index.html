@@ -7,16 +7,15 @@
 
   <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
   <script src="https://unpkg.com/layout-base/layout-base.js"></script>
-  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
   <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
   <script src="https://unpkg.com/cytoscape-svg@0.4.0/cytoscape-svg.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
-  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-euler@1.2.3/cytoscape-euler.min.js"></script>
 </head>
 
 
@@ -128,9 +127,25 @@ const isMergedModel = isMegaModel || gocamId.includes("+");
 
 const response = await fetch(url);
 
-const elements = await response.json();
+let elements = await response.json();
 
-const parentStyle = {
+const models = elements['models'];
+
+delete elements['models'];
+
+if (models && models.length > 1) {
+  models.map(details => {
+    const id = details[0];
+    const title = details[1];
+    elements.nodes.push({
+      data: {
+        id,
+        title,
+        type: 'model',
+        node_id: id,
+      }
+    });
+  });
 }
 
 const STYLES = {
@@ -443,6 +458,20 @@ const nodeStyle = {
 "text-max-width": 84,
 };
 
+const parentStyle = {
+  'background-color': '#ebefff',
+  'background-opacity': 0.5,
+  'text-valign': 'top',
+  'text-halign': 'center',
+  "text-max-width": "80em",
+  'font-size': "36px",
+  'shape': 'round-rectangle',
+  'corner-radius': "10",
+  'padding': "10px",
+  'content': "data(title)",
+  'border-width': '2px',
+  'border-color': '#555',
+};
 
 const edgeStyle = {
 'curve-style': 'bezier',
@@ -487,14 +516,26 @@ const cy = window.cy = cytoscape({
   ready: function() {
     if (isMegaModel) {
       const func = () => {
-        this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof', animate: false}).run();
+        this.layout({name: 'euler', fit: true, randomize: false,
+                     springLength: (edge) => {
+                       if (edge.data.ideal_edge_length) {
+                         return edge.data.ideal_edge_length;
+                       } else {
+                         return 20;
+                       }
+                     },
+                     gravity: -10,
+                     springCoeff: edge => 0.0005,
+                     maxIterations: 500,
+                     quality: 'proof',
+                     animate: false}).run();
       };
       func();
     }
   },
 
-  minZoom: 0.1,
-  maxZoom: 8.0,
+  minZoom: 0.01,
+  maxZoom: 40.0,
   zoomingEnabled: true,
   userZoomingEnabled: true,
   wheelSensitivity: 1.5,
@@ -517,7 +558,11 @@ const cy = window.cy = cytoscape({
     {
       selector: 'edge',
       style: edgeStyle,
-    }
+    },
+    {
+      selector: ':parent',
+      style: parentStyle,
+    },
   ]
   });
 
@@ -543,11 +588,12 @@ const cy = window.cy = cytoscape({
   cy.elements().bind("click", (event) => {
     const data = event.target.data();
     const nodeId = data.node_id;
+    const nodeType = data.type;
     const label = data.label;
 
     currentNode = data.id;
 
-    if (nodeId) {
+    if (nodeId && nodeType !== 'model') {
       const makeLink = (id, label) => {
         const bits = id.split(":");
         if (bits.length == 2) {
