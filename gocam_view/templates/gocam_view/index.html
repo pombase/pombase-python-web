@@ -44,7 +44,7 @@
   flex: 0 0 auto;
 }
 #node-details {
-  height: 20em;
+  height: 25em;
   overflow: auto;
   background-color: #fbfbfb;
   border-left: 1px solid #eee;
@@ -74,8 +74,12 @@
 .models {
   padding-top: 0.2em;
 }
+.model-list {
+  padding: 0.1em 0 0.1em 1.3em;
+  margin: 0.1em;
+}
 .model-id {
-  padding-left: 1em;
+  padding: 0;
   font-size: 95%;
 }
 .popper-div {
@@ -143,10 +147,24 @@ if (models && models.length > 1) {
         title,
         type: 'model',
         node_id: id,
+        label: title,
       }
     });
   });
 }
+
+const findModel = (modelId) => {
+  for (const modelDetails of models) {
+    if (modelDetails[0] === modelId || modelDetails[0] === 'gomodel:' + modelId) {
+      return {
+        id: modelDetails[0],
+        title: modelDetails[1],
+      };
+    }
+  }
+
+  return undefined;
+};
 
 const STYLES = {
   SIZES: {
@@ -593,7 +611,7 @@ const cy = window.cy = cytoscape({
 
     currentNode = data.id;
 
-    if (nodeId && nodeType !== 'model') {
+    if (nodeId) {
       const makeLink = (id, label) => {
         const bits = id.split(":");
         if (bits.length == 2) {
@@ -605,6 +623,17 @@ const cy = window.cy = cytoscape({
             } else {
               if (bits[0] == 'GO') {
                 return `<a target="_blank" href="/term/${id}">${label} (${id})</a>`;
+              } else {
+                if (bits[0].startsWith('gomodel')) {
+                  const modelId = bits[1];
+                  const modelDetails = findModel(modelId);
+
+                  if (modelDetails) {
+                    return `<a target="_blank" href="/gocam/pombase-view/docs/${modelId}">${modelDetails.title}</a>`;
+                  } else {
+                    return modelId;
+                  }
+                }
               }
             }
           }
@@ -615,13 +644,13 @@ const cy = window.cy = cytoscape({
 
       let headerText;
 
-      if (data.type.startsWith('enable')) {
+      if (nodeType.startsWith('enable')) {
         headerText = 'Activity';
       } else {
-        if (data.type == 'mrna') {
+        if (nodeType == 'mrna') {
           headerText = 'mRNA';
         } else {
-          headerText = capitalizeInitial(data.type);
+          headerText = capitalizeInitial(nodeType);
         }
       }
 
@@ -672,11 +701,13 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
-      if (isMergedModel) {
-        newContent += '<div class="models">Models:</div>';
-        for (const longModelId of data.model_ids) {
-          const modelId = longModelId.replace('gomodel:', '');
-          newContent += `<div class="model-id"><a target="_blank" href="/gocam/pombase-view/docs/${modelId}">${modelId}</a></div>`;
+      if (nodeType !== 'model') {
+        if (isMergedModel) {
+          newContent += '<div class="models">Models:</div><ul class="model-list">';
+          for (const longModelId of data.model_ids) {
+            newContent += '<li class="model-id">' + makeLink(longModelId) + '</li>';
+          }
+          newContent += '</ul>';
         }
       }
 
