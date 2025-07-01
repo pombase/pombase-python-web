@@ -542,8 +542,9 @@ const cy = window.cy = cytoscape({
                          return 20;
                        }
                      },
+                     pull: 0.002,
                      gravity: -10,
-                     springCoeff: edge => 0.0005,
+                     springCoeff: edge => 0.0004,
                      maxIterations: 500,
                      quality: 'proof',
                      animate: false}).run();
