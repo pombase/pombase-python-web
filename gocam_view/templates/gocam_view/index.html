@@ -137,9 +137,20 @@ const models = elements['models'];
 
 delete elements['models'];
 
+let seenParentIds = new Set();
+
+elements['nodes'].map(node => {
+  if (node.data.parent) {
+    seenParentIds.add(node.data.parent);
+  }
+});
+
 if (models && models.length > 1) {
   models.map(details => {
-    const id = details[0];
+    const id = details[0]
+    if (!seenParentIds.has(id)) {
+      return;
+    }
     const title = details[1];
     elements.nodes.push({
       data: {
