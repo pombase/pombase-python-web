@@ -36,8 +36,19 @@
   flex: 1 1 auto;
   min-width: 100px;
 }
+#panel-buttons {
+  display: inline;
+  position: absolute;
+  right: 0;
+}
+#show-panel-button, #hide-panel-button, #save-svg-button {
+  font-size: 110%;
+}
+#hide-panel-button {
+  display: none;
+}
 #cy-panel {
-  width: 22em;
+  width: 0.1em;
   flex: 0 0 auto;
 }
 #actions {
@@ -46,7 +57,8 @@
   flex: 0 0 auto;
 }
 #node-details {
-  height: 25em;
+  padding-top: 1em;
+  height: 23em;
   overflow: auto;
   background-color: #fbfbfb;
   border-left: 1px solid #eee;
@@ -64,6 +76,20 @@
   font-size: 90%;
 }
 #cy-panel .sections div {
+}
+#rel-key {
+  margin: 0.2em;
+}
+#rel-key .item {
+/*  font-size: 105%;*/
+}
+#rel-key .item svg {
+  display: inline-block;
+}
+#rel-key .item span {
+  display: inline-block;
+  max-width: 14rem;
+  vertical-align: top;
 }
 .header {
   margin: 0.2em 0 0.5em 0;
@@ -614,6 +640,42 @@ const cy = window.cy = cytoscape({
 
   const contentDiv = document.getElementById("node-details");
 
+  const panelEl = document.getElementById("cy-panel");
+  const panelStyle = panelEl.style;
+  const panelContent = document.getElementById("cy-panel-contents");
+  const showPanelButton = document.getElementById("show-panel-button");
+  const hidePanelButton = document.getElementById("hide-panel-button");
+
+  window.showCyPanel = function() {
+    panelStyle.width = '20em';
+    showPanelButton.style.display = 'none';
+    hidePanelButton.style.display = 'block';
+    panelContent.style.display = 'block';
+    /* wait until someone asks for this:
+    cy.ready(function() {
+      setTimeout(() => {
+        cy.fit();
+        cy.center();
+      }, 300);
+    });
+    */
+  };
+
+  window.hideCyPanel = function() {
+    panelStyle.width = '0.1em';
+    showPanelButton.style.display = 'block';
+    hidePanelButton.style.display = 'none';
+    panelContent.style.display = 'none';
+    /*
+    cy.ready(function() {
+      setTimeout(() => {
+        cy.fit();
+        cy.center();
+      }, 300);
+    });
+    */
+  }
+
   cy.on('click', (event) => {
     if (event.target === cy) {
       // clicked on the background
@@ -631,6 +693,8 @@ const cy = window.cy = cytoscape({
     currentNode = data.id;
 
     if (nodeId) {
+      showCyPanel();
+
       const makeLink = (id, label) => {
         const bits = id.split(":");
         if (bits.length == 2) {
@@ -741,11 +805,17 @@ const cy = window.cy = cytoscape({
 
   <div id="cy-container">
     <div id="cy"></div>
+  <div id="panel-buttons">
+    <button id="show-panel-button" onclick="showCyPanel()">Show side panel</button>
+    <button id="hide-panel-button" onclick="hideCyPanel()">Hide side panel</button>
+  </div>
 <div id="cy-panel">
+  <div id="cy-panel-contents" style="display: none">
   <div id="node-details">
 
   </div>
 
+  <div id="rel-key">
   <svg height="0" width="0" style="position: absolute;">
     <defs>
       <marker id="triangle-RO:0002304" viewBox="-2 0 18 10" refX="18" refY="5" markerWidth="12" markerHeight="4" orient="auto">
@@ -816,28 +886,28 @@ const cy = window.cy = cytoscape({
 <div class="sections" part="sections">
 <div class="section regulation" part="section">
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="none" marker-end="url(#triangle-RO:0002629)">
       </line>
     </svg>
     <span>direct positive regulation/activation</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="none" marker-end="url(#tee-RO:0002630)">
       </line>
     </svg>
     <span>direct negative regulation/inhibition</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002407)">
       </line>
     </svg>
     <span>indirect positive regulation</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002409)">
       </line>
     </svg>
@@ -846,28 +916,28 @@ const cy = window.cy = cytoscape({
 </div>
 <div class="section input" part="section">
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#800080" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-triangle-RO:0002413)">
       </line>
     </svg>
     <span>provides input for</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="none" marker-end="url(#square-RO:0012010)">
       </line>
     </svg>
     <span>removes input for</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#6495ED" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002233)">
       </line>
     </svg>
     <span>input of</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#ED6495" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002234)">
       </line>
     </svg>
@@ -876,21 +946,21 @@ const cy = window.cy = cytoscape({
 </div>
 <div class="section upstream" part="section">
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#circle-RO:0012009)">
       </line>
     </svg>
     <span>constitutively upstream</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002304)">
       </line>
     </svg>
     <span>upstream positive effect</span>
   </div>
   <div class="item">
-    <svg height="30" width="60">
+    <svg height="25" width="60">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002305)">
       </line>
     </svg>
@@ -898,11 +968,13 @@ const cy = window.cy = cytoscape({
   </div>
 </div>
 </div>
+</div>
 
   <div id="actions">
-    <button target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
+    <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
   </div>
 
+</div>
 </div>
 </div>
 </body>
