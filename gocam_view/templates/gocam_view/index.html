@@ -15,7 +15,9 @@
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/cytoscape-euler@1.2.3/cytoscape-euler.min.js"></script>
+
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
 </head>
 
 
@@ -545,20 +547,25 @@ const cy = window.cy = cytoscape({
   ready: function() {
     if (isMegaModel) {
       const func = () => {
-        this.layout({name: 'euler', fit: true, randomize: false,
-                     springLength: (edge) => {
-                       if (edge.data.ideal_edge_length) {
-                         return edge.data.ideal_edge_length;
+        this.layout({name: 'fcose',
+                     fit: true,
+                     randomize: true,
+                     idealEdgeLength: (edge) => {
+                       if (edge.data().ideal_edge_length) {
+                         return edge.data().ideal_edge_length;
                        } else {
-                         return 20;
+                         return 50;
                        }
                      },
-                     pull: 0.002,
-                     gravity: -10,
-                     springCoeff: edge => 0.0004,
-                     maxIterations: 500,
+                     uniformNodeDimensions: true,
                      quality: 'proof',
-                     animate: false}).run();
+                     animate: false,
+                     nodeRepulsion: 2000,
+                     gravityRangeCompound: 1,
+                     gravityCompound: 0.1,
+                     gravityRange: 0.02,
+                     gravity: 1.5}).run();
+
       };
       func();
     }
