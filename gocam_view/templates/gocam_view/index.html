@@ -154,7 +154,12 @@ let currentNode = undefined;
 document.addEventListener('DOMContentLoaded', async function(){
 
 const gocamId = '{{gocam_id}}';
-const url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
+
+let url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
+
+if (gocamId.includes('retain_genes')) {
+  url += '/' + {{ highlight_gene_ids|safe }}.join(',');
+}
 
 const isMegaModel = gocamId.toLowerCase() != gocamId;
 const isMergedModel = isMegaModel || gocamId.includes("+");
