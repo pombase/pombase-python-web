@@ -157,7 +157,7 @@ const gocamId = '{{gocam_id}}';
 
 let url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
 
-if (gocamId.includes('retain_genes')) {
+if (gocamId.includes('retain_genes') || gocamId.includes('trim_models')) {
   url += '/' + {{ highlight_gene_ids|safe }}.join(',');
 }
 
