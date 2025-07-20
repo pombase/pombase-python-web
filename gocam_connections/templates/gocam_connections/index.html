@@ -16,12 +16,11 @@
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-svg@0.4.0/cytoscape-svg.js"></script>
 </head>
 
 
 <body>
-    <div id="cy"></div>
-
 <style>
 #cy {
   width: 100%;
@@ -54,9 +53,33 @@
   padding: 5px 9px;
   max-width: 40em;
 }
+
+#actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #f8f8f8a0;
+}
+
+#save-svg-button {
+  font-size: 120%;
+  padding: 0.2em 0.5em;
+}
 </style>
 
+<div id="cy"></div>
+
+<div id="actions">
+  <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
+</div>
+
 <script type="module">
+window.getSvgUrl = function() {
+  var svgContent = window.cy.svg({scale: 1, full: true});
+  var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+  var url = URL.createObjectURL(blob);
+  return url;
+};
 
 const summaryType = '{{summary_type}}';
 
