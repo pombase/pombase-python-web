@@ -180,7 +180,7 @@ elements['nodes'].map(node => {
   }
 });
 
-if (models && models.length > 1) {
+if (flags.includes('show_models')) {
   models.map(details => {
     const id = details[0]
     if (!seenParentIds.has(id)) {
