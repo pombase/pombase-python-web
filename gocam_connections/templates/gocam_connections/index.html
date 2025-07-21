@@ -183,18 +183,8 @@ document.addEventListener('DOMContentLoaded', async function(){
     cy.center();
   }, 10);
 
-  const mouseOut = (event) => {
-    if (event.target.popperRefObj) {
-      event.target.popperRefObj.state.elements.popper.remove();
-      event.target.popperRefObj.destroy();
-    }
-  };
-
-  cy.on('drag', 'node', mouseOut);
-
   cy.on('click', 'node',
         (evt) => {
-          mouseOut(evt);
           const id = evt.target.data().id.replace("gomodel:","");
           const link = '/gocam/pombase-view/full/' + id;
           window.open(link);
@@ -210,56 +200,6 @@ document.addEventListener('DOMContentLoaded', async function(){
           }
           window.open(link);
         });
-
-  cy.elements().unbind('mouseover');
-  cy.elements().bind("mouseover", (event) => {
-    const data = event.target.data();
-    const dbId = data.db_id;
-
-    const makeContentDiv = (contentHtml) => {
-      let contentDiv = document.createElement("div");
-      contentDiv.classList.add("popper-div");
-      contentDiv.innerHTML = contentHtml
-      document.body.appendChild(contentDiv);
-      return contentDiv;
-    };
-
-    if (dbId) {
-      event.target.popperRefObj = event.target.popper({
-        content: () => {
-          let newContent = '<div>' + data.label + ' - ' + data.type + '</div>';
-          const enabler_label = data.enabler_label;
-          newContent += '<div>' + enabler_label + ' ';
-          const dbIdBits = dbId.split(":");
-          if (dbIdBits.length == 2 && dbIdBits[0] == 'PomBase') {
-            if (enabler_label != dbIdBits[1]) {
-              newContent += dbIdBits[1] + '</div>';
-            }
-          } else {
-            newContent += dbId + '</div>';
-          }
-
-          newContent += '<div>' + data.id + '</div><div>(click to view)</div>'
-
-          return makeContentDiv(newContent);
-        },
-        popper: {
-          placement: 'right',
-        },
-      });
-    } else {
-      event.target.popperRefObj = event.target.popper({
-        content: () => {
-          return makeContentDiv('<div>' + event.target.data().label +
-                  '</div><div>(click to view)</div>');
-        }
-      });
-    }
-  });
-
-  cy.elements().unbind('mouseout');
-  cy.elements().bind("mouseout", mouseOut);
-
 });
 </script>
 
