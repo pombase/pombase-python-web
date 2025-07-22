@@ -46,12 +46,16 @@
 #show-panel-button, #hide-panel-button, #save-svg-button {
   font-size: 110%;
 }
-#hide-panel-button {
+#show-panel-button {
   display: none;
 }
 #cy-panel {
   width: 0.1em;
   flex: 0 0 auto;
+  width: 20em;
+}
+#cy-panel-contents {
+  display: block;
 }
 #actions {
   min-width: 100px;
@@ -153,6 +157,7 @@ let currentNode = undefined;
 
 document.addEventListener('DOMContentLoaded', async function(){
 
+const fullOrWidget = '{{full_or_widget}}';
 const gocamId = '{{gocam_id}}';
 
 let url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
@@ -690,6 +695,12 @@ const cy = window.cy = cytoscape({
     */
   }
 
+  if (fullOrWidget == 'widget') {
+    setTimeout(() => {
+      window.hideCyPanel();
+    }, 20);
+  }
+
   cy.on('click', (event) => {
     if (event.target === cy) {
       // clicked on the background
@@ -824,7 +835,7 @@ const cy = window.cy = cytoscape({
     <button id="hide-panel-button" onclick="hideCyPanel()">Hide side panel</button>
   </div>
 <div id="cy-panel">
-  <div id="cy-panel-contents" style="display: none">
+  <div id="cy-panel-contents">
   <div id="node-details">
 
   </div>
