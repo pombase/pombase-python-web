@@ -91,6 +91,10 @@
 }
 #rel-key {
   margin: 0.2em;
+{% if full_or_widget == 'widget' %}
+  overflow-y: auto;
+  height: 150px;
+{% endif %}
 }
 #rel-key .item {
 /*  font-size: 105%;*/
