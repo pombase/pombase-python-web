@@ -37,17 +37,23 @@
   min-width: 100px;
 }
 #panel-buttons {
-  display: inline;
+  display: inline-block;
   position: absolute;
   right: 0;
   padding: 0.2em 0.5em;
   background: #f8f8f8a0;
+  font-size: 110%;
 }
 #show-panel-button, #hide-panel-button, #save-svg-button {
-  font-size: 110%;
+  margin-left: 0.3em;
 }
 #show-panel-button {
   display: none;
+}
+#zoom-in, #zoom-out {
+  font-weight: bold;
+  padding: 0 0.4em;
+  margin-left: 0.3em;
 }
 #cy-panel {
   width: 0.1em;
@@ -620,7 +626,7 @@ const cy = window.cy = cytoscape({
   maxZoom: 40.0,
   zoomingEnabled: true,
   userZoomingEnabled: true,
-  wheelSensitivity: 1.5,
+  wheelSensitivity: 1.4,
   panningEnabled: true,
   userPanningEnabled: true,
   boxSelectionEnabled: true,
@@ -668,7 +674,7 @@ const cy = window.cy = cytoscape({
   window.showCyPanel = function() {
     panelStyle.width = '20em';
     showPanelButton.style.display = 'none';
-    hidePanelButton.style.display = 'block';
+    hidePanelButton.style.display = 'inline-block';
     panelContent.style.display = 'block';
     /* wait until someone asks for this:
     cy.ready(function() {
@@ -682,7 +688,7 @@ const cy = window.cy = cytoscape({
 
   window.hideCyPanel = function() {
     panelStyle.width = '0.1em';
-    showPanelButton.style.display = 'block';
+    showPanelButton.style.display = 'inline-block';
     hidePanelButton.style.display = 'none';
     panelContent.style.display = 'none';
     /*
@@ -693,6 +699,16 @@ const cy = window.cy = cytoscape({
       }, 300);
     });
     */
+  }
+
+  window.modelZoomIn = function() {
+    cy.zoom(cy.zoom() / 0.8);
+    cy.center();
+  }
+
+  window.modelZoomOut = function() {
+    cy.zoom(cy.zoom() * 0.8);
+    cy.center();
   }
 
   if (fullOrWidget == 'widget') {
@@ -831,6 +847,8 @@ const cy = window.cy = cytoscape({
   <div id="cy-container">
     <div id="cy"></div>
   <div id="panel-buttons">
+    <button id="zoom-out" title="Zoom out" onclick="modelZoomOut()">-</button>
+    <button id="zoom-in" title="Zoom in" onclick="modelZoomIn()">+</button>
     <button id="show-panel-button" onclick="showCyPanel()">Show side panel</button>
     <button id="hide-panel-button" onclick="hideCyPanel()">Hide side panel</button>
   </div>
