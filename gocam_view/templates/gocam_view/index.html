@@ -778,7 +778,11 @@ const cy = window.cy = cytoscape({
         if (nodeType == 'mrna') {
           headerText = 'mRNA';
         } else {
-          headerText = capitalizeInitial(nodeType);
+          if (nodeType == 'gene') {
+            headerText = 'Target gene';
+          } else {
+            headerText = capitalizeInitial(nodeType);
+          }
         }
       }
 
