@@ -36,13 +36,18 @@
   flex: 1 1 auto;
   min-width: 100px;
 }
-#panel-buttons {
+#panel-buttons, #actions {
   display: inline-block;
   position: absolute;
   right: 0;
+  font-size: 110%;
+}
+#panel-buttons, #actions {
   padding: 0.2em 0.5em;
   background: #f8f8f8a0;
-  font-size: 110%;
+}
+#actions {
+  bottom: 1em;
 }
 #show-panel-button, #hide-panel-button, #save-svg-button {
   margin-left: 0.3em;
@@ -64,8 +69,7 @@
   display: block;
 }
 #actions {
-  min-width: 100px;
-  padding: 1em 0;
+  padding: 0 0.5em;
   flex: 0 0 auto;
 }
 #node-details {
@@ -860,6 +864,9 @@ const cy = window.cy = cytoscape({
     <button id="show-panel-button" onclick="showCyPanel()">Show side panel</button>
     <button id="hide-panel-button" onclick="hideCyPanel()">Hide side panel</button>
   </div>
+  <div id="actions">
+    <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
+  </div>
 <div id="cy-panel">
   <div id="cy-panel-contents">
   <div id="node-details">
@@ -1020,10 +1027,6 @@ const cy = window.cy = cytoscape({
 </div>
 </div>
 </div>
-
-  <div id="actions">
-    <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
-  </div>
 
 </div>
 </div>
