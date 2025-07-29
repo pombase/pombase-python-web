@@ -42,6 +42,14 @@
   right: 0;
   font-size: 110%;
 }
+#panel-buttons button, #actions button {
+{% if full_or_widget == 'widget' %}
+  font-size: 105%;
+{% endif %}
+{% if full_or_widget == 'full' %}
+  font-size: 120%;
+{% endif %}
+}
 #panel-buttons, #actions {
   padding: 0.2em 0.5em;
   background: #f8f8f8a0;
@@ -73,7 +81,7 @@
   flex: 0 0 auto;
 }
 #node-details {
-  padding-top: 1em;
+  padding-top: 2em;
   height: 23em;
   overflow: auto;
   background-color: #fbfbfb;
@@ -859,13 +867,27 @@ const cy = window.cy = cytoscape({
   <div id="cy-container">
     <div id="cy"></div>
   <div id="panel-buttons">
-    <button id="zoom-out" title="Zoom out" onclick="modelZoomOut()">-</button>
-    <button id="zoom-in" title="Zoom in" onclick="modelZoomIn()">+</button>
+    <button id="zoom-out" title="Zoom out" onclick="modelZoomOut()">
+{% if full_or_widget == 'widget' %}
+    -
+{% endif %}
+{% if full_or_widget == 'full' %}
+     <img width="16px" height="16px" src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg width="10mm" height="10mm" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g transform="matrix(0.09090916,0,0,0.09090916,-2.2369372,-4.0168636)"> <rect style="fill:%23000000;stroke-width:0.264583" width="116.41666" height="31.75" x="31.75" y="95.25" ry="0.26052997" /> </g> </svg>'/>
+{% endif %}
+    </button>
+    <button id="zoom-in" title="Zoom in" onclick="modelZoomIn()">
+{% if full_or_widget == 'widget' %}
+    +
+{% endif %}
+{% if full_or_widget == 'full' %}
+      <img width="16px" height="16px" src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg width="10mm" height="10mm" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g transform="matrix(0.09090916,0,0,0.09090916,-2.2369372,-4.0168636)"> <rect style="fill:%23000000;stroke-width:0.264583" width="116.41666" height="31.75" x="31.75" y="95.25" ry="0.26052997" /> <rect style="fill:%23000000;stroke-width:0.264583" width="31.749998" height="116.41666" x="74.083336" y="52.916668" ry="0" /> </g> </svg>'/>
+{% endif %}
+    </button>
     <button id="show-panel-button" onclick="showCyPanel()">Show side panel</button>
     <button id="hide-panel-button" onclick="hideCyPanel()">Hide side panel</button>
   </div>
   <div id="actions">
-    <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
+    <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View as SVG</button>
   </div>
 <div id="cy-panel">
   <div id="cy-panel-contents">
