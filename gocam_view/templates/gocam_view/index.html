@@ -96,6 +96,9 @@
   padding-left: 1.5em;
   text-indent:-1.5em;
 }
+#node-details .enabler-part-of-complex {
+  padding-left: 1em;
+}
 #cy-panel .sections {
   font-size: 90%;
 }
@@ -806,7 +809,17 @@ const cy = window.cy = cytoscape({
 
       if (enabler_label) {
         const enabler_id = data.enabler_id;
-        newContent += '<div>enabled by: ' + makeLink(enabler_id, enabler_label) + '</div>';
+        newContent += '<div>enabled by: ' +
+          makeLink(enabler_id, enabler_label);
+
+        if (data.enabler_part_of_complex) {
+          const label = data.enabler_part_of_complex.label;
+          const id = data.enabler_part_of_complex.id;
+          newContent += '<div class="enabler-part-of-complex">part of complex: <div class="part-of-process term-link">' + makeLink(id, label) +
+            '</div></div>';
+        }
+
+        newContent += '</div>';
       }
 
       if (data.occurs_in) {
