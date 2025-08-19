@@ -10,6 +10,7 @@ urlpatterns = [
     path('gocam_viz/', include('gocam_viz.urls')),
     path('gocam_view/', include('gocam_view.urls')),
     path('gocam_connections/', include('gocam_connections.urls')),
+    path('rhea_widget/', include('rhea_widget.urls')),
     path('stats/', include('stats.urls')),
     path('admin/', admin.site.urls),
 ]
