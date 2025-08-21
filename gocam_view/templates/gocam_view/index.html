@@ -99,6 +99,12 @@
 #node-details .enabler-part-of-complex {
   padding-left: 1em;
 }
+#node-details .gene-in-complex {
+  padding-left: 1.5em;
+}
+.highlighted-gene {
+  font-weight: bold;
+}
 #cy-panel .sections {
   font-size: 90%;
 }
@@ -208,6 +214,16 @@ let elements = await response.json();
 const models = elements['models'];
 
 delete elements['models'];
+
+const geneInfoMap = elements['gene_info_map'];
+delete elements['gene_info_map'];
+
+for (let key of Object.keys(geneInfoMap)) {
+  const bits = key.split(':');
+  if (bits[1]) {
+    geneInfoMap[bits[1]] = geneInfoMap[key];
+  }
+}
 
 let seenParentIds = new Set();
 
@@ -866,6 +882,22 @@ const cy = window.cy = cytoscape({
           }
           newContent += '</ul>';
         }
+      }
+
+      if (data.has_part_genes && data.has_part_genes.length > 0) {
+        newContent += '<div><div>genes in complex:</div>';
+        for (const id of data.has_part_genes) {
+          let label = id;
+          if (geneInfoMap[id]) {
+            label = geneInfoMap[id];
+          }
+          if (highlightGeneIds.has(id)) {
+            newContent += '<div class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</div>';
+          } else {
+            newContent += '<div class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</div>';
+          }
+        }
+        newContent += '</div>';
       }
 
       contentDiv.innerHTML = newContent;
