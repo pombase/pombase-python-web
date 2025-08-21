@@ -3,6 +3,8 @@
 <head>
   <title>Model</title>
 
+  <base target="_blank" />
+
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
   <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
@@ -10,8 +12,6 @@
   <script src="https://unpkg.com/cose-base/cose-base.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.min.js"></script>
   <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/4.0.1/cytoscape-popper.min.js"></script>
-  <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
@@ -22,57 +22,120 @@
 
 <body>
 <style>
+#cy-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+}
 #cy {
-  width: 100%;
-  height: 780px;
-  display: block;
+  flex: 1 1 auto;
+  min-width: 100px;
+}
+#panel-buttons, #actions {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  font-size: 110%;
+}
+#panel-buttons button, #actions button {
+  font-size: 105%;
+}
+#panel-buttons, #actions {
+  padding: 0.2em 0.5em;
+  background: #f8f8f8a0;
+}
+#actions {
+  bottom: 1em;
+}
+#save-svg-button {
+  margin-left: 0.3em;
+}
+#zoom-in, #zoom-out {
+  font-weight: bold;
+  padding: 0 0.4em;
+  margin-left: 0.3em;
+}
+#cy-panel {
+  width: 0.1em;
+  flex: 0 0 auto;
+  width: 26em;
+  display: none;
+  height: 100%;
+}
+#cy-panel-contents {
+  display: none;
+  height: 100%;
+}
+#actions {
+  padding: 0 0.5em;
+  flex: 0 0 auto;
+}
+#node-details {
+  padding-top: 2em;
+  height: 100%;
+  overflow: auto;
+  background-color: #fbfbfb;
+  border-left: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.selected-models div {
+  margin: 0.4em 0;
 }
 .panel {
   width: 1200px;
   font-size: 130%;
 }
-
-.panel .sections {
-  display: flex;
-  flex-direction: row;
-  min-width: 0px;
+.header {
+  margin: 0.2em 0 0.5em 0;
+  font-size: 110%;
 }
 
-.panel .sections div {
-  flex-grow: 1;
+.models {
+  padding-top: 0.2em;
 }
-
-.popper-div {
-  position: relative;
-  background-color: #eee;
-  color: #111;
-  border: 2px solid #999;
-  font-size: 15px;
-  line-height: 1.4;
-  outline: 0;
-  padding: 5px 9px;
-  max-width: 40em;
+.model-list {
+  padding: 0.1em 0 0.1em 1.3em;
+  margin: 0.1em;
 }
-
-#actions {
-  position: absolute;
-  right: 0;
-  top: 0;
-  background: #f8f8f8a0;
+.model-id {
+  padding: 0;
+  font-size: 95%;
 }
-
 #save-svg-button {
   font-size: 120%;
   padding: 0.2em 0.5em;
 }
 </style>
 
-<div id="cy"></div>
+  <div id="cy-container">
+    <div id="cy"></div>
+  <div id="panel-buttons">
+    <button id="zoom-out" title="Zoom out" onclick="modelZoomOut()">
+     <img width="16px" height="16px" src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg width="10mm" height="10mm" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g transform="matrix(0.09090916,0,0,0.09090916,-2.2369372,-4.0168636)"> <rect style="fill:%23000000;stroke-width:0.264583" width="116.41666" height="31.75" x="31.75" y="95.25" ry="0.26052997" /> </g> </svg>'/>
+    </button>
+    <button id="zoom-in" title="Zoom in" onclick="modelZoomIn()">
+      <img width="16px" height="16px" src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg width="10mm" height="10mm" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g transform="matrix(0.09090916,0,0,0.09090916,-2.2369372,-4.0168636)"> <rect style="fill:%23000000;stroke-width:0.264583" width="116.41666" height="31.75" x="31.75" y="95.25" ry="0.26052997" /> <rect style="fill:%23000000;stroke-width:0.264583" width="31.749998" height="116.41666" x="74.083336" y="52.916668" ry="0" /> </g> </svg>'/>
+    </button>
+  </div>
 
 <div id="actions">
   <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View SVG</button>
 </div>
 
+<div id="cy-panel">
+  <div id="cy-panel-contents">
+  <div id="node-details">
+
+  </div>
+
+
+</div>
+</div>
+  </div>
 <script type="module">
 window.getSvgUrl = function() {
   var svgContent = window.cy.svg({scale: 1, full: true});
@@ -83,15 +146,41 @@ window.getSvgUrl = function() {
 
 const summaryType = '{{summary_type}}';
 
+let currentModels = [];
+
 document.addEventListener('DOMContentLoaded', async function(){
   const url = '/api/v1/dataset/latest/data/gocam/model_summary/' + summaryType;
   const response = await fetch(url);
 
   const modelConnections = await response.json();
 
+  const modelSummaryById = {};
+
   const elements = {
-    nodes: modelConnections.nodes.map(node => { node.label = node.title; return { data: node } }),
+    nodes: modelConnections.nodes.map(node => {
+      const summ = { title: node.title };
+      modelSummaryById[node.id] = summ;
+      const idNoPrefix = node.id.split(':')[1];
+      modelSummaryById[idNoPrefix] = summ;
+
+      node.label = node.title;
+      return { data: node }
+    }),
     edges: modelConnections.edges.map(edge => { edge.weight = 0; return { data: edge } }),
+  };
+
+  const isSelected = (el) => {
+    const data = el.data();
+
+    const id = data['id'].split(':')[1];
+
+    for (const currentModel of currentModels) {
+      if (currentModel.id === id) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   const nodeStyle = {
@@ -99,7 +188,10 @@ document.addEventListener('DOMContentLoaded', async function(){
     'width': '150px',
     'height': '80px',
     'background-color': '#ee8',
-    'border-width': 1,
+    'border-width': function(el) {
+      let width = isSelected(el) ? 5 : 1;
+      return width;
+    },
     'border-style': 'solid',
     'border-color': 'black',
     'font-size': 10,
@@ -128,8 +220,6 @@ document.addEventListener('DOMContentLoaded', async function(){
     'target-arrow-color': 'black',
     'arrow-scale': 2,
   };
-
-//  cytoscape.use(cytoscapePopper(Popper.createPopper));
 
   const cy = window.cy = cytoscape({
     container: document.getElementById('cy'),
@@ -183,23 +273,119 @@ document.addEventListener('DOMContentLoaded', async function(){
     cy.center();
   }, 10);
 
+  const contentDiv = document.getElementById("node-details");
+  const panelEl = document.getElementById("cy-panel");
+  const panelStyle = panelEl.style;
+  const panelContent = document.getElementById("cy-panel-contents");
+
+  window.showCyPanel = function() {
+    panelStyle.width = '26em';
+    panelEl.style.display = 'block';
+    panelContent.style.display = 'block';
+  };
+
+  window.hideCyPanel = function() {
+    panelStyle.width = '0.1em';
+    panelEl.style.display = 'none';
+    panelContent.style.display = 'none';
+  }
+
+  window.modelZoomIn = function() {
+    cy.zoom(cy.zoom() / 0.8);
+    cy.center();
+  }
+
+  window.modelZoomOut = function() {
+    cy.zoom(cy.zoom() * 0.8);
+    cy.center();
+  }
+
+  setTimeout(() => {
+    window.hideCyPanel();
+  }, 20);
+
+  const addToCurrent = (ids) => {
+    ids.map(id => {
+      id = id.replace("gomodel:","");
+      for (const currentModel of currentModels) {
+        if (currentModel.id === id) {
+          return;
+        }
+      }
+      currentModels.push({
+        id,
+        title: modelSummaryById[id].title,
+      });
+    });
+  };
+
+  const updateDetails = () => {
+    let newContent = '';
+
+    if (currentModels.length > 0) {
+      newContent = '<div class="header">Selected model' +
+        (currentModels.length > 1 ? 's' : '');
+      newContent += '</div>';
+
+      newContent += '<div class="selected-models">';
+      for (const modelSummary of currentModels) {
+        newContent += '<div><a href="/gocam/pombase-view/docs/' + modelSummary.id +
+          '">' + modelSummary.title + '</div>';
+      }
+
+      if (currentModels.length > 1) {
+        newContent += '<div class="view-joined-models">';
+        const ids = currentModels.map(m => m.id).join('+');
+        newContent += '<a href="/gocam/pombase-view/docs/' + ids + '">View joined models</a>';
+        newContent += '</div>';
+      }
+
+      newContent += '</div>';
+
+      window.showCyPanel()
+    } else {
+      window.hideCyPanel()
+    }
+
+    contentDiv.innerHTML = newContent;
+  }
+
+  cy.on('box', 'node', function( e ){
+    const node = e.target;
+    const id = node.data().id;
+    addToCurrent([id]);
+    updateDetails();
+  });
+
   cy.on('click', 'node',
-        (evt) => {
-          const id = evt.target.data().id.replace("gomodel:","");
-          const link = '/gocam/pombase-view/full/' + id;
-          window.open(link);
+        (event) => {
+          const data = event.target.data();
+          const id = data.id;
+          if (!event.originalEvent.shiftKey) {
+            currentModels = [];
+          }
+          addToCurrent([id]);
+          updateDetails();
         });
 
   cy.on('click', 'edge',
-        (evt) => {
-          const id = evt.target.data().id.replaceAll("gomodel:","").replaceAll('-', '+');
-          let link = '/gocam/pombase-view/full/' + id;
-          const enablerId = evt.target.data().enabler_id;
-          if (enablerId) {
-            link += '/' + enablerId;
+        (event) => {
+          const data = event.target.data();
+          const ids = data.id.split('-');
+          if (!event.originalEvent.shiftKey) {
+            currentModels = [];
           }
-          window.open(link);
+          addToCurrent(ids);
+          updateDetails();
         });
+
+  cy.on('click', (event) => {
+    if (event.target === cy) {
+      // clicked on the background
+      currentModels = [];
+      updateDetails();
+    }
+  });
 });
 </script>
 
