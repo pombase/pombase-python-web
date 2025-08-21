@@ -163,24 +163,17 @@ document.addEventListener('DOMContentLoaded', async function(){
       const idNoPrefix = node.id.split(':')[1];
       modelSummaryById[idNoPrefix] = summ;
 
+      node.id = idNoPrefix;
       node.label = node.title;
       return { data: node }
     }),
-    edges: modelConnections.edges.map(edge => { edge.weight = 0; return { data: edge } }),
-  };
-
-  const isSelected = (el) => {
-    const data = el.data();
-
-    const id = data['id'].split(':')[1];
-
-    for (const currentModel of currentModels) {
-      if (currentModel.id === id) {
-        return true;
-      }
-    }
-
-    return false;
+    edges: modelConnections.edges.map(edge => {
+      edge.weight = 0;
+      edge.id = edge.id.replaceAll('gomodel:', '');
+      edge.source = edge.source.replaceAll('gomodel:', '');
+      edge.target = edge.target.replaceAll('gomodel:', '');
+      return { data: edge }
+    }),
   };
 
   const nodeStyle = {
@@ -188,10 +181,7 @@ document.addEventListener('DOMContentLoaded', async function(){
     'width': '150px',
     'height': '80px',
     'background-color': '#ee8',
-    'border-width': function(el) {
-      let width = isSelected(el) ? 5 : 1;
-      return width;
-    },
+    'border-width': 1,
     'border-style': 'solid',
     'border-color': 'black',
     'font-size': 10,
@@ -317,6 +307,15 @@ document.addEventListener('DOMContentLoaded', async function(){
         title: modelSummaryById[id].title,
       });
     });
+
+    for (const currentModel of currentModels) {
+      cy.$('#' + currentModel.id).style('border-width', 5);
+    }
+  };
+
+  const clearCurrentModels = () => {
+    currentModels = [];
+    cy.$().style('border-width', 1);
   };
 
   const updateDetails = () => {
@@ -362,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async function(){
           const data = event.target.data();
           const id = data.id;
           if (!event.originalEvent.shiftKey) {
-            currentModels = [];
+            clearCurrentModels();
           }
           addToCurrent([id]);
           updateDetails();
@@ -373,7 +372,7 @@ document.addEventListener('DOMContentLoaded', async function(){
           const data = event.target.data();
           const ids = data.id.split('-');
           if (!event.originalEvent.shiftKey) {
-            currentModels = [];
+            clearCurrentModels();
           }
           addToCurrent(ids);
           updateDetails();
@@ -382,7 +381,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   cy.on('click', (event) => {
     if (event.target === cy) {
       // clicked on the background
-      currentModels = [];
+      clearCurrentModels();
       updateDetails();
     }
   });
