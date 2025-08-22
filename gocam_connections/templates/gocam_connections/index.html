@@ -330,6 +330,10 @@ document.addEventListener('DOMContentLoaded', async function(){
         (currentModels.length > 1 ? 's' : '');
       newContent += '</div>';
 
+      if (currentModels.length == 1) {
+        newContent += '<div>(click to view)</div>';
+      }
+
       newContent += '<div class="selected-models">';
       for (const modelSummary of currentModels) {
         newContent += '<div><a href="/gocam/pombase-view/docs/' + modelSummary.id +
