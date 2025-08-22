@@ -75,7 +75,7 @@
   flex: 0 0 auto;
 }
 #node-details {
-  padding-top: 2em;
+  padding: 2em 0 0 0.2em;
   height: 100%;
   overflow: auto;
   background-color: #fbfbfb;
@@ -84,6 +84,10 @@
 }
 .selected-models div {
   margin: 0.4em 0;
+}
+.view-joined-models {
+  margin: 1em 0;
+  font-size: 110%;
 }
 .panel {
   width: 1200px;
@@ -332,14 +336,15 @@ document.addEventListener('DOMContentLoaded', async function(){
           '">' + modelSummary.title + '</div>';
       }
 
+      newContent += '</div>';
+
       if (currentModels.length > 1) {
         newContent += '<div class="view-joined-models">';
         const ids = currentModels.map(m => m.id).join('+');
-        newContent += '<a href="/gocam/pombase-view/docs/' + ids + '">View joined models</a>';
+        newContent += '<form action="/gocam/pombase-view/docs/' + ids + '">' +
+          '<input type="submit" value="View joined models" /></form>';
         newContent += '</div>';
       }
-
-      newContent += '</div>';
 
       window.showCyPanel()
     } else {
