@@ -47,7 +47,7 @@
   font-size: 105%;
 {% endif %}
 {% if full_or_widget == 'full' %}
-  font-size: 120%;
+  font-size: 110%;
 {% endif %}
 }
 #panel-buttons, #actions {
@@ -71,7 +71,12 @@
 #cy-panel {
   width: 0.1em;
   flex: 0 0 auto;
+{% if full_or_widget == 'widget' %}
+  width: 18em;
+{% endif %}
+{% if full_or_widget == 'full' %}
   width: 20em;
+{% endif %}
 }
 #cy-panel-contents {
   display: block;
@@ -81,8 +86,13 @@
   flex: 0 0 auto;
 }
 #node-details {
-  padding-top: 2em;
-  height: 23em;
+  padding: 2em 0 0 0.2em;
+{% if full_or_widget == 'widget' %}
+  height: 200px;
+{% endif %}
+{% if full_or_widget == 'full' %}
+  height: 400px;
+{% endif %}
   overflow: auto;
   background-color: #fbfbfb;
   border-left: 1px solid #eee;
@@ -112,19 +122,19 @@
 }
 #rel-key {
   margin: 0.2em;
-{% if full_or_widget == 'widget' %}
   overflow-y: auto;
-  height: 150px;
+{% if full_or_widget == 'widget' %}
+  height: 200px;
+{% endif %}
+{% if full_or_widget == 'full' %}
+  height: 400px;
 {% endif %}
 }
-#rel-key .item {
-/*  font-size: 105%;*/
+#rel-key .rel-item svg {
+  height: 1.6em;
 }
-#rel-key .item svg {
-  display: inline-block;
-}
-#rel-key .item span {
-  display: inline-block;
+#rel-key .rel-item {
+  font-size: 105%;
   max-width: 14rem;
   vertical-align: top;
 }
@@ -707,7 +717,11 @@ const cy = window.cy = cytoscape({
   const hidePanelButton = document.getElementById("hide-panel-button");
 
   window.showCyPanel = function() {
-    panelStyle.width = '20em';
+    if (fullOrWidget == 'widget') {
+      panelStyle.width = '18em';
+    } else {
+      panelStyle.width = '20em';
+    }
     showPanelButton.style.display = 'none';
     hidePanelButton.style.display = 'inline-block';
     panelContent.style.display = 'block';
@@ -1010,93 +1024,108 @@ const cy = window.cy = cytoscape({
 <div class="header" part="header">Relation Types</div>
 <div class="sections" part="sections">
 <div class="section regulation" part="section">
-  <div class="item">
-    <svg height="25" width="60">
+  <table>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="none" marker-end="url(#triangle-RO:0002629)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>direct positive regulation/activation</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="none" marker-end="url(#tee-RO:0002630)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>direct negative regulation/inhibition</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#008800" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002407)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>indirect positive regulation</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#FF0000" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002409)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>indirect negative regulation</span>
-  </div>
-</div>
-<div class="section input" part="section">
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+</td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#800080" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-triangle-RO:0002413)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>provides input for</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="none" marker-end="url(#square-RO:0012010)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>removes input for</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#6495ED" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002233)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>input of</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#ED6495" stroke-width="5" stroke-dasharray="none" marker-end="url(#circle-RO:0002234)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>has output</span>
-  </div>
-</div>
-<div class="section upstream" part="section">
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+</td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#circle-RO:0012009)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>constitutively upstream</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#95e095" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#triangle-RO:0002304)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>upstream positive effect</span>
-  </div>
-  <div class="item">
-    <svg height="25" width="60">
+  </td></tr>
+  <tr><td class="rel-item">
+    <svg viewBox="0 0 50 30">
       <line x1="5" y1="15" x2="45" y2="15" stroke="#fF9999" stroke-width="5" stroke-dasharray="5,5" marker-end="url(#tee-RO:0002305)">
       </line>
     </svg>
+    </td>
+    <td>
     <span>upstream negative effect</span>
-  </div>
-</div>
-</div>
-</div>
-
-</div>
-</div>
-</div>
+  </td></tr>
+</table>
 </body>
 </html>
