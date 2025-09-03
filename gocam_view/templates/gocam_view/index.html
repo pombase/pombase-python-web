@@ -881,7 +881,7 @@ const cy = window.cy = cytoscape({
 
       if (nodeType !== 'model') {
         if (isMergedModel) {
-          newContent += '<div class="models">Models:</div><ul class="model-list">';
+          newContent += '<div class="models">models:</div><ul class="model-list">';
           for (const longModelId of currentData.model_ids) {
             newContent += '<li class="model-id">' + makeLink(longModelId) + '</li>';
           }
