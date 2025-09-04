@@ -157,6 +157,9 @@
   padding: 0;
   font-size: 95%;
 }
+.current-model {
+  font-weight: bold;
+}
 .popper-div {
   position: relative;
   background-color: #eee;
@@ -204,11 +207,13 @@ const gocamId = '{{gocam_id}}';
 
 let url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
 
+let gocamIdNoFlags = gocamId;
 let flags = [];
 
 if (gocamId.includes(':')) {
   const parts = gocamId.split(':');
   flags = parts[1].split(',');
+  gocamIdNoFlags = parts[0];
 }
 
 if (flags.includes('retain_genes') || flags.includes('trim_models')) {
@@ -776,27 +781,30 @@ const cy = window.cy = cytoscape({
     if (nodeId) {
       showCyPanel();
 
-      const makeLink = (id, label) => {
+      const makeLink = (id, label, title) => {
+        if (!title) {
+          title = "";
+        }
         const bits = id.split(":");
         if (bits.length == 2) {
           if (bits[0] == 'PomBase') {
-            return `<a target="_blank" href="/gene/${bits[1]}">${label}</a>`;
+            return `<a title="${title}" target="_blank" href="/gene/${bits[1]}">${label}</a>`;
           } else {
             if (bits[0] == 'CHEBI') {
-              return `<a target="_blank" href="https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=${id}">${label} (${id})</a>`;
+              return `<a title="${title}" target="_blank" href="https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=${id}">${label} (${id})</a>`;
             } else {
               if (bits[0] == 'GO') {
-                return `<a target="_blank" href="/term/${id}">${label} (${id})</a>`;
+                return `<a title="${title}" target="_blank" href="/term/${id}">${label} (${id})</a>`;
               } else {
                 if (bits[0].startsWith('gomodel')) {
                   const modelId = bits[1];
-                  const modelDetails = findModel(modelId);
-
-                  if (modelDetails) {
-                    return `<a target="_blank" href="/gocam/pombase-view/docs/${modelId}">${modelDetails.title}</a>`;
-                  } else {
-                    return modelId;
+                  let href = `/gocam/pombase-view/docs/${modelId}`;
+                  const highlightArray =
+                        [...highlightGeneIds].filter(g => g !== '');
+                  if (highlightArray.length > 0) {
+                    href += '/' + highlightArray.join(',');
                   }
+                  return `<a title="${title}" target="_blank" href="${href}">${label}</a>`;
                 }
               }
             }
@@ -880,10 +888,21 @@ const cy = window.cy = cytoscape({
       }
 
       if (nodeType !== 'model') {
-        if (isMergedModel) {
+        if (isMergedModel || currentData.is_connecting_node) {
           newContent += '<div class="models">models:</div><ul class="model-list">';
-          for (const longModelId of currentData.model_ids) {
-            newContent += '<li class="model-id">' + makeLink(longModelId) + '</li>';
+          for (const [longModelId, modelTitle] of currentData.models) {
+            let extraClass = '';
+            let linkTitle = '';
+            if (!isMergedModel) {
+              if (longModelId == 'gomodel:' + gocamIdNoFlags) {
+                extraClass = 'current-model';
+                linkTitle = 'Current model: ';
+              } else {
+                linkTitle = 'Connected model: ';
+              }
+            }
+            linkTitle += modelTitle + ' (click to view)';
+            newContent += '<li class="model-id ' + extraClass + '">' + makeLink(longModelId, modelTitle, linkTitle) + '</li>';
           }
           newContent += '</ul>';
         }
