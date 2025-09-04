@@ -887,7 +887,7 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
-      if (nodeType !== 'model') {
+      if (nodeType.startsWith('enable')) { // activity
         if (isMergedModel || currentData.is_connecting_node) {
           newContent += '<div class="models">models:</div><ul class="model-list">';
           for (const [longModelId, modelTitle] of currentData.models) {
