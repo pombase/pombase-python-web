@@ -890,7 +890,7 @@ const cy = window.cy = cytoscape({
       }
 
       if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
-        newContent += '<div><div>genes in complex:</div>';
+        newContent += '<div><div>complex members:</div>';
         for (const id of currentData.has_part_genes) {
           let label = id;
           if (geneInfoMap[id]) {
