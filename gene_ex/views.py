@@ -42,7 +42,7 @@ def read_gene_ex_df():
     df = pd.read_csv(file_name, sep="\t", header=0)
 
     df = df[df.reference.isin(pubmed_ids)]
-    df.loc[df['average_copies_per_cell'] < 0.0001, 'average_copies_per_cell'] = np.NaN
+    df.loc[df['average_copies_per_cell'] < 0.0001, 'average_copies_per_cell'] = np.nan
 
     def data_set_conf(row):
         return plot_config[(row['reference'], row['term_name'], row['during_term_name'])]
