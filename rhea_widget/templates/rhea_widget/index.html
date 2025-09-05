@@ -41,13 +41,16 @@ rhea-reaction {
   </head>
   <body>
 
-    <div>
-      Rhea {{view_type}} for {{rhea_id}}
-    </div>
+    <template id="styles">
+      <style>
+        .rhea-reaction-source span {
+        color: blue
+        }
+      </style>
+    </template>
 
     <script src="https://cdn.jsdelivr.net/npm/@swissprot/rhea-reaction-viz-test"></script>
 
-    <rhea-{{view_type}}  styleid="styles" zoom rheaid="{{rhea_id}}"></rhea-{{view_type}}>
-
+    <rhea-visualizer styleid="styles" rheaid="{{rhea_id}}"></rhea-visualizer>
   </body>
 </html>
