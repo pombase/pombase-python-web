@@ -146,14 +146,14 @@
   padding-bottom: 0.2em;
   font-size: 105%;
 }
-.models {
-  padding-top: 0.2em;
+.models, .inputs-outputs {
+  padding-top: 0.1em;
 }
-.model-list {
-  padding: 0.1em 0 0.1em 1.3em;
+.model-list, .input-output-list {
+  padding: 0.1em 0 0 1.3em;
   margin: 0.1em;
 }
-.model-id {
+.model-id, .input-output {
   padding: 0;
   font-size: 95%;
 }
@@ -878,6 +878,26 @@ const cy = window.cy = cytoscape({
           newContent += '<div>part of: ' + makeLink(parent.id, parent.label) + '</div>';
         }
         newContent += '</div>';
+      }
+
+      if (currentData.has_input && currentData.has_input.length > 0) {
+        newContent += '<div class="inputs-outputs">has input:</div><ul class="input-output-list">';
+        for (const hasInput of currentData.has_input) {
+          const label = hasInput.label;
+          const id = hasInput.id;
+          newContent += '<li class="input-output">' + makeLink(id, label) + '</li>';
+        }
+        newContent += '</ul></div>';
+      }
+
+      if (currentData.has_output && currentData.has_output.length > 0) {
+        newContent += '<div class="inputs-outputs">has output:</div><ul class="input-output-list">';
+        for (const hasOutput of currentData.has_output) {
+          const label = hasOutput.label;
+          const id = hasOutput.id;
+          newContent += '<li class="input-output">' + makeLink(id, label) + '</li>';
+        }
+        newContent += '</ul></div>';
       }
 
       if (currentData.happens_during) {
