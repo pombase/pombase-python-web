@@ -885,7 +885,16 @@ const cy = window.cy = cytoscape({
         for (const hasInput of currentData.has_input) {
           const label = hasInput.label;
           const id = hasInput.id;
-          newContent += '<li class="input-output">' + makeLink(id, label) + '</li>';
+          newContent += '<li class="input-output">' + makeLink(id, label);
+
+          const component = hasInput.located_in.complex_component ||
+              hasInput.located_in.other_component;
+          const componentLabel = component.label;
+          const componentId = component.id;
+          newContent += '<div class="term-link">located in: ' +
+            makeLink(componentId, componentLabel) + '</div>';
+
+          newContent += '</li>';
         }
         newContent += '</ul></div>';
       }
@@ -895,7 +904,16 @@ const cy = window.cy = cytoscape({
         for (const hasOutput of currentData.has_output) {
           const label = hasOutput.label;
           const id = hasOutput.id;
-          newContent += '<li class="input-output">' + makeLink(id, label) + '</li>';
+          newContent += '<li class="input-output">' + makeLink(id, label);
+
+          const component = hasOutput.located_in.complex_component ||
+              hasOutput.located_in.other_component;
+          const componentLabel = component.label;
+          const componentId = component.id;
+          newContent += '<div class="term-link">located in: ' +
+            makeLink(componentId, componentLabel) + '</div>';
+
+          newContent += '</li>';
         }
         newContent += '</ul></div>';
       }
