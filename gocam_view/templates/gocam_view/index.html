@@ -881,7 +881,7 @@ const cy = window.cy = cytoscape({
       }
 
       if (currentData.has_input && currentData.has_input.length > 0) {
-        newContent += '<div class="inputs-outputs">has input:</div><ul class="input-output-list">';
+        newContent += '<div class="inputs-outputs">inputs:</div><ul class="input-output-list">';
         for (const hasInput of currentData.has_input) {
           const label = hasInput.label;
           const id = hasInput.id;
@@ -891,7 +891,7 @@ const cy = window.cy = cytoscape({
       }
 
       if (currentData.has_output && currentData.has_output.length > 0) {
-        newContent += '<div class="inputs-outputs">has output:</div><ul class="input-output-list">';
+        newContent += '<div class="inputs-outputs">outputs:</div><ul class="input-output-list">';
         for (const hasOutput of currentData.has_output) {
           const label = hasOutput.label;
           const id = hasOutput.id;
