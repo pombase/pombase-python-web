@@ -838,7 +838,7 @@ const cy = window.cy = cytoscape({
 
       if (enabler_label) {
         const enabler_id = currentData.enabler_id;
-        newContent += '<div>enabled by: ' +
+        newContent += '<div class="term-link">enabled by: ' +
           makeLink(enabler_id, enabler_label);
 
         if (currentData.enabler_part_of_complex) {
