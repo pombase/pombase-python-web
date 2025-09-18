@@ -204,8 +204,9 @@ document.addEventListener('DOMContentLoaded', async function(){
 
 const fullOrWidget = '{{full_or_widget}}';
 const gocamId = '{{gocam_id}}';
+const apiPath = '{{api_path}}';
 
-let url = '/api/v1/dataset/latest/data/go-cam-cytoscape/' + gocamId;
+let url = apiPath + '/' + gocamId;
 
 let gocamIdNoFlags = gocamId;
 let flags = [];

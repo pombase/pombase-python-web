@@ -149,11 +149,12 @@ window.getSvgUrl = function() {
 };
 
 const summaryType = '{{summary_type}}';
+const apiPath = '{{api_path}}';
 
 let currentModels = [];
 
 document.addEventListener('DOMContentLoaded', async function(){
-  const url = '/api/v1/dataset/latest/data/gocam/model_summary/' + summaryType;
+  const url = apiPath + '/' + summaryType;
   const response = await fetch(url);
 
   const modelConnections = await response.json();
