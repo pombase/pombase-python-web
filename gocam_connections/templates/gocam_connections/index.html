@@ -113,6 +113,17 @@
   font-size: 120%;
   padding: 0.2em 0.5em;
 }
+a.link-button {
+  border-style: solid;
+  border-width: 1px;
+  text-decoration: none;
+  padding: 4px;
+  border-color: #000000
+  border-radius: 5px;
+  background-color: #eee;
+  color: black;
+  font-size: 90%;
+}
 </style>
 
   <div id="cy-container">
@@ -150,6 +161,7 @@ window.getSvgUrl = function() {
 
 const summaryType = '{{summary_type}}';
 const apiPath = '{{api_path}}';
+const modelViewUrl = '{{model_view_url}}';
 
 let currentModels = [];
 
@@ -337,7 +349,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
       newContent += '<div class="selected-models">';
       for (const modelSummary of currentModels) {
-        newContent += '<div><a href="/gocam/pombase-view/docs/' + modelSummary.id +
+        newContent += '<div><a href="' + modelViewUrl + '/' + modelSummary.id +
           '">' + modelSummary.title + '</div>';
       }
 
@@ -346,8 +358,9 @@ document.addEventListener('DOMContentLoaded', async function(){
       if (currentModels.length > 1) {
         newContent += '<div class="view-joined-models">';
         const ids = currentModels.map(m => m.id).join('+');
-        newContent += '<form action="/gocam/pombase-view/docs/' + ids + '">' +
-          '<input type="submit" value="View joined models" /></form>';
+        const encodedIds = encodeURIComponent(ids);
+        newContent +=
+          `<a class="link-button" href='${modelViewUrl + '/' + encodedIds}:show_models' target='_blank'>View joined models</button>`;
         newContent += '</div>';
       }
 
