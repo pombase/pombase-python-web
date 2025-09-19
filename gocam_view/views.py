@@ -4,7 +4,7 @@ def index(request):
     full_or_widget = request.GET.get('full_or_widget', '').strip()
     gocam_id = request.GET.get('gocam_id', '').strip()
     api_path = request.GET.get('api_path', '').strip()
-    model_view_url = request.GET.get('model_view_url', '').strip()
+    model_view_path = request.GET.get('model_view_path', '').strip()
     highlight_gene_ids = request.GET.get('highlight_gene_ids', '').strip()
 
     if full_or_widget == 'widget':
@@ -16,7 +16,7 @@ def index(request):
         'full_or_widget': full_or_widget,
         'gocam_id': gocam_id,
         'api_path': api_path,
-        'model_view_url': model_view_url,
+        'model_view_path': model_view_path,
         'highlight_gene_ids': highlight_gene_ids.split(','),
     }
 

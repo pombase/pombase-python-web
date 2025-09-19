@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 const fullOrWidget = '{{full_or_widget}}';
 const gocamId = '{{gocam_id}}';
 const apiPath = '{{api_path}}';
-const modelViewUrl = '{{model_view_url}}';
+const modelViewPath = '{{model_view_path}}';
 
 let url = apiPath + '/' + gocamId;
 
@@ -803,7 +803,7 @@ const cy = window.cy = cytoscape({
           }
           if (bits[0].startsWith('gomodel')) {
             const modelId = bits[1];
-            let href = `${modelViewUrl}/${modelId}`;
+            let href = `${modelViewPath}/${modelId}`;
             const highlightArray =
                   [...highlightGeneIds].filter(g => g !== '');
             if (highlightArray.length > 0) {

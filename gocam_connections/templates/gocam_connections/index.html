@@ -161,7 +161,7 @@ window.getSvgUrl = function() {
 
 const summaryType = '{{summary_type}}';
 const apiPath = '{{api_path}}';
-const modelViewUrl = '{{model_view_url}}';
+const modelViewPath = '{{model_view_path}}';
 
 let currentModels = [];
 
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
       newContent += '<div class="selected-models">';
       for (const modelSummary of currentModels) {
-        newContent += '<div><a href="' + modelViewUrl + '/' + modelSummary.id +
+        newContent += '<div><a href="' + modelViewPath + '/' + modelSummary.id +
           '">' + modelSummary.title + '</div>';
       }
 
@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', async function(){
         const ids = currentModels.map(m => m.id).join('+');
         const encodedIds = encodeURIComponent(ids);
         newContent +=
-          `<a class="link-button" href='${modelViewUrl + '/' + encodedIds}:show_models' target='_blank'>View joined models</button>`;
+          `<a class="link-button" href='${modelViewPath + '/' + encodedIds}:show_models' target='_blank'>View joined models</button>`;
         newContent += '</div>';
       }
 
