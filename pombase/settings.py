@@ -32,7 +32,7 @@ SECRET_KEY = '02_oc6yi+f#@^b8*he)=$#(p%toqlo(n5ii25+9j)0f$%4fnm0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dev.pombase.org', 'curation.pombase.org', 'www.pombase.org']
 
 
 # Application definition
