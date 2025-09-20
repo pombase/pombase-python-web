@@ -23,7 +23,7 @@ def index(request):
             ids = urllib.parse.quote_plus(ids)
 
             url = f"{app_path}/view/{ids}:show_models"
-            print(app_path)
+
             return HttpResponseRedirect(url)
 
     else:
