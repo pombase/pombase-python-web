@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>GO-CAMs</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <style>
+      #ids {
+        width: 50em;
+        height: 30em;
+      }
+      #ids-submit {
+        margin-top: 1em;
+       font-size: 110%;
+      }
+    </style>
+  </head>
+  <body>
+    <h4>Links:</h4>
+
+    <ul>
+      <li>
+        <a href="{{app_path}}/view/ALL_CONNECTED:show_models">All connected models</a>
+      </li>
+      <li>
+        <a href="{{app_path}}/view/ALL_MERGED:show_models">All models</a>
+      </li>
+      <li>
+        <a href="{{app_path}}/summary/connected_only">Summary map of connected models</a>
+      </li>
+      <li>
+        <a href="{{app_path}}/summary/all_models">Summary map of all models</a>
+      </li>
+    </ul>
+    
+    <h4>Create a model from IDs:</h4>
+
+    <form id="id-lookup" action="" method="post">
+      {% csrf_token %}
+      <div>
+        {{ form }}
+      </div>
+      <input id="ids-submit" type="submit" value="View GO-CAM(s)">
+    </form>
+
+  </body>
+</html>

@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://curation.pombase.org',
+    'https://dev.pombase.org',
+    'https://www.pombase.org',
+    'https://desktop.kmr.nz',
+]
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -45,6 +52,7 @@ INSTALLED_APPS = [
     'gocam_viz',
     'gocam_view',
     'gocam_connections',
+    'gocam_app',
     'rhea_widget',
 ]
 

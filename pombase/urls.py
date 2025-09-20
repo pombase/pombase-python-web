@@ -7,6 +7,7 @@ urlpatterns = [
     path('gocam_viz/', include('gocam_viz.urls')),
     path('gocam_view/', include('gocam_view.urls')),
     path('gocam_connections/', include('gocam_connections.urls')),
+    path('gocam_app/', include('gocam_app.urls')),
 ]
 
 if len(os.environ["WEBSITE_CONFIG_JSON_PATH"]) > 0:
