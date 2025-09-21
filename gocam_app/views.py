@@ -8,9 +8,11 @@ from .forms import IdForm
 
 def index(request):
     app_path = request.GET.get('app_path', '').strip()
+    api_path = request.GET.get('api_path', '').strip()
 
     context = {
         'app_path': app_path,
+        'api_path': api_path,
     }
 
     if request.method == "POST":

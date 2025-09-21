@@ -7,7 +7,7 @@
     <style>
       body {
         margin-left: 1em;
-        font-size: 150%;
+        font-size: 140%;
       }
       #id_ids {
         width: 40em;
@@ -16,6 +16,23 @@
       #ids-submit {
         margin-top: 1em;
         font-size: 110%;
+      }
+      #missing-activities table {
+        border-collapse: collapse;
+        width: 95%;
+      }
+      #missing-activities thead {
+        border-bottom: 3px solid #ccc;
+      }
+      #missing-activities {
+        font-size: 90%;
+      }
+      #missing-activities td, #missing-activities th {
+        vertical-align: top;
+        padding: 0.4em;
+      }
+      #missing-activities tr:nth-child(2n+1) {
+        background-color: #f3f3fa;
       }
     </style>
   </head>
@@ -47,5 +64,83 @@
       <input id="ids-submit" type="submit" value="View GO-CAM(s)">
     </form>
 
+    <h4>Missing activities</h4>
+    <div id="missing-activities">
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Pathway
+        </th>
+        <th>
+          Missing activity
+        </th>
+        <th>
+          Process
+        </th>
+        <th>
+          Input/output
+        </th>
+        <th>
+          Occurs in
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+    </div>
+
+    <script type="module">
+const appPath = '{{app_path}}';
+const apiPath = '{{api_path}}';
+const holesUrl = `${apiPath}/missing_activities`;
+const response = await fetch(holesUrl);
+const holes = await response.json();
+const holesDiv = document.querySelector('#missing-activities');
+const tbody = holesDiv.querySelector('tbody');
+
+for (const hole of holes) {
+  const rowEl = document.createElement("tr");
+  tbody.appendChild(rowEl);
+  let [modelId, modelTitle] = hole.models[0];
+  modelId = modelId.replace('gomodel:', '');
+
+  const modelEl = document.createElement("td");
+  rowEl.appendChild(modelEl);
+  const modelLinkEl = document.createElement('a');
+  modelEl.appendChild(modelLinkEl);
+  modelLinkEl.textContent = modelTitle;
+  modelLinkEl.setAttribute('target', '_blank');
+  modelLinkEl.setAttribute('href', appPath + '/view/model/' +modelId);
+
+  const missingActivityEl = document.createElement("td");
+  rowEl.appendChild(missingActivityEl);
+  missingActivityEl.textContent =
+    hole.label + ' (' + hole.node_id + ')';
+
+  const processEl = document.createElement("td");
+  rowEl.appendChild(processEl);
+  processEl.textContent = hole.part_of_process.label + ' (' +
+    hole.part_of_process.id + ')';
+
+  let inputs = hole.has_input.map(input => input.label).join(',');
+  if (inputs.length == 0) {
+    inputs = '?';
+  }
+  let outputs = hole.has_output.map(output => output.label).join(',');
+  if (outputs.length == 0) {
+    outputs = '?';
+  }
+  const inputOutputEl = document.createElement("td");
+  rowEl.appendChild(inputOutputEl);
+  inputOutputEl.textContent = inputs + ' / ' + outputs;
+
+  let occursInText = hole.has_input.map(input => input.label).join(',');
+  const occursInEl = document.createElement("td");
+  rowEl.appendChild(occursInEl);
+  occursInEl.textContent = occursInText;
+}
+    </script>
   </body>
 </html>
