@@ -112,7 +112,7 @@ for (const hole of holes) {
   modelEl.appendChild(modelLinkEl);
   modelLinkEl.textContent = modelTitle;
   modelLinkEl.setAttribute('target', '_blank');
-  modelLinkEl.setAttribute('href', appPath + '/view/model/' +modelId);
+  modelLinkEl.setAttribute('href', appPath + '/view/' + modelId);
 
   const missingActivityEl = document.createElement("td");
   rowEl.appendChild(missingActivityEl);
