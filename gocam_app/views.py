@@ -21,7 +21,9 @@ def index(request):
             ids = form.cleaned_data["ids"].replace("\n", " ")
             ids = ids.replace("gomodel:", "");
 
-            ids = 'B+' + re.sub(r'(?:\s|[,;])+', '+', ids)
+            ids = re.sub(r'(?:\s|[,;])+', '+', ids)
+            if not form.cleaned_data["dag"]:
+                ids = 'B+' + ids
             ids = urllib.parse.quote_plus(ids)
 
             url = f"{app_path}/view/{ids}:show_models"
