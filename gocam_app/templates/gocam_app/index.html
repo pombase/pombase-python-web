@@ -95,6 +95,31 @@
     </div>
 
     <script type="module">
+const makeLink = (id, label, title) => {
+  const bits = id.split(":");
+  if (bits.length == 2) {
+    if (bits[0] == 'PomBase') {
+      return `<a target="_blank" href="/gene/${bits[1]}">${label}</a>`;
+    }
+    if (bits[0] == 'FB') {
+      return `<a target="_blank" href="https://www.flybase.org/reports/${bits[1]}">${label}</a>`;
+    }
+    if (bits[0] == 'CHEBI') {
+      return `<a target="_blank" href="https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=${id}">${label} (${id})</a>`;
+    }
+    if (bits[0] == 'GO') {
+      return `<a target="_blank" href="https://amigo.geneontology.org/amigo/term/${id}">${label} (${id})</a>`;
+    }
+    if (bits[0].startsWith('gomodel')) {
+      const modelId = bits[1];
+      let href = `${appPath}/view/${modelId}`;
+      return `<a target="_blank" href="${href}">${label}</a>`;
+    }
+  }
+
+  return label;
+};
+
 const appPath = '{{app_path}}';
 const apiPath = '{{api_path}}';
 const holesUrl = `${apiPath}/missing_activities`;
@@ -106,43 +131,43 @@ const tbody = holesDiv.querySelector('tbody');
 for (const hole of holes) {
   const rowEl = document.createElement("tr");
   tbody.appendChild(rowEl);
-  let [modelId, modelTitle] = hole.models[0];
-  modelId = modelId.replace('gomodel:', '');
+  let [longModelId, modelTitle] = hole.models[0];
+  const modelId = longModelId.replace('gomodel:', '');
 
   const modelEl = document.createElement("td");
   rowEl.appendChild(modelEl);
-  const modelLinkEl = document.createElement('a');
-  modelEl.appendChild(modelLinkEl);
-  modelLinkEl.textContent = modelTitle;
-  modelLinkEl.setAttribute('target', '_blank');
-  modelLinkEl.setAttribute('href', appPath + '/view/' + modelId);
+  const modelHtml = makeLink(longModelId, modelTitle);
+  modelEl.insertAdjacentHTML('afterbegin', modelHtml);
 
   const missingActivityEl = document.createElement("td");
   rowEl.appendChild(missingActivityEl);
-  missingActivityEl.textContent =
-    hole.label + ' (' + hole.node_id + ')';
+  const missingActivityHtml = makeLink(hole.node_id, hole.label);
+  missingActivityEl.insertAdjacentHTML('afterbegin', missingActivityHtml);
 
   const processEl = document.createElement("td");
   rowEl.appendChild(processEl);
-  processEl.textContent = hole.part_of_process.label + ' (' +
-    hole.part_of_process.id + ')';
+  const processHtml = makeLink(hole.part_of_process.id, hole.part_of_process.label);
+  processEl.insertAdjacentHTML('afterbegin', processHtml);
 
-  let inputs = hole.has_input.map(input => input.label).join(',');
+  let inputs = hole.has_input.map(input => makeLink(input.id, input.label)).join(',');
   if (inputs.length == 0) {
     inputs = '?';
   }
-  let outputs = hole.has_output.map(output => output.label).join(',');
+  let outputs = hole.has_output.map(output => makeLink(output.id, output.label)).join(',');
   if (outputs.length == 0) {
     outputs = '?';
   }
   const inputOutputEl = document.createElement("td");
   rowEl.appendChild(inputOutputEl);
-  inputOutputEl.textContent = inputs + ' / ' + outputs;
+  inputOutputEl.insertAdjacentHTML('afterbegin', inputs + ' / ' + outputs);
 
-  let occursInText = hole.has_input.map(input => input.label).join(',');
   const occursInEl = document.createElement("td");
   rowEl.appendChild(occursInEl);
-  occursInEl.textContent = occursInText;
+  const occursInHtml = hole.occurs_in.map(occurs_in => {
+    const component = occurs_in.complex_component || occurs_in.other_component;
+    return makeLink(component.id, component.label);
+  }).join(',');
+  occursInEl.insertAdjacentHTML('afterbegin', occursInHtml);
 }
     </script>
   </body>
