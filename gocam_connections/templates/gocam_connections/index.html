@@ -382,7 +382,8 @@ document.addEventListener('DOMContentLoaded', async function(){
     let matchCount = 0;
     modelNodes.map(node => {
       const title = node.title.toLowerCase();
-      if (title.includes(searchText)) {
+      if (title.includes(searchText) ||
+         searchText.length == 16 && node.id == searchText) {
         addToCurrent([node.id]);
         matchCount++;
       }
