@@ -1010,14 +1010,20 @@ const cy = window.cy = cytoscape({
     }
   });
 
+  const searchBoxDiv = document.getElementById('search-box');
+
+  window.hideSearch = function() {
+    searchBoxDiv.style.display = 'none';
+  }
+
   cy.elements().bind("click", (event) => {
     const data = event.target.data();
     currentData = data;
+    hideSearch();
 
     updateDetails();
   });
 
-  const searchBoxDiv = document.getElementById('search-box');
   window.showSearch = function() {
     if (searchBoxDiv.style.display == 'none') {
       showCyPanel();
@@ -1026,7 +1032,7 @@ const cy = window.cy = cytoscape({
       currentData = undefined;
       updateDetails();
     } else {
-      searchBoxDiv.style.display = 'none';
+      hideSearch();
     }
   }
 
