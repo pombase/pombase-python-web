@@ -69,6 +69,7 @@
   margin-left: 0.3em;
 }
 #cy-panel {
+  margin-top: 2.5em;
   width: 0.1em;
   flex: 0 0 auto;
 {% if full_or_widget == 'widget' %}
@@ -78,6 +79,9 @@
   width: 20em;
 {% endif %}
 }
+#search-input {
+  font-size: 105%;
+}
 #cy-panel-contents {
   display: block;
 }
@@ -86,7 +90,7 @@
   flex: 0 0 auto;
 }
 #node-details {
-  padding: 2em 0 0 0.2em;
+  padding: 0.2em 0 0 0.2em;
 {% if full_or_widget == 'widget' %}
   height: 200px;
 {% endif %}
@@ -233,6 +237,10 @@ const models = elements['models'];
 
 delete elements['models'];
 
+const isSmallJoin = models.length <= 10;
+
+const nodes = elements['nodes'];
+
 const geneInfoMap = elements['gene_info_map'];
 delete elements['gene_info_map'];
 
@@ -246,7 +254,7 @@ for (let key of Object.keys(geneInfoMap)) {
 let seenParentIds = new Set();
 
 
-elements['nodes'].map(node => {
+nodes.map(node => {
   if (node.data.parent) {
     seenParentIds.add(node.data.parent);
   }
@@ -606,7 +614,15 @@ const parentStyle = {
   'corner-radius': "10",
   'padding': "10px",
   'content': "data(title)",
-  'border-width': '2px',
+  'border-width': function(el) {
+    let width = 2;
+    if (isSelected(el)) {
+      width = 6;
+      width += models.length / 8;
+    }
+    return width;
+  },
+
   'border-color': '#555',
 };
 
@@ -974,7 +990,7 @@ const cy = window.cy = cytoscape({
     }
   }
 
-  elements['nodes'].map(node => {
+  nodes.map(node => {
     if (node.data.enabler_id &&
         rawHighlightGeneIds.length == 1 &&
         rawHighlightGeneIds[0] == node.data.enabler_id.replace(/.*:/, '')) {
@@ -1000,12 +1016,58 @@ const cy = window.cy = cytoscape({
     updateDetails();
   });
 
+  const searchBoxDiv = document.getElementById('search-box');
+  window.showSearch = function() {
+    if (searchBoxDiv.style.display == 'none') {
+      searchBoxDiv.style.display = 'block';
+    } else {
+      searchBoxDiv.style.display = 'none';
+    }
+  }
+
+  const doSearch = (searchText) => {
+    for (const node of nodes) {
+      if (isSmallJoin &&
+          (node.data.enabler_label &&
+           node.data.enabler_label.toLowerCase().includes(searchText) ||
+           node.data.enabler_id &&
+           node.data.enabler_id.toLowerCase().includes(searchText) ||
+           node.data.label &&
+           node.data.label.toLowerCase().includes(searchText) ||
+           node.data.node_id &&
+           node.data.node_id.toLowerCase().includes(searchText)) ||
+          node.data.type == 'model' &&
+          (node.data.label.includes(searchText) ||
+           node.data.id == 'gomodel:' + searchText)) {
+        currentData = node.data;
+        cy.getElementById(node.data.id).select();
+        break;
+      }
+    }
+    updateDetails();
+  };
+
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener("input", (e) => {
+    const searchText = e.target.value.trim().toLowerCase();
+    cy.$().unselect();
+    currentData = undefined;
+    if (searchText.length >= 2) {
+      doSearch(searchText);
+    }
+  });
+
 });
 </script>
 
   <div id="cy-container">
     <div id="cy"></div>
   <div id="panel-buttons">
+{% if full_or_widget == 'full' %}
+    <button id="show-search" title="Search" onclick="showSearch()">
+     <img width="16px" height="16px" src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg fill="%23000000" height="10mm" width="10mm" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g> <path d="M483.4,454.444l-121.3-121.4c28.7-35.2,46-80,46-128.9c0-112.5-91.5-204.1-204.1-204.1S0,91.644,0,204.144 s91.5,204,204.1,204c48.8,0,93.7-17.3,128.9-46l121.3,121.3c8.3,8.3,20.9,8.3,29.2,0S491.8,462.744,483.4,454.444z M40.7,204.144 c0-90.1,73.2-163.3,163.3-163.3s163.4,73.3,163.4,163.4s-73.3,163.4-163.4,163.4S40.7,294.244,40.7,204.144z"/> </g> </svg>'/>
+    </button>
+{% endif %}
     <button id="zoom-out" title="Zoom out" onclick="modelZoomOut()">
 {% if full_or_widget == 'widget' %}
     -
@@ -1029,6 +1091,11 @@ const cy = window.cy = cytoscape({
     <button id="save-svg-button" target="_blank" onclick="window.open(getSvgUrl(), '_blank')">View as SVG</button>
   </div>
 <div id="cy-panel">
+{% if full_or_widget == 'full' %}
+  <div id="search-box" style="display: none">
+    <input id="search-input" placeholder="Search ..."/>
+  </div>
+{% endif %}
   <div id="cy-panel-contents">
   <div id="node-details">
 
