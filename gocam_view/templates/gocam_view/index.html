@@ -766,6 +766,7 @@ const cy = window.cy = cytoscape({
     showPanelButton.style.display = 'inline-block';
     hidePanelButton.style.display = 'none';
     panelContent.style.display = 'none';
+    searchBoxDiv.style.display = 'none';
     /*
     cy.ready(function() {
       setTimeout(() => {
@@ -1019,6 +1020,7 @@ const cy = window.cy = cytoscape({
   const searchBoxDiv = document.getElementById('search-box');
   window.showSearch = function() {
     if (searchBoxDiv.style.display == 'none') {
+      showCyPanel();
       searchBoxDiv.style.display = 'block';
       searchInput.focus();
       currentData = undefined;
