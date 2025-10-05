@@ -1020,6 +1020,9 @@ const cy = window.cy = cytoscape({
   window.showSearch = function() {
     if (searchBoxDiv.style.display == 'none') {
       searchBoxDiv.style.display = 'block';
+      searchInput.focus();
+      currentData = undefined;
+      updateDetails();
     } else {
       searchBoxDiv.style.display = 'none';
     }
@@ -1044,7 +1047,6 @@ const cy = window.cy = cytoscape({
         break;
       }
     }
-    updateDetails();
   };
 
   const searchInput = document.getElementById('search-input');
@@ -1055,6 +1057,7 @@ const cy = window.cy = cytoscape({
     if (searchText.length >= 2) {
       doSearch(searchText);
     }
+    updateDetails();
   });
 
 });
