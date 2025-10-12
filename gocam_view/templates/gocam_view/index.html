@@ -741,6 +741,7 @@ const cy = window.cy = cytoscape({
   const panelContent = document.getElementById("cy-panel-contents");
   const showPanelButton = document.getElementById("show-panel-button");
   const hidePanelButton = document.getElementById("hide-panel-button");
+  const searchBoxDiv = document.getElementById('search-box');
 
   window.showCyPanel = function() {
     if (fullOrWidget == 'widget') {
@@ -766,7 +767,9 @@ const cy = window.cy = cytoscape({
     showPanelButton.style.display = 'inline-block';
     hidePanelButton.style.display = 'none';
     panelContent.style.display = 'none';
-    searchBoxDiv.style.display = 'none';
+    if (searchBoxDiv) {
+      searchBoxDiv.style.display = 'none';
+    }
     /*
     cy.ready(function() {
       setTimeout(() => {
@@ -1010,10 +1013,10 @@ const cy = window.cy = cytoscape({
     }
   });
 
-  const searchBoxDiv = document.getElementById('search-box');
-
   window.hideSearch = function() {
-    searchBoxDiv.style.display = 'none';
+    if (searchBoxDiv) {
+      searchBoxDiv.style.display = 'none';
+    }
   }
 
   cy.elements().bind("click", (event) => {
@@ -1025,6 +1028,9 @@ const cy = window.cy = cytoscape({
   });
 
   window.showSearch = function() {
+    if (!searchBoxDiv) {
+      return;
+    }
     if (searchBoxDiv.style.display == 'none') {
       showCyPanel();
       searchBoxDiv.style.display = 'block';
@@ -1058,16 +1064,18 @@ const cy = window.cy = cytoscape({
   };
 
   const searchInput = document.getElementById('search-input');
-  searchInput.addEventListener("input", (e) => {
-    const searchText = e.target.value.trim().toLowerCase();
-    cy.$().unselect();
-    currentData = undefined;
-    if (searchText.length >= 2) {
-      doSearch(searchText);
-    }
-    updateDetails();
-  });
 
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const searchText = e.target.value.trim().toLowerCase();
+      cy.$().unselect();
+      currentData = undefined;
+      if (searchText.length >= 2) {
+        doSearch(searchText);
+      }
+      updateDetails();
+    });
+  }
 });
 </script>
 
