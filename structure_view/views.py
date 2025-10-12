@@ -5,7 +5,7 @@ def index(request):
     structure_type = request.GET.get('structure_type', '').strip()
 
     if structure_type == 'alphafold':
-        url = f'https://alphafold.ebi.ac.uk/files/AF-{id}-F1-model_v4.cif'
+        url = f'https://alphafold.ebi.ac.uk/files/AF-{id}-F1-model_v6.cif'
     else:
         url = f'https://www.ebi.ac.uk/pdbe/model-server/v1/{id}/full?encoding=cif'
 
