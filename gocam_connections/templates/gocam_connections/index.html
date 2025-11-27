@@ -165,12 +165,16 @@ window.getSvgUrl = function() {
 
 const summaryType = '{{summary_type}}';
 const apiPath = '{{api_path}}';
+const flags = '{{flags}}';
 const modelViewPath = '{{model_view_path}}';
 
 let currentModels = [];
 
 document.addEventListener('DOMContentLoaded', async function(){
-  const url = apiPath + '/' + summaryType;
+  let url = apiPath + '/' + summaryType;
+  if (flags.length > 0) {
+    url += ':' + flags;
+  }
   const response = await fetch(url);
 
   const modelConnections = await response.json();
