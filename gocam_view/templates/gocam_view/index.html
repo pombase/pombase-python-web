@@ -902,6 +902,22 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
+      if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
+        newContent += '<div><div>complex members:</div>';
+        for (const id of currentData.has_part_genes) {
+          let label = id;
+          if (geneInfoMap[id]) {
+            label = geneInfoMap[id];
+          }
+          if (highlightGeneIds.has(id)) {
+            newContent += '<div class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</div>';
+          } else {
+            newContent += '<div class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</div>';
+          }
+        }
+        newContent += '</div>';
+      }
+
       if (currentData.has_input && currentData.has_input.length > 0) {
         newContent += '<div class="inputs-outputs">inputs:</div><ul class="input-output-list">';
         for (const hasInput of currentData.has_input) {
@@ -971,23 +987,6 @@ const cy = window.cy = cytoscape({
           newContent += '</ul>';
         }
       }
-
-      if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
-        newContent += '<div><div>complex members:</div>';
-        for (const id of currentData.has_part_genes) {
-          let label = id;
-          if (geneInfoMap[id]) {
-            label = geneInfoMap[id];
-          }
-          if (highlightGeneIds.has(id)) {
-            newContent += '<div class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</div>';
-          } else {
-            newContent += '<div class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</div>';
-          }
-        }
-        newContent += '</div>';
-      }
-
       contentDiv.innerHTML = newContent;
     } else {
       contentDiv.innerHTML = '';
