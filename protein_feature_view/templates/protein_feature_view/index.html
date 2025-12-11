@@ -385,6 +385,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         includeCoords: true,
         singular: 'PIRSF match',
       },
+      'PROSITE_Patterns': {
+        colour: '#e0a',
+        allowGaps: true,
+        helpText: 'PROSITE Patterns matches imported from InterPro',
+        includeCoords: true,
+        singular: 'PROSITE Patterns match',
+      },
       'PROSITE_Profiles': {
         colour: '#89c',
         allowGaps: false,
@@ -398,20 +405,6 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         helpText: 'Pfam matches imported from InterPro',
         includeCoords: true,
         singular: 'Pfam match',
-      },
-      'ProSitePatterns': {
-        colour: '#e0a',
-        allowGaps: true,
-        helpText: 'ProSitePatterns matches imported from InterPro',
-        includeCoords: true,
-        singular: 'ProSitePatterns match',
-      },
-      'ProSiteProfiles': {
-        colour: '#09f',
-        allowGaps: true,
-        helpText: 'ProSiteProfiles matches imported from InterPro',
-        includeCoords: true,
-        singular: 'ProSiteProfiles match',
       },
       'SFLD': {
         colour: '#38b',
