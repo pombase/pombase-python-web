@@ -131,7 +131,7 @@ def make_plot(raw_stat_type, column_name=None):
         ax.xaxis.set_major_locator(MultipleLocator(2))
 
     ax.set_xlabel('')
-    ax.tick_params(axis='x', labelrotation = 45)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', rotation_mode='anchor')
 
     if "cumulative" in raw_stat_type:
         handles, labels = ax.get_legend_handles_labels()
@@ -161,7 +161,7 @@ def make_year_range_plot(raw_stat_type):
 
     sns.barplot(ax=ax, x=df.index, y=df[df.columns[0]], color="#8192ca")
 
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', rotation_mode='anchor')
 
     fontsize = 14
 
@@ -210,7 +210,7 @@ def make_by_year_plot(raw_stat_type):
 
     sns.barplot(ax=ax, x=df.index, y=df[df.columns[0]], color="#8192ca")
 
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', rotation_mode='anchor')
 
     fontsize = 14
 
