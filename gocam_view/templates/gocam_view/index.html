@@ -268,6 +268,15 @@ const response = await fetch(url);
 
 let elements = await response.json();
 
+let resStatus = elements['status'];
+
+if (resStatus && resStatus == 'no-models') {
+  const container = document.getElementById('cy-container');
+  container.innerHTML =
+    "<div style='margin: 1.5em; font-size: 180%;'>No models to display due to filtering by activity</div>";
+  return;
+}
+
 const models = elements['models'];
 
 delete elements['models'];
