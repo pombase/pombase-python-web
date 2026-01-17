@@ -788,6 +788,7 @@ const cy = window.cy = cytoscape({
   const searchBoxDiv = document.getElementById('search-box');
 
   window.showCyPanel = function() {
+    panelStyle.display = 'block';
     showPanelButton.style.display = 'none';
     hidePanelButton.style.display = 'inline-block';
     panelContent.style.display = 'block';
@@ -802,6 +803,7 @@ const cy = window.cy = cytoscape({
   };
 
   window.hideCyPanel = function() {
+    panelStyle.display = 'none';
     showPanelButton.style.display = 'inline-block';
     hidePanelButton.style.display = 'none';
     panelContent.style.display = 'none';
