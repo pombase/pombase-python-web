@@ -1115,12 +1115,16 @@ const cy = window.cy = cytoscape({
       updateDetails();
     });
   }
+
+  const panelButtons = document.getElementById('panel-buttons');
+  // hide until the onclick handlers are defined
+  panelButtons.style.display = 'block';
 });
 </script>
 
   <div id="cy-container">
     <div id="cy"></div>
-  <div id="panel-buttons">
+  <div id="panel-buttons" style="display: none">
 {% if full_or_widget == 'full' %}
     <button id="show-search" title="Search" onclick="showSearch()">
      <img src='data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg fill="%23000000" height="10mm" width="10mm" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <g> <path d="M483.4,454.444l-121.3-121.4c28.7-35.2,46-80,46-128.9c0-112.5-91.5-204.1-204.1-204.1S0,91.644,0,204.144 s91.5,204,204.1,204c48.8,0,93.7-17.3,128.9-46l121.3,121.3c8.3,8.3,20.9,8.3,29.2,0S491.8,462.744,483.4,454.444z M40.7,204.144 c0-90.1,73.2-163.3,163.3-163.3s163.4,73.3,163.4,163.4s-73.3,163.4-163.4,163.4S40.7,294.244,40.7,204.144z"/> </g> </svg>'/>
