@@ -608,7 +608,7 @@ const nodeStyle = {
 },
 'border-style': function(el) {
   let style = 'solid';
-  if (isConnectingNode(el)) {
+  if (isMergedModel && isConnectingNode(el)) {
     style = 'dashed';
   }
   return style;
