@@ -1093,7 +1093,7 @@ const cy = window.cy = cytoscape({
            node.data.node_id &&
            node.data.node_id.toLowerCase().includes(searchText)) ||
           node.data.type == 'model' &&
-          (node.data.label.includes(searchText) ||
+          (node.data.label.toLowerCase().includes(searchText) ||
            node.data.id == 'gomodel:' + searchText)) {
         currentData = node.data;
         cy.getElementById(node.data.id).select();
