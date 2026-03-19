@@ -847,6 +847,9 @@ const cy = window.cy = cytoscape({
         if (!title) {
           title = "";
         }
+        if (geneInfoMap[id]) {
+          label = geneInfoMap[id];
+        }
         const bits = id.split(":");
         if (bits.length == 2) {
           if (bits[0] == 'PomBase') {
