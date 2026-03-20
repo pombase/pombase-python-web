@@ -148,9 +148,6 @@
 #node-details .enabler-part-of-complex {
   padding-left: 1em;
 }
-#node-details .gene-in-complex {
-  padding-left: 1.5em;
-}
 .highlighted-gene {
   font-weight: bold;
 }
@@ -188,7 +185,7 @@
 .models, .inputs-outputs {
   padding-top: 0.1em;
 }
-.model-list, .input-output-list {
+  .model-list, .input-output-list, .complex-members-list {
   padding: 0.1em 0 0 1.3em;
   margin: 0.1em;
 }
@@ -960,19 +957,19 @@ const cy = window.cy = cytoscape({
       }
 
       if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
-        newContent += '<div><div>complex members:</div>';
+        newContent += '<div><div>complex members:</div><ul class="complex-members-list">';
         for (const id of currentData.has_part_genes) {
           let label = id;
           if (geneInfoMap[id]) {
             label = geneInfoMap[id];
           }
           if (highlightGeneIds.has(id)) {
-            newContent += '<div class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</div>';
+            newContent += '<li class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</li>';
           } else {
-            newContent += '<div class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</div>';
+            newContent += '<li class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</li>';
           }
         }
-        newContent += '</div>';
+        newContent += '</ul></div>';
       }
 
       if (currentData.has_input && currentData.has_input.length > 0) {
