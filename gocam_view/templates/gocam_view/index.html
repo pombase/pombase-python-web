@@ -239,6 +239,10 @@ const highlightGeneIds = new Set(rawHighlightGeneIds.map(id => id.replace(/.*:/,
 
 let currentData = undefined;
 
+function isDigit(c) {
+  return typeof c === 'string' && c.length === 1 && c >= '0' && c <= '9';
+}
+
 document.addEventListener('DOMContentLoaded', async function(){
 
 const fullOrWidget = '{{full_or_widget}}';
@@ -849,6 +853,16 @@ const cy = window.cy = cytoscape({
         }
         if (geneInfoMap[id]) {
           label = geneInfoMap[id];
+        } else {
+          // very hacky, pombe specific
+          const bits = id.split('.');
+          const lastBit = bits.pop();
+          if (isDigit(lastBit)) {
+            id = bits.join('.');
+            if (geneInfoMap[id]) {
+              label = geneInfoMap[id] + '.' + lastBit;
+            }
+          }
         }
         const bits = id.split(":");
         if (bits.length == 2) {
