@@ -956,6 +956,13 @@ const cy = window.cy = cytoscape({
         newContent += '<div class="term-link">located in: ' + makeLink(id, label) + '</div>';
       }
 
+      if (currentData.happens_during) {
+        const label = currentData.happens_during.label;
+        const id = currentData.happens_during.id;
+        newContent += '<div class="happens-during term-link">happens during: ' + makeLink(id, label);
+        newContent += '</div>';
+      }
+
       if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
         newContent += '<div><div>complex members:</div><ul class="complex-members-list">';
         for (const id of currentData.has_part_genes) {
@@ -1012,13 +1019,6 @@ const cy = window.cy = cytoscape({
           newContent += '</li>';
         }
         newContent += '</ul></div>';
-      }
-
-      if (currentData.happens_during) {
-        const label = currentData.happens_during.label;
-        const id = currentData.happens_during.id;
-        newContent += '<div class="happens-during term-link">happens during: ' + makeLink(id, label);
-        newContent += '</div>';
       }
 
       if (nodeType.startsWith('enable')) { // activity
