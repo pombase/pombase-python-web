@@ -927,6 +927,17 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
+      if (currentData.part_of_process) {
+        const label = currentData.part_of_process.label;
+        const id = currentData.part_of_process.id;
+        newContent += '<div class="part-of-process term-link">part of: ' + makeLink(id, label);
+        const parent = currentData.part_of_process.part_of_parent;
+        if (parent) {
+          newContent += '<div>part of: ' + makeLink(parent.id, parent.label) + '</div>';
+        }
+        newContent += '</div>';
+      }
+
       if (currentData.occurs_in) {
         for (const occursIn of currentData.occurs_in) {
           const component = occursIn.complex_component ||
@@ -943,17 +954,6 @@ const cy = window.cy = cytoscape({
         const label = component.label;
         const id = component.id;
         newContent += '<div class="term-link">located in: ' + makeLink(id, label) + '</div>';
-      }
-
-      if (currentData.part_of_process) {
-        const label = currentData.part_of_process.label;
-        const id = currentData.part_of_process.id;
-        newContent += '<div class="part-of-process term-link">part of: ' + makeLink(id, label);
-        const parent = currentData.part_of_process.part_of_parent;
-        if (parent) {
-          newContent += '<div>part of: ' + makeLink(parent.id, parent.label) + '</div>';
-        }
-        newContent += '</div>';
       }
 
       if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
