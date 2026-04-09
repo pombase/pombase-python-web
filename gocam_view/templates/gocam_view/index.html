@@ -185,7 +185,7 @@
 .models, .inputs-outputs {
   padding-top: 0.1em;
 }
-  .model-list, .input-output-list, .complex-members-list {
+.model-list, .input-output-list, .complex-members-list {
   padding: 0.1em 0 0 1.3em;
   margin: 0.1em;
 }
@@ -979,46 +979,88 @@ const cy = window.cy = cytoscape({
         newContent += '</div>';
       }
 
-      if (currentData.has_input && currentData.has_input.length > 0) {
-        newContent += '<div class="inputs-outputs">inputs:</div><ul class="input-output-list">';
+      const allAreGenes = (inputsOutputs) => {
         for (const hasInput of currentData.has_input) {
-          const label = hasInput.label;
-          const id = hasInput.id;
-          newContent += '<li class="input-output">' + makeLink(id, label);
-
-          if (hasInput.located_in) {
-            const component = hasInput.located_in.complex_component ||
-                  hasInput.located_in.other_component;
-            const componentLabel = component.label;
-            const componentId = component.id;
-            newContent += '<div class="term-link">located in: ' +
-              makeLink(componentId, componentLabel) + '</div>';
+          if (!geneInfoMap[hasInput.id] || hasInput.located_in) {
+            return false;
           }
-
-          newContent += '</li>';
         }
-        newContent += '</ul></div>';
+
+        return true;
+      };
+
+      if (currentData.has_input && currentData.has_input.length > 0) {
+        let allInputsAreGenes = allAreGenes(currentData.has_output);
+
+        newContent += '<div class="inputs-outputs">inputs:</div>';
+
+        if (allInputsAreGenes) {
+          const geneLinks = currentData.has_input
+                .map(hasInput => {
+                  const label = hasInput.label;
+                  const id = hasInput.id;
+                  return makeLink(id, label);
+                });
+          newContent += '<div class="input-output-list">' + geneLinks.join(', ') + '</div>';
+        } else {
+          newContent += '<ul class="input-output-list">'
+
+          for (const hasInput of currentData.has_input) {
+            const label = hasInput.label;
+            const id = hasInput.id;
+            newContent += '<li class="input-output">' + makeLink(id, label);
+
+            if (hasInput.located_in) {
+              const component = hasInput.located_in.complex_component ||
+                    hasInput.located_in.other_component;
+              const componentLabel = component.label;
+              const componentId = component.id;
+              newContent += '<div class="term-link">located in: ' +
+                makeLink(componentId, componentLabel) + '</div>';
+            }
+
+            newContent += '</li>';
+          }
+          newContent += '</ul>';
+        }
+        newContent += '</div>';
       }
 
       if (currentData.has_output && currentData.has_output.length > 0) {
-        newContent += '<div class="inputs-outputs">outputs:</div><ul class="input-output-list">';
-        for (const hasOutput of currentData.has_output) {
-          const label = hasOutput.label;
-          const id = hasOutput.id;
-          newContent += '<li class="input-output">' + makeLink(id, label);
+        let allOutputsAreGenes = allAreGenes(currentData.has_output);
 
-          if (hasOutput.located_in) {
-            const component = hasOutput.located_in.complex_component ||
-                  hasOutput.located_in.other_component;
-            const componentLabel = component.label;
-            const componentId = component.id;
-            newContent += '<div class="term-link">located in: ' +
-              makeLink(componentId, componentLabel) + '</div>';
+        newContent += '<div class="inputs-outputs">outputs:</div>';
+
+        if (allOutputsAreGenes) {
+          const geneLinks = currentData.has_output
+                .map(hasOutput => {
+                  const label = hasOutput.label;
+                  const id = hasOutput.id;
+                  return makeLink(id, label);
+                });
+          newContent += '<div class="input-output-list">' + geneLinks.join(', ') + '</div>';
+        } else {
+          newContent += '<ul class="input-output-list">'
+
+          for (const hasOutput of currentData.has_output) {
+            const label = hasOutput.label;
+            const id = hasOutput.id;
+            newContent += '<li class="input-output">' + makeLink(id, label);
+
+            if (hasOutput.located_in) {
+              const component = hasOutput.located_in.complex_component ||
+                    hasOutput.located_in.other_component;
+              const componentLabel = component.label;
+              const componentId = component.id;
+              newContent += '<div class="term-link">located in: ' +
+                makeLink(componentId, componentLabel) + '</div>';
+            }
+
+            newContent += '</li>';
           }
-
-          newContent += '</li>';
+          newContent += '</ul>';
         }
-        newContent += '</ul></div>';
+        newContent += '</div>';
       }
 
       if (nodeType.startsWith('enable')) { // activity
