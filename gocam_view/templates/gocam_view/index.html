@@ -994,8 +994,15 @@ const cy = window.cy = cytoscape({
       }
 
       const allAreGenes = (inputsOutputs) => {
-        for (const hasInput of currentData.has_input) {
-          if (!geneInfoMap[hasInput.id] || hasInput.located_in) {
+        for (const hasInputOutput of inputsOutputs) {
+          let id = hasInputOutput.id;
+          if (!geneInfoMap[id] || hasInputOutput.located_in) {
+            const bits = id.split('.');
+            const lastBit = bits.pop();
+            // pombe specific hack
+            if (isDigit(lastBit) && geneInfoMap[bits.join('.')]) {
+              continue;
+            }
             return false;
           }
         }
@@ -1004,7 +1011,7 @@ const cy = window.cy = cytoscape({
       };
 
       if (currentData.has_input && currentData.has_input.length > 0) {
-        let allInputsAreGenes = allAreGenes(currentData.has_output);
+        let allInputsAreGenes = allAreGenes(currentData.has_input);
 
         newContent += '<div class="inputs-outputs">inputs:</div>';
 
