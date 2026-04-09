@@ -185,7 +185,7 @@
 .models, .inputs-outputs {
   padding-top: 0.1em;
 }
-.model-list, .input-output-list, .complex-members-list {
+.model-list, .input-output-list, #complex-members-list {
   padding: 0.1em 0 0 1.3em;
   margin: 0.1em;
 }
@@ -241,6 +241,15 @@ function isDigit(c) {
 }
 
 document.addEventListener('DOMContentLoaded', async function(){
+
+  window.showComplexMembers = () => {
+    const button = document.getElementById('show-complex-members');
+    const list = document.getElementById('complex-members-list');
+
+    button.style.display = 'none';
+    list.style.display = 'block';
+  }
+
 
 const fullOrWidget = '{{full_or_widget}}';
 const gocamId = '{{gocam_id}}';
@@ -928,7 +937,10 @@ const cy = window.cy = cytoscape({
       }
 
       if (currentData.has_part_genes && currentData.has_part_genes.length > 0) {
-        newContent += '<div><div>complex members:</div><ul class="complex-members-list">';
+        newContent += '<div><div>complex members: ' +
+          '<a id="show-complex-members" onclick="showComplexMembers()">[click to view]</a>' +
+          '</div>' +
+          '<ul style="display: none" id="complex-members-list">';
         for (const id of currentData.has_part_genes) {
           let label = id;
           if (geneInfoMap[id]) {
