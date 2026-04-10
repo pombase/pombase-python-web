@@ -1113,7 +1113,8 @@ const cy = window.cy = cytoscape({
   nodes.map(node => {
     if (node.data.enabler_id &&
         rawHighlightIds.length == 1 &&
-        rawHighlightIds[0] == node.data.enabler_id.replace(/.*:/, '')) {
+        (rawHighlightIds[0] == node.data.enabler_id ||
+         rawHighlightIds[0] == node.data.enabler_id.replace(/.*:/, ''))) {
       // select the highlighted gene if there's only one
       currentData = node.data;
     }
