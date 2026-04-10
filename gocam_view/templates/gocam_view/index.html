@@ -231,8 +231,8 @@ function capitalizeInitial(val) {
   return String(withSpaces).charAt(0).toUpperCase() + String(withSpaces).slice(1);
 }
 
-const rawHighlightGeneIds = {{ highlight_gene_ids|safe }};
-const highlightGeneIds = new Set(rawHighlightGeneIds.map(id => id.replace(/.*:/, '')))
+const rawHighlightIds = {{ highlight_gene_ids|safe }};
+const highlightIds = new Set(rawHighlightIds.map(id => id.replace(/.*:/, '')))
 
 let currentData = undefined;
 
@@ -544,14 +544,14 @@ const isSelected = (el) => {
   const data = el.data();
 
   const nodeIdBits = data['node_id'].split(':');
-  if (nodeIdBits[1] && highlightGeneIds.has(nodeIdBits[1])) {
+  if (nodeIdBits[1] && highlightIds.has(nodeIdBits[1])) {
     return true;
   }
 
   const enablerId = data['enabler_id'];
   if (enablerId) {
     const bits = enablerId.split(':');
-    if (bits[1] && highlightGeneIds.has(bits[1])) {
+    if (bits[1] && highlightIds.has(bits[1])) {
       return true;
     }
   }
@@ -562,7 +562,7 @@ const isSelected = (el) => {
 
   if (data['has_part_genes']) {
     for (const id of data['has_part_genes']) {
-      if (highlightGeneIds.has(id)) {
+      if (highlightIds.has(id)) {
         return true;
       }
     }
@@ -890,7 +890,7 @@ const cy = window.cy = cytoscape({
             const modelId = bits[1];
             let href = `${modelViewPath}/${modelId}`;
             const highlightArray =
-                  [...highlightGeneIds].filter(g => g !== '');
+                  [...highlightIds].filter(g => g !== '');
             if (highlightArray.length > 0) {
               href += '/' + highlightArray.join(',');
             }
@@ -948,7 +948,7 @@ const cy = window.cy = cytoscape({
           if (geneInfoMap[id]) {
             label = geneInfoMap[id];
           }
-          if (highlightGeneIds.has(id)) {
+          if (highlightIds.has(id)) {
             newContent += '<li class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</li>';
           } else {
             newContent += '<li class="gene-in-complex">' + makeLink('PomBase:' + id, label) + '</li>';
@@ -1112,8 +1112,8 @@ const cy = window.cy = cytoscape({
 
   nodes.map(node => {
     if (node.data.enabler_id &&
-        rawHighlightGeneIds.length == 1 &&
-        rawHighlightGeneIds[0] == node.data.enabler_id.replace(/.*:/, '')) {
+        rawHighlightIds.length == 1 &&
+        rawHighlightIds[0] == node.data.enabler_id.replace(/.*:/, '')) {
       // select the highlighted gene if there's only one
       currentData = node.data;
     }
