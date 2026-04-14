@@ -844,7 +844,7 @@ const cy = window.cy = cytoscape({
 
   function updateDetails() {
     if (!currentData) {
-      contentDiv.innerHTML = '';
+      contentDiv.innerHTML = '<div style="padding: 1em 0.5em; color: #666;">(Click a target or activity for details)</div>';
       return;
     }
 
@@ -1125,8 +1125,8 @@ const cy = window.cy = cytoscape({
   cy.on('click', (event) => {
     if (event.target === cy) {
       // clicked on the background
-      contentDiv.innerHTML = '';
       currentData = undefined;
+      updateDetails();
     }
   });
 
