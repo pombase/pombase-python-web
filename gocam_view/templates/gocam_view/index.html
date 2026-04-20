@@ -860,7 +860,10 @@ const cy = window.cy = cytoscape({
           title = "";
         }
         if (geneInfoMap[id]) {
-          label = geneInfoMap[id];
+          title = 'product: ' + geneInfoMap[id].product;
+          if (geneInfoMap[id].name) {
+            label = geneInfoMap[id].name;
+          }
         } else {
           // very hacky, pombe specific
           const bits = id.split('.');
@@ -868,7 +871,10 @@ const cy = window.cy = cytoscape({
           if (isDigit(lastBit)) {
             id = bits.join('.');
             if (geneInfoMap[id]) {
-              label = geneInfoMap[id] + '.' + lastBit;
+              title = 'product: ' + geneInfoMap[id].product;
+              if (geneInfoMap[id].name) {
+                label = geneInfoMap[id].name + '.' + lastBit;
+              }
             }
           }
         }
