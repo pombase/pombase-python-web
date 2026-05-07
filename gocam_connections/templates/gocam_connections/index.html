@@ -243,7 +243,10 @@ document.addEventListener('DOMContentLoaded', async function(){
 
     ready: function(){
       if (summaryType == 'all_models') {
-        this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof', animate: false}).run();
+        this.layout({name: 'fcose', fit: false, randomize: true, quality: 'proof',
+                     nodeRepulsion: 9000,
+                     idealEdgeLength: 100,
+                     animate: false}).run();
       } else {
         this.layout({ name: 'dagre',
                     nodeSep: 30,
