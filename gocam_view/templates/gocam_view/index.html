@@ -235,6 +235,7 @@ const rawHighlightIds = {{ highlight_gene_ids|safe }};
 const highlightIds = new Set(rawHighlightIds.map(id => id.replace(/.*:/, '')))
 
 let currentData = undefined;
+let currentEdge = undefined;
 
 function isDigit(c) {
   return typeof c === 'string' && c.length === 1 && c >= '0' && c <= '9';
@@ -688,6 +689,18 @@ const edgeStyle = {
   const label = el.data()['label'];
   return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['lineStyle'];
 },
+'font-size': 14,
+'text-wrap': 'wrap',
+'text-max-width': 160,
+'text-background-color': '#fff',
+'text-background-opacity': 0.5,
+'label': function(el) {
+  if (currentEdge && el.data().id == currentEdge) {
+    return el.data()['label'];
+  } else {
+    return '';
+  }
+},
 'target-arrow-shape': function(el) {
   const label = el.data()['label'];
   return (RELATION_MAP[label] || RELATION_MAP['DEFAULT'])['glyph'];
@@ -1132,6 +1145,7 @@ const cy = window.cy = cytoscape({
     if (event.target === cy) {
       // clicked on the background
       currentData = undefined;
+      currentEdge = undefined;
       updateDetails();
     }
   });
@@ -1144,10 +1158,15 @@ const cy = window.cy = cytoscape({
 
   cy.elements().bind("click", (event) => {
     const data = event.target.data();
-    currentData = data;
+    currentData = data; 
+    currentEdge = undefined;
     hideSearch();
 
-    updateDetails();
+    if (data.node_id) {
+      updateDetails();
+    } else {
+      currentEdge = data.id;
+    }
   });
 
   window.showSearch = function() {
@@ -1193,6 +1212,7 @@ const cy = window.cy = cytoscape({
       const searchText = e.target.value.trim().toLowerCase();
       cy.$().unselect();
       currentData = undefined;
+      currentEdge = undefined;
       if (searchText.length >= 2) {
         doSearch(searchText);
       }
