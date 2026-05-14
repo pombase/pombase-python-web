@@ -56,7 +56,7 @@
         <a href="{{app_path}}/summary/all_models">Summary map of all models</a>
       </li>
     </ul>
-    
+
     <h4>Create a diagram from IDs:</h4>
 
     <form id="id-lookup" action="" method="post">
@@ -149,25 +149,32 @@ for (const hole of holes) {
   const processHtml = makeLink(hole.part_of_process.id, hole.part_of_process.label);
   processEl.insertAdjacentHTML('afterbegin', processHtml);
 
-  let inputs = hole.has_input.map(input => makeLink(input.id, input.label)).join(',');
+  let inputs = '';
+  let outputs = '';
+  if (hole.node_type.activity) {
+    inputs = hole.node_type.activity.inputs.map(input => makeLink(input.id, input.label)).join(',');
+    outputs = hole.node_type.activity.outputs.map(output => makeLink(output.id, output.label)).join(',');
+  }
   if (inputs.length == 0) {
     inputs = '?';
   }
-  let outputs = hole.has_output.map(output => makeLink(output.id, output.label)).join(',');
   if (outputs.length == 0) {
     outputs = '?';
   }
+
   const inputOutputEl = document.createElement("td");
   rowEl.appendChild(inputOutputEl);
   inputOutputEl.insertAdjacentHTML('afterbegin', inputs + ' / ' + outputs);
 
   const occursInEl = document.createElement("td");
   rowEl.appendChild(occursInEl);
-  const occursInHtml = hole.occurs_in.map(occurs_in => {
-    const component = occurs_in.complex_component || occurs_in.other_component;
-    return makeLink(component.id, component.label);
-  }).join(',');
-  occursInEl.insertAdjacentHTML('afterbegin', occursInHtml);
+  if (hole.occurs_in) {
+    const occursInHtml = hole.occurs_in.map(occurs_in => {
+      const component = occurs_in.complex_component || occurs_in.other_component;
+      return makeLink(component.id, component.label);
+    }).join(',');
+    occursInEl.insertAdjacentHTML('afterbegin', occursInHtml);
+  }
 }
     </script>
   </body>
