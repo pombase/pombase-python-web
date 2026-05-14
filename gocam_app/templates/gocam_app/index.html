@@ -146,8 +146,10 @@ for (const hole of holes) {
 
   const processEl = document.createElement("td");
   rowEl.appendChild(processEl);
-  const processHtml = makeLink(hole.part_of_process.id, hole.part_of_process.label);
-  processEl.insertAdjacentHTML('afterbegin', processHtml);
+  if (hole.part_of_process) {
+    const processHtml = makeLink(hole.part_of_process.id, hole.part_of_process.label);
+    processEl.insertAdjacentHTML('afterbegin', processHtml);
+  }
 
   let inputs = '';
   let outputs = '';
