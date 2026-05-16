@@ -28,6 +28,11 @@ def index(request):
 
             url = f"{app_path}/view/{ids}:show_models"
 
+            if form.cleaned_data["targets"]:
+                url += ',show_inputs'
+            else:
+                url += ',no_inputs'
+
             return HttpResponseRedirect(url)
 
     else:
