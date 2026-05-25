@@ -1186,8 +1186,7 @@ const cy = window.cy = cytoscape({
 
   const doSearch = (searchText) => {
     for (const node of nodes) {
-      if (isSmallJoin &&
-          (node.data.enabler_label &&
+      if ((node.data.enabler_label &&
            node.data.enabler_label.toLowerCase().includes(searchText) ||
            node.data.enabler_id &&
            node.data.enabler_id.toLowerCase().includes(searchText) ||
