@@ -877,8 +877,12 @@ const cy = window.cy = cytoscape({
         }
         if (geneInfoMap[id]) {
           title = 'product: ' + geneInfoMap[id].product;
-          if (geneInfoMap[id].name) {
-            label = geneInfoMap[id].name;
+          if (!label) {
+            if (geneInfoMap[id].name) {
+              label = geneInfoMap[id].name;
+            } else {
+              label = id;
+            }
           }
         } else {
           // very hacky, pombe specific
@@ -967,8 +971,8 @@ const cy = window.cy = cytoscape({
           '<ul style="display: none" id="complex-members-list">';
         for (const id of currentData.has_part_genes) {
           let label = id;
-          if (geneInfoMap[id]) {
-            label = geneInfoMap[id];
+          if (geneInfoMap[id] && geneInfoMap[id].name) {
+            label = geneInfoMap[id].name;
           }
           if (highlightIds.has(id)) {
             newContent += '<li class="gene-in-complex highlighted-gene">' + makeLink('PomBase:' + id, label) + '</li>';
