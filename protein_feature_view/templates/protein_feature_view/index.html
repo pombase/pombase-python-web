@@ -158,7 +158,7 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
       'DeepTMHMM': {
         colour: '#81e',
         allowGaps: true,
-        helpText: 'Trans-membrane domains predicted by DeepTMHMM',
+        helpText: 'Trans-membrane domains predicted by DeepTMHMM via InterProScan',
         includeCoords: true,
         singular: 'TM domain',
       },
@@ -182,6 +182,13 @@ fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
         helpText: 'Localization signals imported from UniProt',
         includeCoords: true,
         singular: 'Localization signals',
+      },
+      'DeepTMHMM-Signal-Peptide': {
+        colour: '#a04',
+        allowGaps: true,
+        helpText: 'Signal peptide prediction from DeepTMHMM via InterProScan',
+        includeCoords: true,
+        singular: 'DeepTMHMM signal peptides',
       },
       'Binding sites': {
         colour: '#52e',
