@@ -57,12 +57,26 @@
       </li>
     </ul>
 
-    <h4>Create a diagram from IDs:</h4>
+    <h4>Create a diagram from model IDs:</h4>
 
     <form id="id-lookup" action="" method="post">
       {% csrf_token %}
       <div>
-        {{ form }}
+        <textarea name="model_ids" cols="50" rows="10" class="ids-field" required="" id="id_model_ids"></textarea>
+      </div>
+
+      <div>
+        <h5>Highlight these genes (optional):</h5>
+        <textarea name="highlight_gene_ids" cols="50" rows="10" class="ids-field" id="highlight_gene_ids"></textarea>
+      </div>
+      <div>
+        <label for="id_dag">Use top-down layout:</label>
+        <input type="checkbox" name="dag" id="id_dag">
+      </div>
+
+      <div>
+        <label for="id_targets">Include targets:</label>
+        <input type="checkbox" name="targets" id="id_targets">
       </div>
       <input id="ids-submit" type="submit" value="View GO-CAM(s)">
     </form>
