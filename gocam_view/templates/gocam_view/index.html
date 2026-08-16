@@ -900,11 +900,8 @@ const cy = window.cy = cytoscape({
         }
         const bits = id.split(":");
         if (bits.length == 2) {
-          if (bits[0] == 'PomBase') {
+          if (bits[0] == 'PomBase' || bits[0] == 'FB') {
             return `<a title="${title}" target="_blank" href="/gene/${bits[1]}">${label}</a>`;
-          }
-          if (bits[0] == 'FB') {
-            return `<a title="${title}" target="_blank" href="https://www.flybase.org/reports/${bits[1]}">${label}</a>`;
           }
           if (bits[0] == 'CHEBI') {
             return `<a title="${title}" target="_blank" href="https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=${id}">${label} (${id})</a>`;
