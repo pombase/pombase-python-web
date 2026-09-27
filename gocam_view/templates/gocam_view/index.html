@@ -906,6 +906,10 @@ const cy = window.cy = cytoscape({
           if (bits[0] == 'CHEBI') {
             return `<a title="${title}" target="_blank" href="https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId=${id}">${label} (${id})</a>`;
           }
+          if (bits[0] == 'PR') {
+            const idNum = bits[1];
+            return `<a title="${title}" target="_blank" href="https://purl.obolibrary.org/obo/PR_${idNum}">${label} (${id})</a>`;
+          }
           if (bits[0] == 'GO') {
             return `<a title="${title}" target="_blank" href="/term/${id}">${label} (${id})</a>`;
           }
