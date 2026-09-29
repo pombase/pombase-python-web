@@ -580,7 +580,8 @@ const nodeStyle = {
 'width': '110px',
 'height': '40px',
 'background-color': function(el) {
-  const type = el.data()['type'];
+  const data = el.data();
+  const type = data['type'];
   if (type == 'chemical') {
     return '#b2dfdb';
   } else if (type == 'modified_protein') {
@@ -588,10 +589,10 @@ const nodeStyle = {
   } else if (type == 'gene') {
     return '#b2fbef';
   } else if (type == 'enabled_by_gene') {
-    if (el.data()['label'] == 'molecular_function') {
+    if (data['label'] == 'molecular_function') {
       return '#ffd3d4';
     } else {
-      if (el.data()['label'].startsWith('obsolete ')) {
+      if (data['label'].startsWith('obsolete ')) {
         return '#eee';
       } else {
         return '#c8e6c9';
@@ -607,8 +608,14 @@ const nodeStyle = {
     return '#ffe6ff';
   } else if (type == 'enabled_by_modified_protein') {
     return '#d8c5ff';
+  } else if (type == 'enabled_by_unknown') {
+    if (data['label'] == 'molecular_function') {
+      return '#ffc374';
+    } else {
+      return '#ee7';
+    }
   } else {
-    return '#ee7';
+    return '#bb9';
   }
 },
 'background-opacity': function(el) {
