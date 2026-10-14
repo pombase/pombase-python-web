@@ -18,4 +18,5 @@ if len(os.environ["WEBSITE_CONFIG_JSON_PATH"]) > 0:
     urlpatterns.append(path('protein_feature_view/', include('protein_feature_view.urls')))
     urlpatterns.append(path('rhea_widget/', include('rhea_widget.urls')))
     urlpatterns.append(path('stats/', include('stats.urls')))
+    urlpatterns.append(path('complex_viewer/', include('complex_viewer.urls')))
     urlpatterns.append(path('admin/', admin.site.urls))

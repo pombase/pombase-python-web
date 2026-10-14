@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Complex Viewer</title>
+
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+  <script src="https://unpkg.com/complexviewer@2.3.0/dist/complexviewer.js"></script>
+
+</head>
+<body>
+  <style>
+body, html {
+  height: 100%;
+}
+#parent {
+  display: flex;
+  flex-direction: column;
+
+  width: 650px;
+  height: 400px;
+}
+
+#widget {
+  flex: auto;
+
+  display: flex;
+}
+
+.complexViewerSVG {
+  flex: auto;
+}
+  </style>
+
+  <div id="parent">
+    <div id="widget"></div>
+  </div>
+
+  <script type="module">
+    const complexId = "{{ complex_id|safe }}";
+
+    const response = await fetch("https://www.ebi.ac.uk/intact/complex-ws/export/" + complexId);
+    const data = await response.json();
+
+    const widget = document.getElementById('widget');
+    const cv = new complexviewer.App(widget, {maxCountInitiallyExpanded: 4, initialAnnotations: ['MI Features', 'AlphaFold']});
+
+    cv.readMIJSON(data);
+  </script>
+
+</body>
+</html>

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'gocam_connections',
     'gocam_app',
     'rhea_widget',
+    'complex_viewer',
 ]
 
 MIDDLEWARE = [
