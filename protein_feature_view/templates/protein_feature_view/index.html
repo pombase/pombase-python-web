@@ -112,7 +112,7 @@ const locationsById = {};
 
 window.onload = (event) => {
 
-fetch("/api/v1/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
+fetch("/api/v2/dataset/latest/protein_features/" + scope + "/" + geneUniquename)
   .then((response) => {
     return response.json();
   })
